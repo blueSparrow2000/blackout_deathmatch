@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>BLACKOUT</title>
+        <link rel="icon" type="image/x-icon" href="./favicon.ico">
+
+        <style>
+            #image {
+            display: none;
+            }
+            body{
+                margin:0;
+                background:rgb(106, 106, 106);
+                /* Cursor color is inverse of the color its hovering at: Hence previous color code of (128,128,128) is same with its inverse so crosshair did not appear well */
+            }
+            .blink{
+              animation: blinker 0.2s step-start 2;
+            }
+            @keyframes blinker{
+              50%{
+                opacity: 0;
+              }
+            }
+        </style>
+    </head>
+    <body>
+      <div
+        style="
+          position: absolute;
+          color: white;
+          padding: 8px;
+          font-family: sans-serif;
+          font-size: 14px;
+          user-select: none;
+          background: rgb(43, 40, 40)
+        "
+        >
+        <span style="margin-bottom: 8px">[ Alive players ] </span>
+        <div id="playerLabels">
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; justify-content: center; cursor:crosshair;">
+          <canvas id="canvas"></canvas>
+          <!-- username input -->
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              position: absolute;
+              top: 0;
+              right: 0;
+              bottom: 0;
+              left: 0;
+            "
+            >
+            <form id="usernameForm">
+
+              <p class="blink" style="text-align: center;font-size:50px"><b>BLACK OUT</b></p>
+
+              <div style="text-align: center; margin-top: 20%">
+                <input
+                  id = "usernameInput"
+                  type="text"
+                  placeholder="Username"
+                  style="
+                    padding: 12px;
+                    border-radius: 20px;
+                    border: none;
+                    background:rgb(43, 40, 40);
+                    color: #cbd5e1;
+                  "
+                />
+              </div>
+    
+              <div style="text-align: center; margin-top: 8px">
+                <button
+                  style="
+                    padding: 8px 20px;
+                    border-radius: 100px;
+                    border: none;
+                    background-image: linear-gradient(
+                      to right,
+                      rgb(94, 99, 101),
+                      rgb(0, 0, 0)
+                    );
+                    color: white;
+                    cursor: pointer;
+                  "
+                >
+                  Start!
+                </button>
+              </div>
+    
+    
+              <div id = "scoreinfos" style="text-align: center;
+              border-radius: 10px;
+              border: none;
+              background: rgb(43, 40, 40);
+              color: #cbd5e1;">
+                <h1 class="text-4xl font-bold mb-0" style="padding: 0px 10px 0px 10px;" id="pointEl">0</h1>
+                <p class="text-sm text-gray-700 mt-0" style="padding: 0px 10px 5px 10px;">points</p>
+              </div>
+    
+    
+              <div id = "keyinfos" style="display: flex;">
+                <p style="
+                    padding: 10px 10px;
+                    border-radius: 10px;
+                    border: none;
+                    background: rgb(43, 40, 40);
+                    color: #cbd5e1;
+                  ">
+                  Move: W,A,S,D or arrow key <br>
+                  Inventory switch key: 1,2,3,4 <br>
+                  Use item(shoot/eat/hit): Mouse left click <br>
+                  Auto fire: Space <br>
+                  Reload gun (except flaregun): R <br>
+                  Interact (pick up/drive): F <br>
+                  See minimap: G <br>
+                  Drop the holding item: Q 
+                </p>
+              </div>  
+
+              <div style="text-align: center;">
+                <button type="button" onclick="show()" id="btnID" style="
+                padding: 8px 20px;
+                border-radius: 100px;
+                border: none;
+                margin: auto;
+                background-image: linear-gradient(
+                  to right,
+                  rgb(43, 40, 40),
+                      rgb(0, 0, 0)
+                );
+                color: white;
+                cursor: pointer;
+              ">
+                    Show Help
+                </button>
+              </div>
+
+              <div>
+                <!-- Add id to image -->
+                <img id="HELP" src="help.png" alt="help" style="position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                display:none">
+              </div>
+
+          
+              <script>
+                  function show() {
+                      /* Access image by id and change 
+                      the display property to block*/
+                      document.getElementById('HELP')
+                          .style.display = "block";
+                      document.getElementById('btnID')
+                          .style.display = "none";
+                  }
+              </script>
+              <!-- 
+              <img src="help.png" alt="help" style="position: absolute;
+              top: 0;
+              right: 0;
+              bottom: 0;
+              left: 0;"> -->
+              
+              
+            </form>
+          </div>
+          <!-- username input end -->
+  
+      </div>
+      
+
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="./classes/Player.js"></script>
+        <script src="./classes/Projectile.js"></script>
+        <script src="./classes/Item.js"></script>
+        <script src="./classes/Enemy.js"></script>
+        <script src="./classes/ObjectEntity.js"></script>
+        <script src="./classes/Vehicle.js"></script>
+        <script type="module" src="/frontend.js"></script>
+    </body>
+</html>

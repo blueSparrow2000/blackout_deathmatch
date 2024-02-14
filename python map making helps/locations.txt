@@ -1,0 +1,106 @@
+(col,row)
+APCLocation - vehicle - APC
+5, 24
+5, 27
+11, 43
+11, 8
+
+CarLoc - vehicle - car 
+22, 20
+30, 12
+34, 12
+45, 12
+42, 29
+42, 32
+29, 29
+29, 32
+
+RandomTreeLoc - gun - random
+15, 8
+11, 11
+13, 14
+9, 17
+14, 19
+12, 22
+8, 25
+12, 27
+14, 27
+9, 30
+12, 32
+12, 36
+10, 37
+14, 39
+13, 42
+15, 44
+
+House_15TilesRoof - consumable - bandage
+24, 46
+29, 46
+34, 46
+39, 46
+44, 46
+
+House_15TilesCenter - gun - random
+23, 44
+28, 44
+33, 44
+38, 44
+43, 44
+
+House_CourtyardCorner - consumable - medkit
+38, 28
+33, 28
+33, 33
+38, 33
+
+CourtyardCorner - scope - random
+35, 30
+36, 30
+35, 31
+36, 31
+
+GardenCenter - gun - grenadeLauncher
+37, 19
+
+House_36TilesRoof - gun - M1
+28, 18
+
+House_36TilesItemPoints - armor - random
+23, 13
+28, 13
+23, 18
+
+House_42TilesRoof - gun - s686
+43, 21
+
+House_42TilesItemPoints - armor - random
+36, 14
+43, 13
+
+RockyItempoints - melee - random
+29, 1
+32, 0
+37, 1
+48, 2
+
+ForestItemPoints - gun - random
+49, 30
+49, 28
+49, 24
+49, 35
+49, 20
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,52 @@
+            backEndPlayers[socket.id] = {
+                x:playerX,
+                y:playerY,
+                color: playerColor,
+                radius: PLAYERRADIUS,
+                score: 0,
+                health: PLAYERHEALTH,
+                username,
+                inventory, // size 4
+                currentSlot: 1, // 1~4
+                mousePos: {x:0,y:0},
+                wearingarmorID: -1,
+                wearingscopeID: -1,
+                getinhouse: false,
+
+                speed:PLAYERSPEED, // not passed to frontend
+                ridingVehicleID:-1,
+                entityType:'player', // not passed to frontend
+                canvasHeight,
+                canvasWidth,
+		skin,
+
+		onBoard:false,
+		strikeID:-1, // not passed to frontend
+
+            };
+
+  backEndVehicles[vehicleId] = {
+    x,y,radius,velocity:0, myID:vehicleId, color, warningcolor, damage, health, speed, type,occupied:false,ridingPlayerID:-1
+  }
+
+
+  backEndEnemies[enemyId] = {
+    x,y,radius,velocity, myID, color, damage, health, homing, homingTargetId, speed, wearingarmorID, entityType: 'enemy'
+  }
+
+
+
+  if (startDistance>0){
+    backEndProjectiles[projectileId] = {
+      x:location.x + Math.cos(angle)*startDistance, y:location.y + Math.sin(angle)*startDistance,radius,velocity, speed:bulletSpeed, playerId: playerID, gunName:currentGun, travelDistance, projDamage,color
+    }
+  } else{
+    backEndProjectiles[projectileId] = {
+      x:location.x, y:location.y,radius,velocity, speed:bulletSpeed, playerId: playerID, gunName:currentGun, travelDistance, projDamage, color
+    }
+  }
+
+
+  backEndItems[itemsId] = {
+    itemtype, name, groundx, groundy, size, color, iteminfo, onground, myID: itemsId, deleteRequest:false
+  }
