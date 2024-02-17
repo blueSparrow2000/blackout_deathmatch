@@ -3,7 +3,7 @@ const TICKRATE = 15
 const SCREENWIDTH = 1024
 const SCREENHEIGHT = 576
 const ITEMRADIUS = 16
-
+let signalReset = false
 
 ///////////////////////////////////// MAP CONFIGURATION /////////////////////////////////////
 const MAPDICT = {'Wilderness':30, 'Sahara':50, 'MilitaryBase':100} // mapName : map tile number
@@ -32,17 +32,17 @@ const io = new Server(httpServer);
 
 
 // Server Data
-const backEndPlayers = {}
-const backEndEnemies = {}
-const backEndProjectiles = {}
-const backEndItems = {}
-const backEndVehicles = {}
+let backEndPlayers = {}
+let backEndEnemies = {}
+let backEndProjectiles = {}
+let backEndItems = {}
+let backEndVehicles = {}
 backEndItems[0] = {
     itemtype: 'melee', groundx:0, groundy:0, size:{length:5, width:5}, name:'fist', color:'black', iteminfo:{ammo:'inf', ammotype:'bio'} ,onground:false, myID: 0, deleteRequest:false
 }
-const backEndObjects = {}
-const backEndAirstrikes = {}
-const backEndSoundRequest = {}
+let backEndObjects = {}
+let backEndAirstrikes = {}
+let backEndSoundRequest = {}
 
 let enemyId = 0
 let projectileId = 0
@@ -60,6 +60,8 @@ const PLAYERHEALTH = 8
 const PLAYERHEALTHMAX = 8
 const GUNHEARRANGE = 700
 const PLAYER_JOIN_DELAY = 1000
+let lastWinnerName = ''
+
 
 //to check if there exists any player left
 let USERCOUNT = [0]
@@ -123,7 +125,9 @@ const gunInfo = {
     'knife':{travelDistance:32, damage: 0.4, shake:0, num: 1, fireRate: 200, projectileSpeed:8, magSize:0, reloadTime: 0, ammotype:'sharp', size: {length:0, width:2}},
     'bat':{travelDistance:48, damage: 1, shake:0, num: 1, fireRate: 500, projectileSpeed:6, magSize:0, reloadTime: 0, ammotype:'hard', size: {length:0, width:3}},
 }
-const gunOrderInDeathmatch = ['grenadeLauncher','AWM','vector','s686','ak47','SLR','FAMAS','usas12','mp5','M249','mk14','VSS','DBS','ump45','M1','pistol']
+const gunOrderInDeathmatch = ['grenadeLauncher','AWM','vector','s686','ak47','SLR','FAMAS','usas12','mp5','M249','mk14','VSS','DBS','ump45','M1','pistol','bat']
+const finalScore = gunOrderInDeathmatch.length - 1
+
 let defaultGuns = [gunOrderInDeathmatch[0]]//['tankBuster','shockWave','fragment','grenadeLauncher']// 
 
 // 'guntypes' is except for grenade launcher and fragments! Since they are OP
@@ -591,10 +595,11 @@ function updateGunBasedOnScore(player){
   }
   const score = player.score
 
-  if (score >= gunOrderInDeathmatch.length){
-    console.log("winner has been selected!")
-    // disconnect all the connection and restart the server
-    
+  if (score >= finalScore){
+    lastWinnerName = player.username
+    console.log("winner has been selected: ",lastWinnerName)
+    // kill all players and reset the map
+    signalReset = true
     return
   }
 
@@ -610,6 +615,48 @@ function updateGunBasedOnScore(player){
 }
 
 
+function killAllPlayers(){
+  for (const playerId in backEndPlayers) {
+    let backEndPlayer = backEndPlayers[playerId]
+    backEndPlayer.health = 0
+  }
+}
+
+function resetMap(MapNameGiven){
+}
+
+function resetServer(){
+  killAllPlayers()
+
+  for (const entityid in backEndEnemies) {
+    safeDeleteEnemy(entityid)
+  }
+  for (const entityid in backEndProjectiles) {
+    safeDeleteProjectile(entityid)
+  }
+  for (const entityid in backEndItems) {
+    backEndItems[entityid].deleteRequest = true
+  }
+  backEndItems[0] = {
+    itemtype: 'melee', groundx:0, groundy:0, size:{length:5, width:5}, name:'fist', color:'black', iteminfo:{ammo:'inf', ammotype:'bio'} ,onground:false, myID: 0, deleteRequest:false
+  }
+
+  for (const entityid in backEndVehicles) {
+    safeDeleteVehicle(entityid)
+  }
+  for (const entityid in backEndObjects) {
+    safeDeleteObject(entityid)
+  }
+  for (const entityid in backEndAirstrikes) {
+    safeDeleteAirstrike(entityid)
+  }
+  for (const entityid in backEndSoundRequest) {
+    safeDeleteSoundRequest(entityid)
+  }
+
+  resetMap(MAPNAME)
+
+}
 
 
 function Moveplayer(playerGIVEN, WW, AA, SS, DD){
@@ -703,7 +750,7 @@ async function main(){
                 y:playerY,
                 color: playerColor,
                 radius: PLAYERRADIUS,
-                score: 0,
+                score: 15,
                 health: PLAYERHEALTH,
                 username,
                 inventory, // size 4
@@ -950,7 +997,10 @@ async function main(){
 app.use(express.static("public"));
 httpServer.listen(5000);
 
+
 main();
+
+
 
 let strike = true
 
@@ -962,6 +1012,13 @@ let ServerTime = 0
 let GLOBALCLOCK = 0
 // backend ticker - update periodically server info to clients
 setInterval(() => {
+  if (signalReset) {
+    resetServer()
+    signalReset = false
+    GLOBALCLOCK = 0
+    ServerTime = 0
+  }
+
   GLOBALCLOCK += TICKRATE
   // enemy spawn mechanism
   if ((GLOBALCLOCK > ENEMYSPAWNRATE) && (SPAWNENEMYFLAG) && (USERCOUNT[0]>0)){
