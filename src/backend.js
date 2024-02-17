@@ -656,7 +656,7 @@ function resetServer(){
   for (const entityid in backEndSoundRequest) {
     safeDeleteSoundRequest(entityid)
   }
-  
+
   enemyId = 0
   projectileId = 0
   itemsId = 0 
@@ -761,7 +761,7 @@ async function main(){
                 y:playerY,
                 color: playerColor,
                 radius: PLAYERRADIUS,
-                score: 15,
+                score: 0,
                 health: PLAYERHEALTH,
                 username,
                 inventory, // size 4
