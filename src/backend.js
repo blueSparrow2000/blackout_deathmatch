@@ -123,13 +123,14 @@ const gunInfo = {
     'knife':{travelDistance:32, damage: 0.4, shake:0, num: 1, fireRate: 200, projectileSpeed:8, magSize:0, reloadTime: 0, ammotype:'sharp', size: {length:0, width:2}},
     'bat':{travelDistance:48, damage: 1, shake:0, num: 1, fireRate: 500, projectileSpeed:6, magSize:0, reloadTime: 0, ammotype:'hard', size: {length:0, width:3}},
 }
-let defaultGuns = []//['tankBuster','shockWave','fragment','grenadeLauncher']// 
+const gunOrderInDeathmatch = ['grenadeLauncher','AWM','vector','s686','ak47','SLR','FAMAS','usas12','mp5','M249','mk14','VSS','DBS','ump45','M1','pistol']
+let defaultGuns = [gunOrderInDeathmatch[0]]//['tankBuster','shockWave','fragment','grenadeLauncher']// 
 
 // 'guntypes' is except for grenade launcher and fragments! Since they are OP
 const gunTypes = [ 'M1', 'mk14', 'SLR','AWM',    'pistol','VSS', 'M249', 'ak47', 'FAMAS',    's686','DBS', 'usas12',     'ump45','vector','mp5'] // except special guns: 'tankBuster', 'grenadeLauncher', 'fragment'
 const flareTypes = ['red','green','yellow','white']
 const meleeTypes = ['knife','bat']
-const gunOrderInDeathmatch = ['grenadeLauncher','AWM','vector','s686','ak47','SLR','FAMAS','usas12','mp5','M249','mk14','VSS','DBS','ump45','M1','pistol']
+
 
 
 const consumableTypes = ['bandage','medkit']
@@ -231,7 +232,6 @@ if (GROUNDITEMFLAG){
   ///////////////////////////////////////// BATTLE ROYALE DROPS /////////////////////////////////////////
   else if (MAPNAME==='Wilderness' && ENTITYDISTRIBUTIONS[ENTITYDISTRIBUTION_MARK]==="battleRoyale"){
     // special tile locations in 'Wilderness'
-    defaultGuns = ['pistol'] // give additional pistol
 
     const TILESLOC = {"center":{row:14,col:14},"house1":{row:13,col:2},"house2":{row:2,col:24},"house3":{row:5,col:24},
     "rock1":{row:0,col:29},"rock2":{row:6,col:15}, "rockMiddle":{row:0,col:14},
@@ -249,34 +249,34 @@ if (GROUNDITEMFLAG){
     makeHouse_2Tiles(getCoordTiles(TILESLOC["house2"]))
     makeHouse_2Tiles(getCoordTiles(TILESLOC["house3"]))
 
-    makeNdropItem('gun', 'ump45', getCoordTilesCenter(TILESLOC["house1"]))
     makeNdropItem('scope', "1", getCoordTilesCenter(TILESLOC["house1"]))
-    makeNdropItem('gun', 'vector', getCoordTilesCenter(TILESLOC["house2"]))
-    makeNdropItem('gun', 'mp5', getCoordTilesCenter(TILESLOC["house3"]))
+    // makeNdropItem('gun', 'ump45', getCoordTilesCenter(TILESLOC["house1"]))
+    // makeNdropItem('gun', 'vector', getCoordTilesCenter(TILESLOC["house2"]))
+    // makeNdropItem('gun', 'mp5', getCoordTilesCenter(TILESLOC["house3"]))
 
     // some guns 
     const rock1loc = getCoordTilesCenter(TILESLOC["rock1"])
-    makeNdropItem('gun', 'AWM', rock1loc)
+    // makeNdropItem('gun', 'AWM', rock1loc)
     makeNdropItem('scope', "2", rock1loc) // scope 3 is laggy to other PCs
     // console.log(rockloc)
     // console.log(MAPWIDTH)
     const rock2loc = getCoordTilesCenter(TILESLOC["rock2"])
-    makeNdropItem('gun', 'M249', rock2loc)
+    // makeNdropItem('gun', 'M249', rock2loc)
     makeNdropItem('scope', "1", rock2loc)
 
     const sandroad1loc = getCoordTilesCenter(TILESLOC["sandroad1"])
-    makeNdropItem('gun', 'usas12', sandroad1loc)
+    // makeNdropItem('gun', 'usas12', sandroad1loc)
 
     const sandroad2loc = getCoordTilesCenter(TILESLOC["sandroad2"])
-    makeNdropItem('gun', 's686', sandroad2loc)
+    // makeNdropItem('gun', 's686', sandroad2loc)
 
     const tree2loc = getCoordTilesCenter(TILESLOC["tree2"])
-    makeNdropItem('gun', 'grenadeLauncher', tree2loc)
+    // makeNdropItem('gun', 'grenadeLauncher', tree2loc)
     
 
-    makeNdropItem('gun', 'FAMAS', getCoordTilesCenter(TILESLOC["tree3"]))
+    // makeNdropItem('gun', 'FAMAS', getCoordTilesCenter(TILESLOC["tree3"]))
     makeNdropItem('melee', 'knife', getCoordTilesCenter(TILESLOC["tree4"]))
-    makeNdropItem('gun', 'ak47', getCoordTilesCenter(TILESLOC["tree5"]))
+    // makeNdropItem('gun', 'ak47', getCoordTilesCenter(TILESLOC["tree5"]))
 
 
     // some health packs
@@ -578,6 +578,37 @@ function safeDeletePlayer(playerId){
 
   delete backEndPlayers[playerId]
 }
+
+// for (let i=0;i<defaultGuns.length; i++){
+//   makeNdropItem('gun', defaultGuns[i], {x:0 ,y:0},onground=false)
+//   inventory[i] = backEndItems[itemsId]
+// }
+
+
+function updateGunBasedOnScore(player){
+  if (!player){ // if does not exist
+    return
+  }
+  const score = player.score
+
+  if (score >= gunOrderInDeathmatch.length){
+    console.log("winner has been selected!")
+    // disconnect all the connection and restart the server
+    
+    return
+  }
+
+
+  const playerholdinggun = player.inventory[0]
+  backEndItems[playerholdinggun.myID].deleteflag = true // what about not deleting it... umm... not good but.. 
+
+  // now add the item based on the score
+  const newGunID = makeNdropItem('gun', gunOrderInDeathmatch[score], {x:0 ,y:0},onground=false)
+  console.log(score)
+  player.inventory[0] = backEndItems[newGunID]
+
+}
+
 
 
 
@@ -1090,6 +1121,7 @@ setInterval(() => {
               // who shot projectile
               if (backEndPlayers[projGET.playerId]){ // safe
               backEndPlayers[projGET.playerId].score ++
+              updateGunBasedOnScore(backEndPlayers[projGET.playerId])
               }
               safeDeletePlayer(playerId)} 
           }
@@ -1118,6 +1150,7 @@ setInterval(() => {
             if (backEndEnemy.health <= 0){ //check again
               if (backEndPlayers[projGET.playerId]){ // safe
                 backEndPlayers[projGET.playerId].score ++
+                updateGunBasedOnScore(backEndPlayers[projGET.playerId])
               }
               safeDeleteEnemy(enemyId)} 
         }
@@ -1309,13 +1342,15 @@ function makeNdropItem(itemtype, name, groundloc,onground=true,variantNameGiven=
     iteminfo = {variantName:variantNameGiven} 
   } else{
     console.log("invalid itemtype requested in makeNdropItem")
-    return 
+    return -1
   }
 
   backEndItems[itemsId] = {
     itemtype, name, groundx, groundy, size, color, iteminfo, onground, myID: itemsId, deleteRequest:false
   }
   itemBorderUpdate(backEndItems[itemsId])
+
+  return itemsId // in case needed
 }
 
 

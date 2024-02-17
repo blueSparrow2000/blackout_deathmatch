@@ -846,8 +846,14 @@ socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles,
             const inventorySize = backEndPlayer.inventory.length
             for (let i=0;i<inventorySize;i++){
                 const backEndItem = backEndPlayer.inventory[i]
+                // if new, make one
+                if (!frontEndItems[backEndItem.myID]){
+                  instantiateItem(backEndItem,backEndItem.myID) 
+                }
                 frontEndPlayerOthers.inventory[i] = backEndItem.myID
             }
+
+            
     
             if (id === myPlayerID){ // client side prediction - mouse pointer
                 frontEndPlayerOthers.cursorPos = {x:cursorX,y:cursorY}

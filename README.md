@@ -76,9 +76,12 @@ or
 2024.2.3~2024.2.12 Basic game mechanics
 
 
-- Make a death match version: Each kill advances the weapon of a player(cannot be dropped) + smarter AI & AI health increase + on ground items are: medkits/scopes/armors
-- Make a death match version: When a player reaches the last gun and get a kill, game initializes itself with last winner's name on the leaderboard / unable to drop item & pickup guns / player drop a medkit & wearing armor and scope on death
+2024.2.17  Each kill advances the weapon of a player / unable to drop item & pickup guns / player drop a medkit & wearing armor and scope on death / AI health increase / on ground items are restricted to the followings: medkits/scopes/armors 
 
+
+
+- Make a death match version: smarter AI & 
+- Make a death match version: When a player reaches the last gun and get a kill, game initializes itself with last winner's name on the leaderboard 
 
 
 
