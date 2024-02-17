@@ -295,10 +295,10 @@ if (GROUNDITEMFLAG){
 
   else if (MAPNAME==='Sahara' && ENTITYDISTRIBUTIONS[ENTITYDISTRIBUTION_MARK]==="battleRoyale"){
     const TILESLOC_N_REQUEST = {
-      'APCLocation1':{row: 24, col:5, request:['vehicle','turret']},
-      'APCLocation2':{row: 27, col:5, request:['vehicle','turret']},
-      'APCLocation3':{row: 43, col:11, request:['vehicle','APC']},
-      'APCLocation4':{row: 8, col:11, request:['vehicle','APC']},
+      // 'APCLocation1':{row: 24, col:5, request:['vehicle','turret']},
+      // 'APCLocation2':{row: 27, col:5, request:['vehicle','turret']},
+      // 'APCLocation3':{row: 43, col:11, request:['vehicle','APC']},
+      // 'APCLocation4':{row: 8, col:11, request:['vehicle','APC']},
       'CarLoc1':{row: 20, col:22, request:['vehicle','car']},
       'CarLoc2':{row: 12, col:30, request:['vehicle','car']},
       'CarLoc3':{row: 12, col:34, request:['vehicle','car']},
@@ -307,32 +307,32 @@ if (GROUNDITEMFLAG){
       'CarLoc6':{row: 32, col:42, request:['vehicle','car']},
       'CarLoc7':{row: 29, col:29, request:['vehicle','car']},
       'CarLoc8':{row: 32, col:29, request:['vehicle','car']},
-      'RandomTreeLoc1':{row: 8, col:15, request:['gun','random']},
-      'RandomTreeLoc2':{row: 11, col:11, request:['gun','random']},
-      'RandomTreeLoc3':{row: 14, col:13, request:['gun','random']},
-      'RandomTreeLoc4':{row: 17, col:9, request:['gun','random']},
-      'RandomTreeLoc5':{row: 19, col:14, request:['gun','random']},
-      'RandomTreeLoc6':{row: 22, col:12, request:['gun','random']},
-      'RandomTreeLoc7':{row: 25, col:8, request:['gun','random']},
-      'RandomTreeLoc8':{row: 27, col:12, request:['gun','random']},
-      'RandomTreeLoc9':{row: 27, col:14, request:['gun','random']},
-      'RandomTreeLoc10':{row: 30, col:9, request:['gun','random']},
-      'RandomTreeLoc11':{row: 32, col:12, request:['gun','random']},
-      'RandomTreeLoc12':{row: 36, col:12, request:['gun','random']},
-      'RandomTreeLoc13':{row: 37, col:10, request:['gun','random']},
-      'RandomTreeLoc14':{row: 39, col:14, request:['gun','random']},
-      'RandomTreeLoc15':{row: 42, col:13, request:['gun','random']},
-      'RandomTreeLoc16':{row: 44, col:15, request:['gun','random']},
+      // 'RandomTreeLoc1':{row: 8, col:15, request:['gun','random']},
+      // 'RandomTreeLoc2':{row: 11, col:11, request:['gun','random']},
+      // 'RandomTreeLoc3':{row: 14, col:13, request:['gun','random']},
+      // 'RandomTreeLoc4':{row: 17, col:9, request:['gun','random']},
+      // 'RandomTreeLoc5':{row: 19, col:14, request:['gun','random']},
+      // 'RandomTreeLoc6':{row: 22, col:12, request:['gun','random']},
+      // 'RandomTreeLoc7':{row: 25, col:8, request:['gun','random']},
+      // 'RandomTreeLoc8':{row: 27, col:12, request:['gun','random']},
+      // 'RandomTreeLoc9':{row: 27, col:14, request:['gun','random']},
+      // 'RandomTreeLoc10':{row: 30, col:9, request:['gun','random']},
+      // 'RandomTreeLoc11':{row: 32, col:12, request:['gun','random']},
+      // 'RandomTreeLoc12':{row: 36, col:12, request:['gun','random']},
+      // 'RandomTreeLoc13':{row: 37, col:10, request:['gun','random']},
+      // 'RandomTreeLoc14':{row: 39, col:14, request:['gun','random']},
+      // 'RandomTreeLoc15':{row: 42, col:13, request:['gun','random']},
+      // 'RandomTreeLoc16':{row: 44, col:15, request:['gun','random']},
       'House_15TilesRoof1':{row: 46, col:24, request:['consumable','bandage']},
       'House_15TilesRoof2':{row: 46, col:29, request:['consumable','bandage']},
       'House_15TilesRoof3':{row: 46, col:34, request:['consumable','bandage']},
       'House_15TilesRoof4':{row: 46, col:39, request:['consumable','bandage']},
       'House_15TilesRoof5':{row: 46, col:44, request:['consumable','bandage']},
-      'House_15TilesCenter1':{row: 44, col:23, request:['gun','random']},
-      'House_15TilesCenter2':{row: 44, col:28, request:['gun','random']},
-      'House_15TilesCenter3':{row: 44, col:33, request:['gun','random']},
-      'House_15TilesCenter4':{row: 44, col:38, request:['gun','random']},
-      'House_15TilesCenter5':{row: 44, col:43, request:['gun','random']},
+      'House_15TilesCenter1':{row: 44, col:23, request:['consumable','random']},
+      'House_15TilesCenter2':{row: 44, col:28, request:['consumable','random']},
+      'House_15TilesCenter3':{row: 44, col:33, request:['consumable','random']},
+      'House_15TilesCenter4':{row: 44, col:38, request:['consumable','random']},
+      'House_15TilesCenter5':{row: 44, col:43, request:['consumable','random']},
       'House_CourtyardCorner1':{row: 28, col:38, request:['consumable','medkit']},
       'House_CourtyardCorner2':{row: 28, col:33, request:['consumable','medkit']},
       'House_CourtyardCorner3':{row: 33, col:33, request:['consumable','medkit']},
@@ -341,23 +341,23 @@ if (GROUNDITEMFLAG){
       'CourtyardCorner2':{row: 30, col:36, request:['scope','random']},
       'CourtyardCorner3':{row: 31, col:35, request:['scope','random']},
       'CourtyardCorner4':{row: 31, col:36, request:['scope','random']},
-      'GardenCenter1':{row: 19, col:37, request:['gun','grenadeLauncher']},
-      'House_36TilesRoof1':{row: 18, col:28, request:['gun','M1']},
+      'GardenCenter1':{row: 19, col:37, request:['consumable','random']},
+      'House_36TilesRoof1':{row: 18, col:28, request:['consumable','random']},
       'House_36TilesItemPoints1':{row: 13, col:23, request:['armor','random']},
       'House_36TilesItemPoints2':{row: 13, col:28, request:['armor','random']},
       'House_36TilesItemPoints3':{row: 18, col:23, request:['armor','random']},
-      'House_42TilesRoof1':{row: 21, col:43, request:['gun','s686']},
+      'House_42TilesRoof1':{row: 21, col:43, request:['consumable','random']},
       'House_42TilesItemPoints1':{row: 14, col:36, request:['armor','random']},
       'House_42TilesItemPoints2':{row: 13, col:43, request:['armor','random']},
       'RockyItempoints1':{row: 1, col:29, request:['melee','random']},
       'RockyItempoints2':{row: 0, col:32, request:['melee','random']},
       'RockyItempoints3':{row: 1, col:37, request:['melee','random']},
       'RockyItempoints4':{row: 2, col:48, request:['melee','random']},
-      'ForestItemPoints1':{row: 30, col:49, request:['gun','random']},
-      'ForestItemPoints2':{row: 28, col:49, request:['gun','random']},
-      'ForestItemPoints3':{row: 24, col:49, request:['gun','random']},
-      'ForestItemPoints4':{row: 35, col:49, request:['gun','random']},
-      'ForestItemPoints5':{row: 20, col:49, request:['gun','random']},
+      // 'ForestItemPoints1':{row: 30, col:49, request:['gun','random']},
+      // 'ForestItemPoints2':{row: 28, col:49, request:['gun','random']},
+      // 'ForestItemPoints3':{row: 24, col:49, request:['gun','random']},
+      // 'ForestItemPoints4':{row: 35, col:49, request:['gun','random']},
+      // 'ForestItemPoints5':{row: 20, col:49, request:['gun','random']},
     } 
 
     // AUTO DROPPER
@@ -398,14 +398,10 @@ if (GROUNDITEMFLAG){
     // MANUAL DROP
     // test feature
     makeNdropItem('scope', "3" ,getCoordTilesCenter({row:1,col:1})) // get with your own risk: will be laggy!
-    makeNdropItem('gun', 'tankBuster' ,getCoordTilesCenter({row:49,col:48})) // The only anti-tank weapon
 
     // makeNdropItem('placeable', 'barrel' ,getCoordTilesCenter({row:2,col:3})) 
     makeNdropItem('placeable', 'barrel' ,getCoordTilesCenter({row:2,col:4}),onground=true,variantNameGiven='SaharaBarrel') 
    
-    makeObjects("mine", MINE_DETONATE_COUNTDOWN, {center:getCoordTilesCenter({row: 30, col: 21}), radius: MINE_DETECTION_RADIUS, color:'gray', placerID:0}, givenname ='SaharaMine')
-    makeObjects("mine", MINE_DETONATE_COUNTDOWN, {center:getCoordTilesCenter({row: 31, col: 21}), radius: MINE_DETECTION_RADIUS, color:'gray', placerID:0}, givenname ='SaharaMine')
-
     for (let i=0;i<2;i++){
       makeNdropItem('placeable', 'mine' ,getCoordTilesCenter({row:47,col:2}),onground=true,variantNameGiven='SaharaMine') 
     }
@@ -413,12 +409,12 @@ if (GROUNDITEMFLAG){
       makeNdropItem('placeable', 'mine' ,getCoordTilesCenter({row:1,col:46}),onground=true,variantNameGiven='') 
     }
 
-    for (let i=0;i<1;i++){
-      makeNdropItem('gun', 'flareGun', getCoordTilesCenter({row:24,col:3}),onground=true,variantNameGiven='green')// variant should be red,green etc.
-      makeNdropItem('gun', 'flareGun', getCoordTilesCenter({row:14,col:5}),onground=true,variantNameGiven='red')// variant should be red,green etc.
-      makeNdropItem('gun', 'flareGun', getCoordTilesCenter({row:27,col:3}),onground=true,variantNameGiven='yellow')// variant should be red,green etc.
-      makeNdropItem('gun', 'flareGun', getCoordTilesCenter({row:37,col:5}),onground=true,variantNameGiven='white')// variant should be red,green etc.
-    }
+    // for (let i=0;i<1;i++){
+    //   makeNdropItem('gun', 'flareGun', getCoordTilesCenter({row:24,col:3}),onground=true,variantNameGiven='green')// variant should be red,green etc.
+    //   makeNdropItem('gun', 'flareGun', getCoordTilesCenter({row:14,col:5}),onground=true,variantNameGiven='red')// variant should be red,green etc.
+    //   makeNdropItem('gun', 'flareGun', getCoordTilesCenter({row:27,col:3}),onground=true,variantNameGiven='yellow')// variant should be red,green etc.
+    //   makeNdropItem('gun', 'flareGun', getCoordTilesCenter({row:37,col:5}),onground=true,variantNameGiven='white')// variant should be red,green etc.
+    // }
 
 
     // MAKE HOUSES
@@ -551,19 +547,9 @@ function safeDeletePlayer(playerId){
     return
   }
 
-  const inventoryItems = backEndPlayer.inventory
-   
-  for (let i=0;i<inventoryItems.length;i++){
-    const curitemID = inventoryItems[i].myID
-    if (curitemID===0){ // no fist
-      continue
-    }
-    let backEndItem = backEndItems[curitemID]
-    backEndItem.onground = true
-    backEndItem.groundx = backEndPlayer.x + (Math.random() - 0.5)*100
-    backEndItem.groundy = backEndPlayer.y + (Math.random() - 0.5)*100
-    itemBorderUpdate(backEndItem)
-  }
+  // drop only a medkit (no other inventory stuffs - melee weapons & consumables in inventory are deleted)
+  makeNdropItem('consumable', 'medkit',{x:backEndPlayer.x + (Math.random() - 0.5)*100, y:backEndPlayer.y + (Math.random() - 0.5)*100})
+
 
   ////////////////////////// integrate player death //////////////////
   // DROP armor

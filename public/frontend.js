@@ -46,7 +46,8 @@ let fireTimeout
 let reloadTimeout
 let interactTimeout
 const INTERACTTIME = 300
-const ITEM_THAT_TAKESUP_INVENTORY = ['gun', 'consumable', 'melee' , 'placeable']
+const ITEM_THAT_TAKESUP_INVENTORY = ['consumable', 'placeable','melee']
+const UNDROPPABLE_ITEM = ['gun']
 
 const LobbyBGM = new Audio("/sound/Lobby.mp3")
 const shothitsound = new Audio("/sound/shothit.mp3")
@@ -488,18 +489,6 @@ setInterval(()=>{
       if (keys.r.pressed){ // reload lock? click once please... dont spam click. It will slow your PC
           socket.emit('keydown',{keycode:'KeyR'})
       }
-      if (keys.q.pressed){ //
-        //socket.emit('keydown',{keycode:'KeyQ'})
-        if (!frontEndPlayer){return}
-        let inventoryPointer = frontEndPlayer.currentSlot - 1 // current slot is value between 1 to 4
-        if (!inventoryPointer) {inventoryPointer = 0} // default 0
-        const currentHoldingItemId = frontEndPlayer.inventory[inventoryPointer] // if it is 0, it is fist
-
-        dropItem(currentHoldingItemId)
-        socket.emit('updateitemrequest',{itemid:0, requesttype:'pickupinventory',currentSlot: frontEndPlayer.currentSlot,playerId:socket.id}) // update to fist
-        frontEndPlayer.inventory[inventoryPointer] = 0 // front end should also be changed
-
-    }
   }
 
   const Movement = keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed
@@ -644,13 +633,17 @@ function interactItem(itemId,backEndItems){
   //console.log("interacting!")
 
 
-  interactSound.play()
+
 
   // interact here!
   // make the item unpickable for other players => backenditem onground switch to false
   const pickingItem = backEndItems[itemId]
 
-  if(ITEM_THAT_TAKESUP_INVENTORY.includes(pickingItem.itemtype) ){
+  if(ITEM_THAT_TAKESUP_INVENTORY.includes(pickingItem.itemtype) ){ 
+    if (UNDROPPABLE_ITEM.includes(currentHoldingItem.itemtype)){ // do not drop guns or melee weapons
+      listen = true
+      return
+    }
     //console.log(`itemId: ${itemId} / inventorypointer: ${inventoryPointer}`)
     dropItem(currentHoldingItemId)
     socket.emit('updateitemrequest',{itemid:itemId, requesttype:'pickupinventory',currentSlot: frontEndPlayer.currentSlot,playerId:socket.id})
@@ -693,12 +686,16 @@ function interactItem(itemId,backEndItems){
     // console.log(pickingItem.iteminfo.scopeDist)
     updateSightChunk(pickingItem.iteminfo.scopeDist) // change scope!
     socket.emit('updateitemrequest',{itemid:itemId, requesttype:'scopeChange',playerId:socket.id})
+  } else{ // do not pick up others (gun/melee)
+    listen = true
+    return
   }
+  interactSound.play()
 
   interactTimeout = window.setTimeout(function(){
     clearTimeout(interactTimeout);
-    if (frontEndPlayer){listen = true;    // reload when pick up
-    reloadGun()}}, INTERACTTIME)
+    if (frontEndPlayer){listen = true;    // NO reload when pick up (guns are not picked up in death match)
+    }}, INTERACTTIME)
 }
 
 // iteract
