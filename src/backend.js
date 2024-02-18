@@ -632,23 +632,27 @@ function resetMap(MapNameGiven){
 function resetServer(){
   killAllPlayers()
   for (const entityid in backEndEnemies) {
-    safeDeleteEnemy(entityid)
+    // safeDeleteEnemy(entityid)
+    delete backEndEnemies[entityid]
   }
   for (const entityid in backEndProjectiles) {
-    safeDeleteProjectile(entityid)
+    // safeDeleteProjectile(entityid)
+    delete backEndProjectiles[entityid]
+  }
+  for (const entityid in backEndVehicles) {
+    // safeDeleteVehicle(entityid)
+    delete backEndVehicles[entityid]
+  }
+  for (const entityid in backEndObjects) {
+    // safeDeleteObject(entityid)
+    delete backEndObjects[entityid]
   }
   for (const entityid in backEndItems) {
-    backEndItems[entityid].deleteRequest = true
+    // backEndItems[entityid].deleteRequest = true
+    delete backEndItems[entityid]
   }
   backEndItems[0] = {
     itemtype: 'melee', groundx:0, groundy:0, size:{length:5, width:5}, name:'fist', color:'black', iteminfo:{ammo:'inf', ammotype:'bio'} ,onground:false, myID: 0, deleteRequest:false
-  }
-
-  for (const entityid in backEndVehicles) {
-    safeDeleteVehicle(entityid)
-  }
-  for (const entityid in backEndObjects) {
-    safeDeleteObject(entityid)
   }
   for (const entityid in backEndAirstrikes) {
     safeDeleteAirstrike(entityid)
@@ -664,8 +668,6 @@ function resetServer(){
   vehicleId = 0
   airstrikeId = 0
   soundID = 0
-
-  resetMap(MAPNAME)
 
 }
 
@@ -761,7 +763,7 @@ async function main(){
                 y:playerY,
                 color: playerColor,
                 radius: PLAYERRADIUS,
-                score: 15,
+                score: 0,
                 health: PLAYERHEALTH,
                 username,
                 inventory, // size 4
@@ -1029,6 +1031,7 @@ setInterval(() => {
     GLOBALCLOCK = 0
     ServerTime = 0
     io.emit('resetServer')
+    resetMap(MAPNAME)
   }
 
   GLOBALCLOCK += TICKRATE
