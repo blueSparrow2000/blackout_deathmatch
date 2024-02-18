@@ -84,7 +84,7 @@ or
 
 
 Future plan:
-- smarter AI
+- smarter AI / kill logs
 
 
 ## Various Tips
