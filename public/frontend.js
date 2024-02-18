@@ -1175,7 +1175,7 @@ function loop(){
 
     if (!frontEndPlayer){ // if not exists - draw nothing
       canvas.fillStyle = 'black'
-      canvas.fillText("loading...",centerX - 50,centerY + 30)
+      canvas.fillText("loading...",centerX - 50,centerY + 90)
       window.requestAnimationFrame(loop);
       return
     }
