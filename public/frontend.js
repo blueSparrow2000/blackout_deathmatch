@@ -143,20 +143,23 @@ let frontEndConsumableSounds = {}
 let consumableInfoKeysFrontEnd = []
 let lastWinnerNameFRONTEND = ''
 
+
+function updateLastWinner(name){
+  lastWinnerNameFRONTEND = name
+  if (name){
+    document.querySelector('#lastwinner').innerHTML = `<div data-id="0"> Last winner: ${lastWinnerNameFRONTEND} </div>`
+  }
+}
+
 // server is resetting
-socket.on('resetServer',()=>{
-  frontEndPlayer = null
+socket.on('resetServer',({lastWinnerName})=>{
+  updateLastWinner(lastWinnerName)
 })
 
 
 socket.on('serverVars',( {gunInfo, consumableInfo, SHOOTER_VEHICLES_BACKEND,lastWinnerName})=>{
     SHOOTER_VEHICLES = SHOOTER_VEHICLES_BACKEND
-    lastWinnerNameFRONTEND = lastWinnerName
-    console.log(lastWinnerName)
-    if (lastWinnerNameFRONTEND){
-      document.querySelector('#lastwinner').innerHTML = `<div data-id="0"> Last winner: ${lastWinnerNameFRONTEND} </div>`
-    }
-
+    updateLastWinner(lastWinnerName)
 
     // gun infos
     gunInfoKeysFrontEnd = Object.keys(gunInfo)

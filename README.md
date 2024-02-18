@@ -79,9 +79,7 @@ or
 2024.2.17  When a player reaches the last gun and get a kill, game initializes itself with last winner's name on the server / Each kill advances the weapon of a player / unable to drop item & pickup guns / player drop a medkit & wearing armor and scope on death / AI health increase / on ground items are restricted to the followings: medkits/scopes/armors 
 
 
-
-- Make a death match version: last winner's name on the leaderboard please
-- Make a death match version: front end: make it robust when server resets (no error)
+2024.2.18 last winner's name on the leaderboard / made it robust when server resets (no error)
 
 
 

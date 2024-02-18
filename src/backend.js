@@ -764,7 +764,7 @@ async function main(){
                 y:playerY,
                 color: playerColor,
                 radius: PLAYERRADIUS,
-                score: 15,
+                score: 0,
                 health: PLAYERHEALTH,
                 username,
                 inventory, // size 4
@@ -1031,7 +1031,7 @@ setInterval(() => {
     signalReset = false
     GLOBALCLOCK = 0
     ServerTime = 0
-    io.emit('resetServer')
+    io.emit('resetServer',{lastWinnerName})
   }
 
   GLOBALCLOCK += TICKRATE
