@@ -669,6 +669,7 @@ function resetServer(){
   airstrikeId = 0
   soundID = 0
 
+  resetMap(MAPNAME)
 }
 
 
@@ -1031,7 +1032,6 @@ setInterval(() => {
     GLOBALCLOCK = 0
     ServerTime = 0
     io.emit('resetServer')
-    resetMap(MAPNAME)
   }
 
   GLOBALCLOCK += TICKRATE
