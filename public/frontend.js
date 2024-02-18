@@ -142,6 +142,12 @@ let itemImages = {}
 let frontEndConsumableSounds = {}
 let consumableInfoKeysFrontEnd = []
 
+// server is resetting
+socket.on('resetServer',()=>{
+  frontEndPlayer = null
+})
+
+
 socket.on('serverVars',( {gunInfo, consumableInfo, SHOOTER_VEHICLES_BACKEND})=>{
     SHOOTER_VEHICLES = SHOOTER_VEHICLES_BACKEND
 
@@ -1041,7 +1047,8 @@ socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles,
     // remove deleted 
     for (const frontEndItemId in frontEndItems){
       if (!backEndItems[frontEndItemId]){
-       delete frontEndItems[frontEndItemId]
+        console.log("deleting: ",frontEndItemId)
+        delete frontEndItems[frontEndItemId]
       }
     }
 
@@ -1289,6 +1296,8 @@ function loop(){
     // canvas.strokeStyle = 'black' // same stroke style with projectiles
     if (!frontEndPlayer.onBoard){ // draw myself in the center
         const currentHoldingItem = getCurItem(frontEndPlayer)
+        //console.log(frontEndPlayer.inventory[0],frontEndItems[frontEndPlayer.inventory[0]])//frontEndItems
+        console.log(Object.keys(frontEndItems).length,frontEndPlayer.inventory[0])
         frontEndPlayer.displayAttribute(canvas, camX, camY, currentHoldingItem)
         if (gunInfoFrontEnd){
           const thisguninfo = gunInfoFrontEnd[currentHoldingItem.name]

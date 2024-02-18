@@ -125,7 +125,7 @@ const gunInfo = {
     'knife':{travelDistance:32, damage: 0.4, shake:0, num: 1, fireRate: 200, projectileSpeed:8, magSize:0, reloadTime: 0, ammotype:'sharp', size: {length:0, width:2}},
     'bat':{travelDistance:48, damage: 1, shake:0, num: 1, fireRate: 500, projectileSpeed:6, magSize:0, reloadTime: 0, ammotype:'hard', size: {length:0, width:3}},
 }
-const gunOrderInDeathmatch = ['grenadeLauncher','AWM','vector','s686','ak47','SLR','FAMAS','usas12','mp5','M249','mk14','VSS','DBS','ump45','M1','pistol','bat']
+const gunOrderInDeathmatch = ['grenadeLauncher','AWM','vector','s686','ak47','SLR','FAMAS','usas12','mp5','M249','mk14','VSS','DBS','ump45','M1','pistol','pistol']
 const finalScore = gunOrderInDeathmatch.length - 1
 
 let defaultGuns = [gunOrderInDeathmatch[0]]//['tankBuster','shockWave','fragment','grenadeLauncher']// 
@@ -438,7 +438,7 @@ function updateGunBasedOnScore(player){
   if (score >= finalScore){
     lastWinnerName = player.username
     console.log("winner has been selected: ",lastWinnerName)
-    player.health = 0 // immediate death to the winner...
+    // player.health = 0 // immediate death to the winner...
     // kill all players and reset the map
     signalReset = true
     return
@@ -457,8 +457,9 @@ function updateGunBasedOnScore(player){
 
 function killAllPlayers(){
   for (const playerId in backEndPlayers) {
-    let backEndPlayer = backEndPlayers[playerId]
-    backEndPlayer.health = 0
+    // let backEndPlayer = backEndPlayers[playerId]
+    // backEndPlayer.health = 0
+    delete backEndPlayers[playerId]
   }
 }
 
@@ -630,7 +631,6 @@ function resetMap(MapNameGiven){
 
 function resetServer(){
   killAllPlayers()
-
   for (const entityid in backEndEnemies) {
     safeDeleteEnemy(entityid)
   }
@@ -656,7 +656,7 @@ function resetServer(){
   for (const entityid in backEndSoundRequest) {
     safeDeleteSoundRequest(entityid)
   }
-
+  
   enemyId = 0
   projectileId = 0
   itemsId = 0 
@@ -761,7 +761,7 @@ async function main(){
                 y:playerY,
                 color: playerColor,
                 radius: PLAYERRADIUS,
-                score: 0,
+                score: 15,
                 health: PLAYERHEALTH,
                 username,
                 inventory, // size 4
@@ -1028,6 +1028,7 @@ setInterval(() => {
     signalReset = false
     GLOBALCLOCK = 0
     ServerTime = 0
+    io.emit('resetServer')
   }
 
   GLOBALCLOCK += TICKRATE
