@@ -178,7 +178,6 @@ class Player{
     }
 
     displayAttribute(canvas, camX, camY, currentHoldingItem){
-      if (!currentHoldingItem) return
       const itemName = currentHoldingItem.name
       canvas.fillText(`[${this.currentSlot}] ${itemName}`,this.x - 50 - camX ,this.y + this.radius*3- camY)
       
