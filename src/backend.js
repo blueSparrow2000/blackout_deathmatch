@@ -736,7 +736,7 @@ async function main(){
         console.log("user connected",socket.id);
         socket.emit('map',{loadedMap:{ground:ground2D, decals: decals2D},MAPTILENUMBACKEND: MAPTILENUM, MAPNAMEBACKEND:MAPNAME})
         // give server info to a frontend
-        socket.emit('serverVars', {gunInfo, consumableInfo,SHOOTER_VEHICLES_BACKEND})
+        socket.emit('serverVars', {gunInfo, consumableInfo,SHOOTER_VEHICLES_BACKEND, lastWinnerName})
 
         // remove player when disconnected (F5 etc.)
         socket.on('disconnect',(reason) => {
@@ -764,7 +764,7 @@ async function main(){
                 y:playerY,
                 color: playerColor,
                 radius: PLAYERRADIUS,
-                score: 0,
+                score: 15,
                 health: PLAYERHEALTH,
                 username,
                 inventory, // size 4

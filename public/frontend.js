@@ -141,6 +141,7 @@ let itemImages = {}
 
 let frontEndConsumableSounds = {}
 let consumableInfoKeysFrontEnd = []
+let lastWinnerNameFRONTEND = ''
 
 // server is resetting
 socket.on('resetServer',()=>{
@@ -148,8 +149,14 @@ socket.on('resetServer',()=>{
 })
 
 
-socket.on('serverVars',( {gunInfo, consumableInfo, SHOOTER_VEHICLES_BACKEND})=>{
+socket.on('serverVars',( {gunInfo, consumableInfo, SHOOTER_VEHICLES_BACKEND,lastWinnerName})=>{
     SHOOTER_VEHICLES = SHOOTER_VEHICLES_BACKEND
+    lastWinnerNameFRONTEND = lastWinnerName
+    console.log(lastWinnerName)
+    if (lastWinnerNameFRONTEND){
+      document.querySelector('#lastwinner').innerHTML = `<div data-id="0"> Last winner: ${lastWinnerNameFRONTEND} </div>`
+    }
+
 
     // gun infos
     gunInfoKeysFrontEnd = Object.keys(gunInfo)
