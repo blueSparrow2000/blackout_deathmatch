@@ -1,6 +1,10 @@
 # BLACKOUT 
 ## Death match edition
 
+First to reach 16 kills is the winner!
+
+
+Your gun changes each kill, getting harder to kill others!
 
 ## Required
 - npm
