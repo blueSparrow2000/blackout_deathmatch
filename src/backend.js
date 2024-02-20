@@ -43,6 +43,7 @@ backEndItems[0] = {
 let backEndObjects = {}
 let backEndAirstrikes = {}
 let backEndSoundRequest = {}
+let backEndKillLog = []
 
 let enemyId = 0
 let projectileId = 0
@@ -161,6 +162,30 @@ const placeableInfo = {
 'mine':{color: 'gray',size:{length:12, width:12},variantName:''},
 }
 
+
+function updateKillLog(killerName,killedName,weaponName=''){
+  if (!killerName){
+    killerName = 'Player'
+  }
+  if (!killedName){
+    killedName = 'Player'
+  }
+  backEndKillLog.push(`${killerName} killed ${killedName}`)
+}
+
+let check = false
+
+function refreshKillLog(){
+  if (backEndKillLog.length){ // length >0
+    if (check){
+      console.log(backEndKillLog.length)
+      backEndKillLog = []
+      check = false
+    }else{
+      check = true
+    }
+  }
+}
 
 
 function armorEffect(armorID, damage){
@@ -1056,6 +1081,7 @@ setInterval(() => {
     ServerTime += 1
   }
 
+  refreshKillLog()
   // red zone?
   // if ((USERCOUNT[0]>0) && strike){
   //   strike = false
@@ -1191,9 +1217,11 @@ setInterval(() => {
           }
           if (backEndPlayer.health <= 0){ //check again
               // who shot projectile
-              if (backEndPlayers[projGET.playerId]){ // safe
-              backEndPlayers[projGET.playerId].score ++
-              updateGunBasedOnScore(backEndPlayers[projGET.playerId])
+              let whoshotProj = backEndPlayers[projGET.playerId]
+              if (whoshotProj){ // safe
+                whoshotProj.score ++
+                updateKillLog(whoshotProj.username,backEndPlayer.username)
+                updateGunBasedOnScore(whoshotProj)
               }
               safeDeletePlayer(playerId)} 
           }
@@ -1354,7 +1382,7 @@ setInterval(() => {
     updateSoundRequest(id)
   }
 
-    io.emit('updateFrontEnd',{backEndPlayers, backEndEnemies, backEndProjectiles, backEndObjects, backEndItems,backEndVehicles,backEndAirstrikes,backEndSoundRequest})
+  io.emit('updateFrontEnd',{backEndPlayers, backEndEnemies, backEndProjectiles, backEndObjects, backEndItems,backEndVehicles,backEndAirstrikes,backEndSoundRequest, backEndKillLog})
 }, TICKRATE)
 
 

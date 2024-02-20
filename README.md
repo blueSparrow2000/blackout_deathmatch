@@ -86,9 +86,11 @@ or
 2024.2.18 last winner's name on the leaderboard / made it robust when server resets (no error)
 
 
+2024.2.20 Added kill log
+
 
 Future plan:
-- smarter AI / kill logs
+- smarter AI
 
 
 ## Various Tips

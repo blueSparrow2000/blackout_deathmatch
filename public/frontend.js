@@ -143,6 +143,22 @@ let frontEndConsumableSounds = {}
 let consumableInfoKeysFrontEnd = []
 let lastWinnerNameFRONTEND = ''
 
+let killlogID = 0
+
+function showKillLog(loglist){
+
+  loglist.forEach(function (item,idx) {
+    killlogID+=1
+    // let content = document.querySelector('#killLog') //+= jQuery(`<div data-id="${killlogID}"> ${item} </div>`)//.fadeOut(400,function(){$(this).remove()})
+    
+    // $(content).html(`<div data-id="${killlogID}"> ${item} </div>`).fadeOut(5000,function(){$(this).remove()})
+
+    $(`<div data-id="${killlogID}"> ${item} </div>`).appendTo("#killLog").fadeOut(5000,function(){$(this).remove()})
+  });
+
+
+}
+
 
 function updateLastWinner(name){
   lastWinnerNameFRONTEND = name
@@ -798,7 +814,7 @@ function playSoundEffect(gunName,DISTANCE,thatGunSoundDistance){
 
 
 // backend -> front end signaling
-socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles, backEndObjects, backEndItems,backEndVehicles,backEndAirstrikes,backEndSoundRequest})=>{
+socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles, backEndObjects, backEndItems,backEndVehicles,backEndAirstrikes,backEndSoundRequest, backEndKillLog})=>{
     /////////////////////////////////////////////////// 1.PLAYER //////////////////////////////////////////////////
     const myPlayerID = socket.id
 
@@ -1144,6 +1160,12 @@ socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles,
       }
     }
 
+
+    /////////////////////////////////////////////////// 9. kill logs //////////////////////////////////////////////////
+
+    showKillLog(backEndKillLog)
+
+  
 
 })
 
