@@ -89,6 +89,9 @@ or
 2024.2.20 Added kill log
 
 
+2024.2.27 Flare guns are now available 
+
+
 Future plan:
 - smarter AI
 

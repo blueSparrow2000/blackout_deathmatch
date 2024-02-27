@@ -665,8 +665,6 @@ function interactItem(itemId,backEndItems){
   //console.log("interacting!")
 
 
-
-
   // interact here!
   // make the item unpickable for other players => backenditem onground switch to false
   const pickingItem = backEndItems[itemId]
