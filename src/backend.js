@@ -108,7 +108,7 @@ const gunInfo = {
     'SLR':{travelDistance:1216, damage: 3.5, shake:1, num: 1, fireRate: 350, projectileSpeed:36, magSize: 10, reloadTime: 2700, ammotype:'7mm', size: {length:38, width:2}}, 
     'AWM':{travelDistance:1600, damage: 9, shake:0, num: 1, fireRate: 2000, projectileSpeed:30, magSize:  7, reloadTime: 4000, ammotype:'7mm', size: {length:50, width:3}}, 
 
-    'pistol':{travelDistance:576, damage: 1, shake:3, num: 1, fireRate: 300, projectileSpeed:15, magSize:15, reloadTime: 1100, ammotype:'5mm', size: {length:17, width:2}}, 
+    'pistol':{travelDistance:576, damage: 1, shake:2, num: 1, fireRate: 300, projectileSpeed:15, magSize:15, reloadTime: 1100, ammotype:'5mm', size: {length:17, width:2}}, 
     'M249':{travelDistance:832, damage: 1, shake:1, num: 1, fireRate: 75, projectileSpeed:23, magSize:150, reloadTime: 7400, ammotype:'5mm', size: {length:28, width:6}},
     'VSS':{travelDistance:1088, damage: 1, shake:1, num: 1, fireRate: 100, projectileSpeed:19, magSize:10, reloadTime: 2300, ammotype:'5mm' , size: {length:27, width:2}}, 
     'ak47':{travelDistance:704, damage: 1, shake:1, num: 1, fireRate: 110, projectileSpeed:21, magSize:30, reloadTime: 2000, ammotype:'5mm', size: {length:28, width:3}}, 
@@ -1930,14 +1930,14 @@ function spawnVehicle(location, type='car'){ // currently only makes cars
     warningcolor = "IndianRed"
     damage = 10 // bump into damage
     health = 60
-    speed = 3 
+    speed = 4 
   } else if(type==='APC'){ // with turrets!
     radius = 30
     color = "OliveDrab"
     warningcolor = "Chocolate"
     damage = 5 // bump into damage
     health = 50
-    speed = 4 
+    speed = 3
     info = {turretName:"FAMAS"}
   } else if(type==='tank'){ // with turrets!
     radius = 40
@@ -1969,7 +1969,7 @@ function spawnVehicle(location, type='car'){ // currently only makes cars
     warningcolor = "PeachPuff"
     damage = 10 // bump into damage
     health = 50
-    speed = 8 // max speed
+    speed = 8 
     info = {turretName:"tankBuster"} // becareful not to shoot itself!
   }
 
