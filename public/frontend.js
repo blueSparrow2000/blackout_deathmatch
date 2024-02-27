@@ -671,8 +671,8 @@ function interactItem(itemId,backEndItems){
   // make the item unpickable for other players => backenditem onground switch to false
   const pickingItem = backEndItems[itemId]
 
-  if(ITEM_THAT_TAKESUP_INVENTORY.includes(pickingItem.itemtype) ){ 
-    if (UNDROPPABLE_ITEM.includes(currentHoldingItem.itemtype)){ // do not drop guns or melee weapons
+  if(ITEM_THAT_TAKESUP_INVENTORY.includes(pickingItem.itemtype) || pickingItem.name ==='flareGun'){ 
+    if (UNDROPPABLE_ITEM.includes(currentHoldingItem.itemtype) && currentHoldingItem.name!=='flareGun'){ // do not drop guns or melee weapons
       listen = true
       return
     }

@@ -178,7 +178,7 @@ let check = false
 function refreshKillLog(){
   if (backEndKillLog.length){ // length >0
     if (check){
-      console.log(backEndKillLog.length)
+      //console.log(backEndKillLog.length)
       backEndKillLog = []
       check = false
     }else{
@@ -605,12 +605,12 @@ function resetMap(MapNameGiven){
       makeNdropItem('placeable', 'mine' ,getCoordTilesCenter({row:1,col:46}),onground=true,variantNameGiven='') 
     }
   
-    // for (let i=0;i<1;i++){
-    //   makeNdropItem('gun', 'flareGun', getCoordTilesCenter({row:24,col:3}),onground=true,variantNameGiven='green')// variant should be red,green etc.
-    //   makeNdropItem('gun', 'flareGun', getCoordTilesCenter({row:14,col:5}),onground=true,variantNameGiven='red')// variant should be red,green etc.
-    //   makeNdropItem('gun', 'flareGun', getCoordTilesCenter({row:27,col:3}),onground=true,variantNameGiven='yellow')// variant should be red,green etc.
-    //   makeNdropItem('gun', 'flareGun', getCoordTilesCenter({row:37,col:5}),onground=true,variantNameGiven='white')// variant should be red,green etc.
-    // }
+    for (let i=0;i<1;i++){
+      makeNdropItem('gun', 'flareGun', getCoordTilesCenter({row:24,col:3}),onground=true,variantNameGiven='green')// variant should be red,green etc.
+      makeNdropItem('gun', 'flareGun', getCoordTilesCenter({row:14,col:5}),onground=true,variantNameGiven='red')// variant should be red,green etc.
+      makeNdropItem('gun', 'flareGun', getCoordTilesCenter({row:27,col:3}),onground=true,variantNameGiven='yellow')// variant should be red,green etc.
+      makeNdropItem('gun', 'flareGun', getCoordTilesCenter({row:37,col:5}),onground=true,variantNameGiven='white')// variant should be red,green etc.
+    }
   
   
     // MAKE HOUSES
@@ -890,7 +890,7 @@ async function main(){
             hitpoints = MINE_DETONATE_COUNTDOWN // count down #
             hitRadius = MINE_DETECTION_RADIUS // actually detection radius
           }else{
-            console.log("WTF")
+            console.log("Not placeable item")
           }
           makeObjects(itemName, hitpoints, {center: {x:curplayer.x,y:curplayer.y}, radius: hitRadius, color:'gray',placerID:playerId}, imgName)
 
