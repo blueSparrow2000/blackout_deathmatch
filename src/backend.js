@@ -2155,14 +2155,14 @@ function DeployAirstrike(airstrike){
   } else if(airstrike.signal==='supply'){ // strike once
 
     const idxGUN = Math.round(Math.random()*(AirstrikeGuns.length-1)) 
-    makeNdropItem('gun', AirstrikeGuns[idxGUN], {x:airstrike.x + 100, y:airstrike.y})
+    makeNdropItem('consumable', 'medkit', {x:airstrike.x + 100, y:airstrike.y})
     makeNdropItem('scope', "2" ,{x:airstrike.x - 100, y:airstrike.y})
     makeNdropItem('armor', 'reduce', {x:airstrike.x, y:airstrike.y})
 
     pushSoundRequest({x:airstrike.x,y:airstrike.y},'item_landing',TILE_SIZE*3, duration=1)
 
   } else if(airstrike.signal==='vehicle request'){
-    spawnVehicle({x:airstrike.x, y:airstrike.y},'tank')
+    spawnVehicle({x:airstrike.x, y:airstrike.y},'Fennek')
 
     pushSoundRequest({x:airstrike.x,y:airstrike.y},'vehicle_landing',TILE_SIZE*6, duration=1)
 
