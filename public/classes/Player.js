@@ -21,12 +21,22 @@ class Player{
       this.canvasHeight = canvasHeight
       this.canvasWidth = canvasWidth
       this.skin = skin
+
     }
     drawPlayer(canvas, skin, xloc, yloc){
       canvas.drawImage(skin, xloc, yloc)
 
+      // draw armor if exist
+      if (this.wearingarmorID>0){
+        canvas.lineWidth = 4
+        canvas.beginPath()
+        canvas.arc(xloc+this.radius, yloc+this.radius, this.radius, 0, Math.PI * 2, false)
+        canvas.stroke()
+      }
+
+
     }
-    
+
     getMinimapLoc(MiniMapRatio){
       return {x:Math.round(this.x*MiniMapRatio), y:Math.round(this.y*MiniMapRatio)}
     }

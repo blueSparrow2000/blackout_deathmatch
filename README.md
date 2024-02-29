@@ -92,6 +92,8 @@ or
 2024.2.27 Flare guns are now available 
 
 
+2024.2.29 Shows whether player weared armor or not
+
 Future plan:
 - smarter AI
 
