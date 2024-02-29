@@ -1331,7 +1331,8 @@ function loop(){
           const thisguninfo = gunInfoFrontEnd[currentHoldingItem.name]
           frontEndPlayer.drawGun(canvas, camX, camY, centerX , centerY , currentHoldingItem, thisguninfo)
         }
-        canvas.drawImage(myPCSkin, centerX - PLAYERRADIUS, centerY - PLAYERRADIUS)
+        frontEndPlayer.drawPlayer(canvas,myPCSkin, centerX - PLAYERRADIUS, centerY - PLAYERRADIUS )
+        //canvas.drawImage(myPCSkin, centerX - PLAYERRADIUS, centerY - PLAYERRADIUS)
     }
 
     for (const id in frontEndPlayers){ 
@@ -1349,7 +1350,8 @@ function loop(){
             const thisguninfo = gunInfoFrontEnd[currentHoldingItem.name]
             currentPlayer.drawGun(canvas, camX, camY, -1, -1, currentHoldingItem, thisguninfo)
           }
-          canvas.drawImage(skinImages[currentPlayer.skin], currentPlayer.x - camX- PLAYERRADIUS, currentPlayer.y - camY- PLAYERRADIUS)
+          frontEndPlayer.drawPlayer(canvas,skinImages[currentPlayer.skin], currentPlayer.x - camX- PLAYERRADIUS, currentPlayer.y - camY- PLAYERRADIUS)
+          //canvas.drawImage(skinImages[currentPlayer.skin], currentPlayer.x - camX- PLAYERRADIUS, currentPlayer.y - camY- PLAYERRADIUS)
       }
     }
 

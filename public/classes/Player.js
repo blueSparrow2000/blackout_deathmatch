@@ -22,7 +22,11 @@ class Player{
       this.canvasWidth = canvasWidth
       this.skin = skin
     }
+    drawPlayer(canvas, skin, xloc, yloc){
+      canvas.drawImage(skin, xloc, yloc)
 
+    }
+    
     getMinimapLoc(MiniMapRatio){
       return {x:Math.round(this.x*MiniMapRatio), y:Math.round(this.y*MiniMapRatio)}
     }

@@ -114,9 +114,9 @@ const gunInfo = {
     'ak47':{travelDistance:704, damage: 1, shake:1, num: 1, fireRate: 110, projectileSpeed:21, magSize:30, reloadTime: 2000, ammotype:'5mm', size: {length:28, width:3}}, 
     'FAMAS':{travelDistance:576, damage: 1, shake:2, num: 1, fireRate: 90, projectileSpeed:17, magSize: 30, reloadTime: 3200, ammotype:'5mm', size: {length:22, width:3}}, 
     
-    's686':{travelDistance:320, damage: 1, shake:4, num: 5, fireRate: 180, projectileSpeed:10, magSize:2, reloadTime: 1200, ammotype:'12G', size: {length:13, width:5}},
-    'DBS':{travelDistance:448, damage: 1, shake:2, num: 3, fireRate: 400, projectileSpeed:13, magSize:14, reloadTime: 6000, ammotype:'12G', size: {length:16, width:5}},
-    'usas12':{travelDistance:448, damage: 1, shake:1, num: 2, fireRate: 180, projectileSpeed:14, magSize:5, reloadTime: 2300, ammotype:'12G', size: {length:18, width:4}},
+    's686':{travelDistance:180, damage: 1, shake:4, num: 5, fireRate: 180, projectileSpeed:10, magSize:2, reloadTime: 1200, ammotype:'12G', size: {length:13, width:5}},
+    'DBS':{travelDistance:320, damage: 1, shake:2, num: 3, fireRate: 400, projectileSpeed:13, magSize:14, reloadTime: 6000, ammotype:'12G', size: {length:16, width:5}},
+    'usas12':{travelDistance:320, damage: 1, shake:1, num: 2, fireRate: 180, projectileSpeed:14, magSize:5, reloadTime: 2300, ammotype:'12G', size: {length:18, width:4}},
     
     'ump45':{travelDistance:700, damage: 0.8, shake:2, num: 1, fireRate: 85, projectileSpeed:16, magSize:25, reloadTime: 2800, ammotype:'45ACP', size: {length:19, width:4}},
     'vector':{travelDistance:600, damage: 0.8, shake:1, num: 1, fireRate: 50, projectileSpeed:17, magSize:19, reloadTime: 2600, ammotype:'45ACP', size: {length:18, width:3}},
