@@ -828,6 +828,19 @@ function playSoundEffect(gunName,DISTANCE,thatGunSoundDistance){
     gunSound.remove()
 }
 
+function hideInventory(){
+  document.querySelector('#itemshower').style.display = 'none' // hide item bars
+  for (let i=0;i<4;i++){
+    document.querySelector(`#item${i+1}`).style.display = 'none' 
+  }
+}
+
+function showInventory(){
+  document.querySelector('#itemshower').style.display = 'inline' // hide item bars
+  for (let i=0;i<4;i++){
+    document.querySelector(`#item${i+1}`).style.display = 'inline' 
+  }
+}
 
 // backend -> front end signaling
 socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles, backEndObjects, backEndItems,backEndVehicles,backEndAirstrikes,backEndSoundRequest, backEndKillLog})=>{
@@ -935,6 +948,8 @@ socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles,
                 pointEl.innerHTML = mePlayer.score
                 playerdeathsound.play()
                 document.querySelector('#usernameForm').style.display = 'block'
+                hideInventory()
+              
                 //socket.emit('playerdeath',{playerId: id, armorID: mePlayer.wearingarmorID, scopeID: mePlayer.wearingscopeID,vehicleID:mePlayer.ridingVehicleID})
                 LobbyBGM.play()
             }
@@ -1640,7 +1655,7 @@ document.querySelector('#usernameForm').addEventListener('submit', (event) => {
     //console.log(myPCSkin.src)
     socket.emit('initGame', {username:myUserName, playerX, playerY, playerColor,canvasHeight:canvasEl.height,canvasWidth:canvasEl.width,Myskin})
     
-    document.querySelector('#itemshower').style.display = 'inline' // show
+    showInventory()
     updateItemHTML(1,'grenadeLauncher')
     for (let i=1;i<4;i++){ // initialize to fist
       updateItemHTML(i+1,'fist')
