@@ -100,6 +100,8 @@ or
 
 
 Future plan:
+- Gun recoil effect 
+- Consumables and placeable as a held item (draw when holding them!)
 - smarter AI
 
 
