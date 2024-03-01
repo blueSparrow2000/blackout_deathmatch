@@ -165,7 +165,12 @@ function showKillLog(loglist){
     $(`<div data-id="${killlogID}"> ${item} </div>`).appendTo("#killLog").fadeOut(5000,function(){$(this).remove()})
   });
 
+}
 
+function updateItemHTML(itemIDX,itemName){
+
+  document.querySelector(`#item${itemIDX}`).innerHTML = `<div data-id="${itemIDX}"> > [${itemIDX}] ${itemName} </div>`
+  
 }
 
 
@@ -517,6 +522,7 @@ setInterval(()=>{
   if (listen) {
       if (keys.digit1.pressed){
           socket.emit('keydown',{keycode:'Digit1'})
+          
       }
       if (keys.digit2.pressed){
           socket.emit('keydown',{keycode:'Digit2'})
@@ -686,8 +692,10 @@ function interactItem(itemId,backEndItems){
     }
     //console.log(`itemId: ${itemId} / inventorypointer: ${inventoryPointer}`)
     dropItem(currentHoldingItemId)
+    
     socket.emit('updateitemrequest',{itemid:itemId, requesttype:'pickupinventory',currentSlot: frontEndPlayer.currentSlot,playerId:socket.id})
     frontEndPlayer.inventory[inventoryPointer] = itemId // front end should also be changed
+
   } else if (pickingItem.itemtype === 'armor'){
     //drop current armor - to be updated
     const currentwearingarmorID = frontEndPlayer.wearingarmorID
@@ -890,14 +898,21 @@ socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles,
                 if (!frontEndItems[backEndItem.myID]){
                   instantiateItem(backEndItem,backEndItem.myID) 
                 }
+                
+                if (id === myPlayerID){
+                  const prevItemID = frontEndPlayerOthers.inventory[i]
+                  if (prevItemID !== backEndItem.myID){ // my inventory change by server's decision (like gun update due to score/placing/consume)
+                    updateItemHTML(i+1,frontEndItems[backEndItem.myID].name)
+                  }
+                }
+  
                 frontEndPlayerOthers.inventory[i] = backEndItem.myID
             }
 
             
     
             if (id === myPlayerID){ // client side prediction - mouse pointer
-                frontEndPlayerOthers.cursorPos = {x:cursorX,y:cursorY}
-    
+                frontEndPlayerOthers.cursorPos = {x:cursorX,y:cursorY}               
             }else{
                 frontEndPlayerOthers.cursorPos = backEndPlayer.mousePos
             }
@@ -1624,7 +1639,13 @@ document.querySelector('#usernameForm').addEventListener('submit', (event) => {
     myPCSkin = skinImages[Myskin]
     //console.log(myPCSkin.src)
     socket.emit('initGame', {username:myUserName, playerX, playerY, playerColor,canvasHeight:canvasEl.height,canvasWidth:canvasEl.width,Myskin})
- })
+    
+    document.querySelector('#itemshower').style.display = 'inline' // show
+    updateItemHTML(1,'grenadeLauncher')
+    for (let i=1;i<4;i++){ // initialize to fist
+      updateItemHTML(i+1,'fist')
+    }
+  })
   
 
 
