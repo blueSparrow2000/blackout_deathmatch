@@ -38,7 +38,7 @@ let Myskin = 'default'
 let frontEndPlayer
 let listen = true // very important for event listener 
 const AIRSTRIKEDIST_ADDITIONAL = 8 // additional distance to see the airdrop (+3 is just enough to see it)
-
+let winnerCeremony = false
 
 const PLAYERRADIUS = 16 
 // semaphores
@@ -130,6 +130,13 @@ socket.on('map', ({loadedMap,MAPTILENUMBACKEND,MAPNAMEBACKEND})=>{
 
 })
 
+socket.on("winnerMessage", ()=>{
+  console.log("I am the winner!");
+  winnerCeremony = true
+})
+
+
+
 
 // initialize server variables
 let gunInfoFrontEnd = {}
@@ -170,6 +177,7 @@ function updateLastWinner(name){
 // server is resetting
 socket.on('resetServer',({lastWinnerName})=>{
   updateLastWinner(lastWinnerName)
+  winnerCeremony = false
 })
 
 
@@ -1196,6 +1204,13 @@ function loop(){
     if (!frontEndPlayer){ // if not exists - draw nothing
       canvas.fillStyle = 'black'
       canvas.fillText("loading...",centerX - 50,centerY + 90)
+
+      // loading screen some fireworks?
+      if (winnerCeremony){ // fire works!
+        canvas.fillText("Winner winner chicken dinner!",centerX - 180,centerY - 220)
+        
+      }
+
       window.requestAnimationFrame(loop);
       return
     }

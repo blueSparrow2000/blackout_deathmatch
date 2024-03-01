@@ -62,6 +62,7 @@ const PLAYERHEALTHMAX = 8
 const GUNHEARRANGE = 700
 const PLAYER_JOIN_DELAY = 1000
 let lastWinnerName = ''
+let lastWinnerID = -1
 
 
 //to check if there exists any player left
@@ -454,7 +455,8 @@ function safeDeletePlayer(playerId){
 // }
 
 
-function updateGunBasedOnScore(player){
+function updateGunBasedOnScore(shooterID){
+  const player = backEndPlayers[shooterID]
   if (!player){ // if does not exist
     return
   }
@@ -462,6 +464,7 @@ function updateGunBasedOnScore(player){
 
   if (score >= finalScore){
     lastWinnerName = player.username
+    lastWinnerID = shooterID
     console.log("winner has been selected: ",lastWinnerName)
     // player.health = 0 // immediate death to the winner...
     // kill all players and reset the map
@@ -789,7 +792,7 @@ async function main(){
                 y:playerY,
                 color: playerColor,
                 radius: PLAYERRADIUS,
-                score: 0,
+                score: 15,
                 health: PLAYERHEALTH,
                 username,
                 inventory, // size 4
@@ -1057,6 +1060,10 @@ setInterval(() => {
     GLOBALCLOCK = 0
     ServerTime = 0
     io.emit('resetServer',{lastWinnerName})
+    const socketById = io.sockets.sockets.get(lastWinnerID);
+    if (socketById){
+      socketById.emit("winnerMessage")
+    }
   }
 
   GLOBALCLOCK += TICKRATE
@@ -1221,7 +1228,7 @@ setInterval(() => {
               if (whoshotProj){ // safe
                 whoshotProj.score ++
                 updateKillLog(whoshotProj.username,backEndPlayer.username)
-                updateGunBasedOnScore(whoshotProj)
+                updateGunBasedOnScore(projGET.playerId)
               }
               safeDeletePlayer(playerId)} 
           }
@@ -1250,7 +1257,7 @@ setInterval(() => {
             if (backEndEnemy.health <= 0){ //check again
               if (backEndPlayers[projGET.playerId]){ // safe
                 backEndPlayers[projGET.playerId].score ++
-                updateGunBasedOnScore(backEndPlayers[projGET.playerId])
+                updateGunBasedOnScore(projGET.playerId)
               }
               safeDeleteEnemy(enemyId)} 
         }
