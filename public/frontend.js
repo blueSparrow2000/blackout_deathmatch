@@ -168,7 +168,6 @@ function showKillLog(loglist){
 }
 
 function updateItemHTML(itemIDX,itemName){
-
   document.querySelector(`#item${itemIDX}`).innerHTML = `<div data-id="${itemIDX}"> [${itemIDX}] ${itemName} </div>`
   
 }
@@ -1231,16 +1230,22 @@ function updateSightChunk(scopeDist){
 }
 
 // Particle helper functions
-
+const PARTICLELIMIT = 100000
 function addParticle(angle,location, color, particlespeed){
   particleID++
-  let  shakeParticle = 1
+  let  shakeParticle = 0.5
   const velocity = { // with shake!
     x: Math.cos(angle) * particlespeed + (Math.random()-0.5) * shakeParticle,
     y: Math.sin(angle) * particlespeed + (Math.random()-0.5) * shakeParticle
   }
 
   frontEndParticles[particleID] = new Particle({x:location.x, y:location.y,velocity, color})
+
+  if (particleID > PARTICLELIMIT){ // too much particles
+    particleID = 0
+    console.log("particle limit reached!")
+    winnerCeremony = false
+  }
 }
 
 function safeDeleteParticle(patricleID){
@@ -1259,14 +1264,12 @@ let FIREWORKRATE = 30 // 400
 const FIREWORKCOLORS = ['Seashell','Orchid','Dusty Rose','Bisque', 'Amaranth', 'pink', 'Coral Pink']
 // using particle
 function firework(){
-
   const BLASTNUM = 18 + Math.round(Math.random()*6) 
   const blastAngle = 2*Math.PI/BLASTNUM
-  
   const location = {x:skippedGenerator(window.innerWidth),y:skippedGenerator(window.innerHeight)}
-  
   const color = FIREWORKCOLORS[Math.round(Math.random()* (FIREWORKCOLORS.length-1))]
-  const particlespeed = 7 + Math.round(Math.random()*3) 
+  const particlespeed = 7 + Math.round(Math.random()*4) 
+
 
   for (let i=0;i< BLASTNUM;i++){
     addParticle( (blastAngle)*i, location, color, particlespeed)// damaging all players nearby
@@ -1309,7 +1312,7 @@ function loop(){
             //playSoundEffect('firework',0,100)
           }
           GLOBALCLOCK = 0 // init
-          FIREWORKRATE = 50 + Math.round(Math.random()*40)
+          FIREWORKRATE = 20 + Math.round(Math.random()*20)
         }
 
       }
