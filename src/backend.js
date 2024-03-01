@@ -792,7 +792,7 @@ async function main(){
                 y:playerY,
                 color: playerColor,
                 radius: PLAYERRADIUS,
-                score: 15,
+                score: 0,
                 health: PLAYERHEALTH,
                 username,
                 inventory, // size 4

@@ -150,7 +150,9 @@ let frontEndConsumableSounds = {}
 let consumableInfoKeysFrontEnd = []
 let lastWinnerNameFRONTEND = ''
 
+let frontEndParticles = {}
 let killlogID = 0
+let particleID = 0
 
 function showKillLog(loglist){
 
@@ -797,7 +799,7 @@ function playSoundEffectGun(gunName,DISTANCE,thatGunSoundDistance){
 
 
 let MySoundEffects = {}
-const mysoundeffectkeys = ['explosion', 'takeoff','plane_2sec','plane_motor_2sec','B2_halfsec','item_landing','vehicle_landing','player_pickup',   'tank_moving','car_moving','B2_moving','raptor_moving','APC_moving','Fennek_moving']
+const mysoundeffectkeys = ['explosion','firework', 'takeoff','plane_2sec','plane_motor_2sec','B2_halfsec','item_landing','vehicle_landing','player_pickup',   'tank_moving','car_moving','B2_moving','raptor_moving','APC_moving','Fennek_moving']
 for (let i=0;i<mysoundeffectkeys.length;i++){
   const soundkey = mysoundeffectkeys[i]
   const soundstring = `/sound/${soundkey}.mp3`
@@ -1198,6 +1200,53 @@ function updateSightChunk(scopeDist){
   sightChunk = defaultSightChunk + scopeDist
 }
 
+// Particle helper functions
+
+function addParticle(angle,location, color, particlespeed){
+  particleID++
+  let  shakeParticle = 1
+  const velocity = { // with shake!
+    x: Math.cos(angle) * particlespeed + (Math.random()-0.5) * shakeParticle,
+    y: Math.sin(angle) * particlespeed + (Math.random()-0.5) * shakeParticle
+  }
+
+  frontEndParticles[particleID] = new Particle({x:location.x, y:location.y,velocity, color})
+}
+
+function safeDeleteParticle(patricleID){
+  delete frontEndParticles[patricleID]
+}
+
+// return {x:,y:} multiple arguement by container
+function skippedGenerator(maxSize){
+  const thirdmax = maxSize/3
+  const relpos = Math.round(Math.random()* thirdmax)
+  const x = Math.random() < 0.5 ? 100 + relpos : thirdmax*2 + relpos  - 100
+  return x
+}
+
+let FIREWORKRATE = 30 // 400
+const FIREWORKCOLORS = ['Seashell','Orchid','Dusty Rose','Bisque', 'Amaranth', 'pink', 'Coral Pink']
+// using particle
+function firework(){
+
+  const BLASTNUM = 18 + Math.round(Math.random()*6) 
+  const blastAngle = 2*Math.PI/BLASTNUM
+  
+  const location = {x:skippedGenerator(window.innerWidth),y:skippedGenerator(window.innerHeight)}
+  
+  const color = FIREWORKCOLORS[Math.round(Math.random()* (FIREWORKCOLORS.length-1))]
+  const particlespeed = 7 + Math.round(Math.random()*3) 
+
+  for (let i=0;i< BLASTNUM;i++){
+    addParticle( (blastAngle)*i, location, color, particlespeed)// damaging all players nearby
+  }
+
+}
+
+
+let GLOBALCLOCK = 0
+
 function loop(){
     canvas.clearRect(0,0,canvasEl.width, canvasEl.height)  
 
@@ -1207,8 +1256,32 @@ function loop(){
 
       // loading screen some fireworks?
       if (winnerCeremony){ // fire works!
-        canvas.fillText("Winner winner chicken dinner!",centerX - 180,centerY - 220)
-        
+        //canvas.fillText("Winner winner chicken dinner!",centerX - 180,centerY - 220)
+
+        // draw firework particles if exist
+        canvas.lineWidth = 8
+        for (const id in frontEndParticles){ 
+          const frontEndParticle = frontEndParticles[id]
+          canvas.strokeStyle = frontEndParticle.color
+          frontEndParticle.draw(canvas, 0, 0)
+          if (frontEndParticle.deleteRequest){
+            safeDeleteParticle(id)
+          }
+        }
+
+
+        // generate firework
+        GLOBALCLOCK += 1
+        if ((GLOBALCLOCK > FIREWORKRATE)){
+          const fireAmount = 1 + Math.round(Math.random()*2) // 1~3
+          for (let i=0 ; i < fireAmount ; i++){
+            firework()
+            //playSoundEffect('firework',0,100)
+          }
+          GLOBALCLOCK = 0 // init
+          FIREWORKRATE = 50 + Math.round(Math.random()*40)
+        }
+
       }
 
       window.requestAnimationFrame(loop);
