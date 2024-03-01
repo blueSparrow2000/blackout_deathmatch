@@ -1655,11 +1655,11 @@ document.querySelector('#usernameForm').addEventListener('submit', (event) => {
     //console.log(myPCSkin.src)
     socket.emit('initGame', {username:myUserName, playerX, playerY, playerColor,canvasHeight:canvasEl.height,canvasWidth:canvasEl.width,Myskin})
     
-    showInventory()
     updateItemHTML(1,'grenadeLauncher')
     for (let i=1;i<4;i++){ // initialize to fist
       updateItemHTML(i+1,'fist')
     }
+    showInventory()
   })
   
 
