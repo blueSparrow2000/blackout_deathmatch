@@ -169,7 +169,7 @@ function showKillLog(loglist){
 
 function updateItemHTML(itemIDX,itemName){
 
-  document.querySelector(`#item${itemIDX}`).innerHTML = `<div data-id="${itemIDX}"> > [${itemIDX}] ${itemName} </div>`
+  document.querySelector(`#item${itemIDX}`).innerHTML = `<div data-id="${itemIDX}"> [${itemIDX}] ${itemName} </div>`
   
 }
 

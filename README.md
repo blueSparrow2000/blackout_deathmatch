@@ -95,7 +95,7 @@ or
 2024.2.29 Shows whether player weared armor or not
 
 
-2024.3.1 Added firework particle effect for the winner!
+2024.3.1 Added firework particle effect for the winner! / inventory shown in html
 
 
 

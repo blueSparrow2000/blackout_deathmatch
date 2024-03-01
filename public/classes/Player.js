@@ -192,15 +192,16 @@ class Player{
     }
 
     displayAttribute(canvas, camX, camY, currentHoldingItem){
-      const itemName = currentHoldingItem.name
-      canvas.fillText(`[${this.currentSlot}] ${itemName}`,this.x - 50 - camX ,this.y + this.radius*3- camY)
+      // inventory display
+      //const itemName = currentHoldingItem.name
+      //canvas.fillText(`[${this.currentSlot}] ${itemName}`,this.x - 50 - camX ,this.y + this.radius*3- camY)
       
       if (currentHoldingItem){
         if (currentHoldingItem.itemtype === 'gun'){
           if (this.reloading){
-            canvas.fillText('reloading...',this.x - 50 - camX,this.y + this.radius*5- camY)
+            canvas.fillText('reloading...',this.x - camX - 50,this.y + this.radius*5- camY)
           } else{
-            canvas.fillText(`${currentHoldingItem.ammo}/${currentHoldingItem.magSize}`,this.x - 50 - camX,this.y + this.radius*5- camY)
+            canvas.fillText(`${currentHoldingItem.ammo}/${currentHoldingItem.magSize}`,this.x - camX - 20,this.y + this.radius*5- camY)
           }
         }
       }
