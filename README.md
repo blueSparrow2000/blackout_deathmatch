@@ -100,6 +100,7 @@ or
 
 
 Future plan:
+- Inventory selection show up
 - Gun recoil effect 
 - Consumables and placeable as a held item (draw when holding them!)
 - reacon (shows location of enemy in the map & direction for 1 seconds)
