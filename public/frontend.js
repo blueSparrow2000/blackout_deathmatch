@@ -1230,7 +1230,7 @@ function updateSightChunk(scopeDist){
 }
 
 // Particle helper functions
-const PARTICLELIMIT = 100000
+const PARTICLELIMIT = 100000 // ~ 10 minutes
 function addParticle(angle,location, color, particlespeed){
   particleID++
   let  shakeParticle = 0.5
@@ -1248,7 +1248,14 @@ function addParticle(angle,location, color, particlespeed){
   }
 }
 
+
+
 function safeDeleteParticle(patricleID){
+  const particle = frontEndParticles[patricleID]
+  
+  if (particle.type === 'fireworkRocket'){
+    firework(particle.x, particle.y, particle.color) // make firework!
+  }
   delete frontEndParticles[patricleID]
 }
 
@@ -1261,20 +1268,28 @@ function skippedGenerator(maxSize){
 }
 
 let FIREWORKRATE = 30 // 400
-const FIREWORKCOLORS = ['Seashell','Orchid','Dusty Rose','Bisque', 'Amaranth', 'pink', 'Coral Pink']
+const FIREWORKCOLORS = ['Seashell','Orchid','Dusty Rose','Bisque', 'Amaranth', 'pink', 'Coral Pink', ]
+const FIREWORKCOLORSIZE = FIREWORKCOLORS.length-1
 // using particle
-function firework(){
+function firework(x,y, color){
   const BLASTNUM = 18 + Math.round(Math.random()*6) 
   const blastAngle = 2*Math.PI/BLASTNUM
-  const location = {x:skippedGenerator(window.innerWidth),y:skippedGenerator(window.innerHeight)}
-  const color = FIREWORKCOLORS[Math.round(Math.random()* (FIREWORKCOLORS.length-1))]
+  const location = {x,y}
   const particlespeed = 7 + Math.round(Math.random()*4) 
 
 
   for (let i=0;i< BLASTNUM;i++){
-    addParticle( (blastAngle)*i, location, color, particlespeed)// damaging all players nearby
+    addParticle( (blastAngle)*i, location, color, particlespeed)
   }
 
+}
+
+function deployFireworkRocket(){
+  particleID++
+  const color = FIREWORKCOLORS[Math.round(Math.random()* (FIREWORKCOLORSIZE))]
+  const particlespeed = 20 + Math.round(Math.random()*40) 
+
+  frontEndParticles[particleID] = new FireworkRocket({x:skippedGenerator(window.innerWidth), y:window.innerHeight,Yvelocity:particlespeed, color})
 }
 
 
@@ -1308,7 +1323,7 @@ function loop(){
         if ((GLOBALCLOCK > FIREWORKRATE)){
           const fireAmount = 1 + Math.round(Math.random()*2) // 1~3
           for (let i=0 ; i < fireAmount ; i++){
-            firework()
+            deployFireworkRocket()
             //playSoundEffect('firework',0,100)
           }
           GLOBALCLOCK = 0 // init
@@ -1663,6 +1678,9 @@ document.querySelector('#usernameForm').addEventListener('submit', (event) => {
       updateItemHTML(i+1,'fist')
     }
     showInventory()
+
+    // reset particle ids
+    particleID = 0
   })
   
 

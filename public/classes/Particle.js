@@ -7,6 +7,7 @@ class Particle {
       this.FRICTION = 0.97
       this.alpha = 1 // experimental feature. If too laggy, then will be removed
       this.deleteRequest = false
+      this.type = 'particle'
     }
   
     move(){
@@ -42,4 +43,35 @@ class Particle {
   
 
 
+  class FireworkRocket {
+    constructor({x, y, Yvelocity, color}) {
+      this.x = x
+      this.y = y
+      this.color = color
+      this.Yvelocity = Yvelocity
+      this.FRICTION = 0.92
+      this.deleteRequest = false
+      this.type = 'fireworkRocket'
+    }
+  
+    move(){
+        this.Yvelocity *= this.FRICTION
+        this.y -= this.Yvelocity
+
+        if (this.Yvelocity < 1){
+            this.deleteRequest = true
+        }
+    }
+
+    draw(canvas, camX, camY) {
+        // line
+        canvas.beginPath()
+        canvas.moveTo(this.x - camX, this.y - this.Yvelocity*3 - camY)
+        canvas.lineTo(this.x - camX,this.y - camY)
+        canvas.stroke()
+
+        this.move()
+    }
+
+  }
   
