@@ -406,7 +406,7 @@ function shootCheck(event,holding = false){
   if ((currentHoldingItem.itemtype==='consumable')){ // eat
     // dont need to check amount since we will delete item if eaten
     const currentItemName = currentHoldingItem.name
-    const CONSUMERATE = 1000
+    const CONSUMERATE = 2000
 
     if (!listen) {return} // not ready to eat
     listen = false // block
@@ -950,6 +950,11 @@ socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles,
                 hideInventory()
               
                 //socket.emit('playerdeath',{playerId: id, armorID: mePlayer.wearingarmorID, scopeID: mePlayer.wearingscopeID,vehicleID:mePlayer.ridingVehicleID})
+                if (winnerCeremony){
+                  LobbyBGM.volume = 1
+                } else{
+                  LobbyBGM.volume = 0.5
+                }
                 LobbyBGM.play()
             }
             else{ // other player died
@@ -1014,7 +1019,11 @@ socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles,
 
           const sightdistanceProjectile = (sightChunk+1)*TILE_SIZE + TILE_SIZE_HALF
 
-          const thatGunSoundDistance = Math.max(backEndProjectile.travelDistance, sightdistanceProjectile)  //900
+          let gunSoundRange = backEndProjectile.travelDistance
+          if (gunName === 'VSS'){
+            gunSoundRange = 0
+          }
+          const thatGunSoundDistance = Math.max(gunSoundRange, sightdistanceProjectile)  //900
           if (gunName === 'shockWave' ||gunName === 'fragment'){// these are explosions
             // pass
           } else if (gunName && (DISTANCE-100 < thatGunSoundDistance) ){ 

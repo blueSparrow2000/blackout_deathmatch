@@ -111,7 +111,7 @@ const gunInfo = {
 
     'pistol':{travelDistance:576, damage: 1, shake:2, num: 1, fireRate: 300, projectileSpeed:15, magSize:15, reloadTime: 1100, ammotype:'5mm', size: {length:17, width:2}}, 
     'M249':{travelDistance:832, damage: 1, shake:1, num: 1, fireRate: 75, projectileSpeed:23, magSize:150, reloadTime: 7400, ammotype:'5mm', size: {length:28, width:6}},
-    'VSS':{travelDistance:1088, damage: 1, shake:1, num: 1, fireRate: 100, projectileSpeed:19, magSize:10, reloadTime: 2300, ammotype:'5mm' , size: {length:27, width:2}}, 
+    'VSS':{travelDistance:1088, damage: 1, shake:1, num: 1, fireRate: 100, projectileSpeed:19, magSize:20, reloadTime: 2300, ammotype:'5mm' , size: {length:27, width:2}}, 
     'ak47':{travelDistance:704, damage: 1, shake:1, num: 1, fireRate: 110, projectileSpeed:21, magSize:30, reloadTime: 2000, ammotype:'5mm', size: {length:28, width:3}}, 
     'FAMAS':{travelDistance:576, damage: 1, shake:2, num: 1, fireRate: 90, projectileSpeed:17, magSize: 30, reloadTime: 3200, ammotype:'5mm', size: {length:22, width:3}}, 
     

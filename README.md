@@ -98,6 +98,8 @@ or
 2024.3.1 Added firework particle effect for the winner! / inventory shown in html
 
 
+2024.3.3 VSS sound range reduced significantly + mag size increased
+
 
 Future plan:
 - Inventory selection show up
