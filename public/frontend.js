@@ -1017,11 +1017,12 @@ socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles,
 
           const DISTANCE = Math.hypot(backEndProjectile.x - me.x, backEndProjectile.y - me.y)
 
-          const sightdistanceProjectile = (sightChunk+1)*TILE_SIZE + TILE_SIZE_HALF
+          let sightdistanceProjectile = (sightChunk+1)*TILE_SIZE + TILE_SIZE_HALF
 
           let gunSoundRange = backEndProjectile.travelDistance
           if (gunName === 'VSS'){
             gunSoundRange = 0
+            sightdistanceProjectile = (sightChunk)*TILE_SIZE // minimize sound
           }
           const thatGunSoundDistance = Math.max(gunSoundRange, sightdistanceProjectile)  //900
           if (gunName === 'shockWave' ||gunName === 'fragment'){// these are explosions

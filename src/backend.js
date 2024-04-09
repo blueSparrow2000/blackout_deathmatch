@@ -114,20 +114,21 @@ const gunInfo = {
     'VSS':{travelDistance:1088, damage: 1, shake:1, num: 1, fireRate: 100, projectileSpeed:19, magSize:20, reloadTime: 2300, ammotype:'5mm' , size: {length:27, width:2}}, 
     'ak47':{travelDistance:704, damage: 1, shake:1, num: 1, fireRate: 110, projectileSpeed:21, magSize:30, reloadTime: 2000, ammotype:'5mm', size: {length:28, width:3}}, 
     'FAMAS':{travelDistance:576, damage: 1, shake:2, num: 1, fireRate: 90, projectileSpeed:17, magSize: 30, reloadTime: 3200, ammotype:'5mm', size: {length:22, width:3}}, 
+    'Deagle':{travelDistance:576, damage: 3, shake:1, num: 1, fireRate: 450, projectileSpeed:18, magSize:7, reloadTime: 2300, ammotype:'7mm', size: {length:18, width:3}}, 
     
     's686':{travelDistance:180, damage: 1, shake:4, num: 5, fireRate: 180, projectileSpeed:10, magSize:2, reloadTime: 1200, ammotype:'12G', size: {length:13, width:5}},
     'DBS':{travelDistance:320, damage: 1, shake:2, num: 3, fireRate: 400, projectileSpeed:13, magSize:14, reloadTime: 6000, ammotype:'12G', size: {length:16, width:5}},
-    'usas12':{travelDistance:320, damage: 1, shake:1, num: 2, fireRate: 180, projectileSpeed:14, magSize:5, reloadTime: 2300, ammotype:'12G', size: {length:18, width:4}},
+    'usas12':{travelDistance:256, damage: 0, shake:1, num: 1, fireRate: 200, projectileSpeed:14, magSize:5, reloadTime: 2500, ammotype:'12G', size: {length:18, width:4}},
     
     'ump45':{travelDistance:700, damage: 0.8, shake:2, num: 1, fireRate: 85, projectileSpeed:16, magSize:25, reloadTime: 2800, ammotype:'45ACP', size: {length:19, width:4}},
-    'vector':{travelDistance:600, damage: 0.8, shake:1, num: 1, fireRate: 50, projectileSpeed:17, magSize:19, reloadTime: 2600, ammotype:'45ACP', size: {length:18, width:3}},
+    'vector':{travelDistance:600, damage: 0.8, shake:1, num: 1, fireRate: 45, projectileSpeed:17, magSize:19, reloadTime: 2600, ammotype:'45ACP', size: {length:18, width:3}},
     'mp5':{travelDistance:650, damage: 0.8, shake:1, num: 1, fireRate: 70, projectileSpeed:19, magSize:30, reloadTime: 2100, ammotype:'45ACP', size: {length:20, width:3}},
     
     'fist':{travelDistance:24, damage: 0.2, shake:0, num: 1, fireRate: 300, projectileSpeed:6, magSize:0, reloadTime: 0, ammotype:'bio', size: {length:0, width:4}},
     'knife':{travelDistance:32, damage: 0.4, shake:0, num: 1, fireRate: 200, projectileSpeed:8, magSize:0, reloadTime: 0, ammotype:'sharp', size: {length:0, width:2}},
-    'bat':{travelDistance:48, damage: 1, shake:0, num: 1, fireRate: 500, projectileSpeed:6, magSize:0, reloadTime: 0, ammotype:'hard', size: {length:0, width:3}},
+    'bat':{travelDistance:48, damage: 1, shake:1, num: 1, fireRate: 500, projectileSpeed:6, magSize:0, reloadTime: 0, ammotype:'hard', size: {length:0, width:3}},
 }
-const gunOrderInDeathmatch = ['grenadeLauncher','AWM','vector','s686','ak47','SLR','FAMAS','usas12','mp5','M249','mk14','VSS','DBS','ump45','M1','pistol','pistol']
+const gunOrderInDeathmatch = ['grenadeLauncher','AWM','vector','s686','ak47','SLR','FAMAS','usas12','mp5','M249','mk14','VSS','DBS','ump45','M1','Deagle','pistol']
 const finalScore = gunOrderInDeathmatch.length - 1
 
 let defaultGuns = [gunOrderInDeathmatch[0]]//['tankBuster','shockWave','fragment','grenadeLauncher']// 
@@ -401,6 +402,9 @@ function safeDeleteProjectile(projID){
     explosion(backEndProjectile,12,playerID=backEndProjectile.playerId)
   } else if(backEndProjectile.gunName==='tankBuster'){
     explosion(backEndProjectile,12,playerID=backEndProjectile.playerId,shockWave=true)
+  } else if(backEndProjectile.gunName==='usas12'){
+    const frags = 3 + Math.round(Math.random()*2) // 3~5
+    explosion(backEndProjectile,frags,playerID=backEndProjectile.playerId,shockWave=false,small = true)
   } else if(backEndProjectile.gunName==='flareGun'){
     // request an air drop!
     spawnAirstrike({x:backEndProjectile.x, y:backEndProjectile.y}, backEndProjectile.playerId ,signalColor = backEndProjectile.color)
@@ -2063,10 +2067,12 @@ function updateVehiclePos(vehicle){
   }
 }
 
-function explosion(location,BLASTNUM,playerID=0,shockWave=false){
+function explosion(location,BLASTNUM,playerID=0,shockWave=false,small=false){
   for (let i=0;i< BLASTNUM;i++){
     if (shockWave){
       addProjectile( (2*Math.PI/BLASTNUM)*i,'shockWave',playerID, location,0)// damaging all players nearby
+    } else if (small) {
+      addProjectile( (2*Math.PI/BLASTNUM)*i,'bat',playerID, location,0)// damaging all players nearby
     } else{
       addProjectile( (2*Math.PI/BLASTNUM)*i,'fragment',playerID, location,0)// damaging all players nearby
     }
