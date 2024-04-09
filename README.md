@@ -104,12 +104,14 @@ or
 2024.4.9 VSS sound range reduced significantly again / USAS12 now have an explosive ammo / Deagle added (sound will be customed later)
 
 Future plan:
+- particle effect when hit 
 - Inventory selection show up
 - Gun recoil effect 
 - Consumables and placeable as a held item (draw when holding them!)
 - reacon (shows location of enemy in the map & direction for 1 seconds)
 - flash / smoke
 - smarter AI
+
 
 
 ## Various Tips
