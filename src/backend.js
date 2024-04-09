@@ -121,7 +121,7 @@ const gunInfo = {
     'DBS':{travelDistance:320, damage: 1, shake:2, num: 3, fireRate: 400, projectileSpeed:13, magSize:14, reloadTime: 6000, ammotype:'12G', size: {length:16, width:5}},
     'usas12':{travelDistance:256, damage: 0, shake:1, num: 1, fireRate: 200, projectileSpeed:14, magSize:5, reloadTime: 2500, ammotype:'12G', size: {length:18, width:4}},
     
-    'ump45':{travelDistance:700, damage: 0.8, shake:2, num: 1, fireRate: 85, projectileSpeed:16, magSize:25, reloadTime: 2800, ammotype:'45ACP', size: {length:19, width:4}},
+    'ump45':{travelDistance:700, damage: 0.8, shake:1, num: 1, fireRate: 85, projectileSpeed:16, magSize:25, reloadTime: 2800, ammotype:'45ACP', size: {length:19, width:4}},
     'vector':{travelDistance:600, damage: 0.8, shake:1, num: 1, fireRate: 45, projectileSpeed:17, magSize:19, reloadTime: 2600, ammotype:'45ACP', size: {length:18, width:3}},
     'mp5':{travelDistance:650, damage: 0.8, shake:1, num: 1, fireRate: 70, projectileSpeed:19, magSize:30, reloadTime: 2100, ammotype:'45ACP', size: {length:20, width:3}},
     
