@@ -101,6 +101,8 @@ or
 2024.3.3 VSS sound range reduced significantly + mag size increased
 
 
+2024.4.9 VSS sound range reduced significantly again / USAS12 now have an explosive ammo / Deagle added (sound will be customed later)
+
 Future plan:
 - Inventory selection show up
 - Gun recoil effect 
