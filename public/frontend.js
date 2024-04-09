@@ -162,7 +162,7 @@ function showKillLog(loglist){
     
     // $(content).html(`<div data-id="${killlogID}"> ${item} </div>`).fadeOut(5000,function(){$(this).remove()})
 
-    $(`<div data-id="${killlogID}"> ${item} </div>`).appendTo("#killLog").fadeOut(5000,function(){$(this).remove()})
+    $(`<div data-id="${killlogID}"> ${item} </div>`).appendTo("#killLog").fadeOut(10000,function(){$(this).remove()})
   });
 
 }

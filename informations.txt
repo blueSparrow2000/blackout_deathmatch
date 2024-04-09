@@ -50,3 +50,8 @@
   backEndItems[itemsId] = {
     itemtype, name, groundx, groundy, size, color, iteminfo, onground, myID: itemsId, deleteRequest:false
   }
+
+
+  backEndObjects[objectId] = {
+    objecttype , myID:objectId, deleteRequest:false, health, objectinfo, objectsideforbackend, name, placerID
+  }

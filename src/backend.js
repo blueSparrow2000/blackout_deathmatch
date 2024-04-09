@@ -102,6 +102,7 @@ const gunInfo = {
     'tankBuster':{travelDistance:832, damage: 50, shake:0, num: 1, fireRate: 4000, projectileSpeed:8, magSize: 1, reloadTime: 6000, ammotype:'rocket', size: {length:35, width:4}}, 
     'shockWave':{travelDistance:192, damage: 15, shake:6, num: 1, fireRate: 300, projectileSpeed:18, magSize: 1, reloadTime: 1400, ammotype:'shockWave', size: {length:14, width:2}}, 
     'flareGun':{travelDistance:320, damage: 0, shake:0, num: 1, fireRate: 1000, projectileSpeed:3, magSize: 1, reloadTime: 1000, ammotype:'red', size: {length:15, width:4}}, // default is red
+    'explosion':{travelDistance:32, damage: 1, shake:3, num: 1, fireRate: 500, projectileSpeed:6, magSize:1, reloadTime: 1000, ammotype:'hard', size: {length:0, width:3}},
 
 
     'M1':{travelDistance:1472, damage: 5, shake:0, num: 1, fireRate: 1600, projectileSpeed:42, magSize: 5, reloadTime: 4000, ammotype:'7mm', size: {length:42, width:3}}, 
@@ -127,7 +128,8 @@ const gunInfo = {
     'fist':{travelDistance:24, damage: 0.2, shake:0, num: 1, fireRate: 300, projectileSpeed:6, magSize:0, reloadTime: 0, ammotype:'bio', size: {length:0, width:4}},
     'knife':{travelDistance:32, damage: 0.4, shake:0, num: 1, fireRate: 200, projectileSpeed:8, magSize:0, reloadTime: 0, ammotype:'sharp', size: {length:0, width:2}},
     'bat':{travelDistance:48, damage: 1, shake:1, num: 1, fireRate: 500, projectileSpeed:6, magSize:0, reloadTime: 0, ammotype:'hard', size: {length:0, width:3}},
-}
+
+  }
 const gunOrderInDeathmatch = ['grenadeLauncher','AWM','vector','s686','ak47','SLR','FAMAS','usas12','mp5','M249','mk14','VSS','DBS','ump45','M1','Deagle','pistol']
 const finalScore = gunOrderInDeathmatch.length - 1
 
@@ -165,14 +167,25 @@ const placeableInfo = {
 }
 
 
-function updateKillLog(killerName,killedName,weaponName=''){
-  if (!killerName){
-    killerName = 'Player'
-  }
+function updateKillLog(killerName,killedName,reason='',serverkill= false){
   if (!killedName){
     killedName = 'Player'
   }
-  backEndKillLog.push(`${killerName} killed ${killedName}`)
+  // server kill (barrel/mines/airstrike etc.)
+  if (serverkill){
+    backEndKillLog.push(`${killedName} was killed by ${reason}`)
+    return
+  }
+  if (!killerName){
+    killerName = 'Player'
+  }
+  // not a server kill (player killed player)
+  if (reason){
+    backEndKillLog.push(`${killerName} killed ${killedName} with ${reason}`)
+  } else{
+    backEndKillLog.push(`${killerName} killed ${killedName}`)
+  }
+  
 }
 
 let check = false
@@ -899,7 +912,7 @@ async function main(){
           }else{
             console.log("Not placeable item")
           }
-          makeObjects(itemName, hitpoints, {center: {x:curplayer.x,y:curplayer.y}, radius: hitRadius, color:'gray',placerID:playerId}, imgName)
+          makeObjects(itemName, hitpoints, {center: {x:curplayer.x,y:curplayer.y}, radius: hitRadius, color:'gray',placerID:playerId}, givenname = imgName, placerID = playerId)
 
           APIdeleteItem()
 
@@ -1231,9 +1244,12 @@ setInterval(() => {
               let whoshotProj = backEndPlayers[projGET.playerId]
               if (whoshotProj){ // safe
                 whoshotProj.score ++
-                updateKillLog(whoshotProj.username,backEndPlayer.username)
+                updateKillLog(whoshotProj.username,backEndPlayer.username,reason = projGET.gunName)
                 updateGunBasedOnScore(projGET.playerId)
+              }else{ // server kill - explosion (fragments)
+                updateKillLog(0,backEndPlayer.username,reason = 'explosion',serverkill= true)
               }
+ 
               safeDeletePlayer(playerId)} 
           }
           // delete projectile after inspecting who shot the projectile & calculating damage
@@ -1367,9 +1383,10 @@ setInterval(() => {
       if ((DISTANCE < enemyRad + backEndPlayer.radius)) {
         // who got hit
         if (backEndPlayer){ // safe
-          const armoredDamage = armorEffect(backEndPlayer.wearingarmorID, enemy.damage)
+          const armoredDamage = armorEffect(backEndPlayer.wearingarmorID, enemy.health) //enemy.damage
           backEndPlayer.health -= armoredDamage
           if (backEndPlayer.health <= 0){ //check alive
+            updateKillLog(0,backEndPlayer.username,reason = 'zombie',serverkill= true)
             safeDeletePlayer(playerId)} 
         }
         // delete enemy after calculating damage
@@ -1467,7 +1484,7 @@ function makeNdropItem(itemtype, name, groundloc,onground=true,variantNameGiven=
 
 
 // safely create object
-function makeObjects(objecttype, health, objectinfo, givenname = ''){
+function makeObjects(objecttype, health, objectinfo, givenname = '', placerID = 0){
   objectId++
   let name = givenname
   if (givenname===''){
@@ -1501,7 +1518,7 @@ function makeObjects(objecttype, health, objectinfo, givenname = ''){
   //console.log(`new obj ID: ${objectId}`)
 
   backEndObjects[objectId] = {
-    objecttype , myID:objectId, deleteRequest:false, health, objectinfo, objectsideforbackend, name
+    objecttype , myID:objectId, deleteRequest:false, health, objectinfo, objectsideforbackend, name, placerID
   }
 }
 
@@ -1709,9 +1726,9 @@ function safeDeleteObject(id){
   //console.log(`obj removed ID: ${id}`)
   const objToDelete = backEndObjects[id]
   if (objToDelete.objecttype==='barrel'){
-    explosion(objToDelete.objectinfo.center,18,playerID=0)
+    explosion(objToDelete.objectinfo.center,18,playerID=objToDelete.placerID)
   } else if(objToDelete.objecttype==='mine'){
-    explosion(objToDelete.objectinfo.center,12,playerID=0,shockWave=true)
+    explosion(objToDelete.objectinfo.center,12,playerID=objToDelete.placerID,shockWave=true)
   }
   delete backEndObjects[id]
 }
@@ -2072,7 +2089,7 @@ function explosion(location,BLASTNUM,playerID=0,shockWave=false,small=false){
     if (shockWave){
       addProjectile( (2*Math.PI/BLASTNUM)*i,'shockWave',playerID, location,0)// damaging all players nearby
     } else if (small) {
-      addProjectile( (2*Math.PI/BLASTNUM)*i,'bat',playerID, location,0)// damaging all players nearby
+      addProjectile( (2*Math.PI/BLASTNUM)*i,'explosion',playerID, location,0)// damaging all players nearby
     } else{
       addProjectile( (2*Math.PI/BLASTNUM)*i,'fragment',playerID, location,0)// damaging all players nearby
     }
@@ -2160,7 +2177,7 @@ function DeployAirstrike(airstrike){
   if (airstrike.signal==='bomb'){ // strike multiple times
     const x_turbulance = Math.round((Math.random()-0.5) * 100)+100
     for (let i=-1;i<2;i+=2){
-      explosion({x:airstrike.x + i*x_turbulance, y:airstrike.y},18,playerID=0,shockWave=true)
+      explosion({x:airstrike.x + i*x_turbulance, y:airstrike.y},18,playerID=airstrike.callerID,shockWave=true)
     }
     airstrike.strike_Y_level -= airstrike.speed*STRIKE_INTERVAL_COEF
     //console.log('air bombing at ', location)
