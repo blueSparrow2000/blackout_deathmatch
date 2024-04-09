@@ -101,10 +101,11 @@ or
 2024.3.3 VSS sound range reduced significantly + mag size increased
 
 
-2024.4.9 VSS sound range reduced significantly again / USAS12 now have an explosive ammo / Deagle added (sound will be customed later)
+2024.4.9 VSS sound range reduced significantly again / USAS12 now have an explosive ammo / Deagle added 
 
 Future plan:
 - particle effect when hit 
+- grenade (throwable - countdown like traveldistance / not a projectile / explosion when deleted)
 - Inventory selection show up
 - Gun recoil effect 
 - Consumables and placeable as a held item (draw when holding them!)
@@ -118,6 +119,6 @@ Future plan:
 - Maps should be square & need to specify tile number of one side 
 - Also Maps should have two layer: layer1 is for ground, layer2 is for ceiling/plants etc.
 - minimap size should be fixed to 550 with frame(used in game) and 512 without frame(used for location calculation)
-
+- Decibel Amplification site online) https://www.mp3louder.com/ko/
 
 Tiled tip: If you hover over a tile and press ALT+C, tile (col,row) value is copied to a clipboard. Use it when map making!
