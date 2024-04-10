@@ -105,29 +105,29 @@ const gunInfo = {
     'explosion':{travelDistance:32, damage: 1, shake:3, num: 1, fireRate: 500, projectileSpeed:6, magSize:1, reloadTime: 1000, ammotype:'hard', size: {length:0, width:3}},
 
 
-    'M1':{travelDistance:1472, damage: 5, shake:0, num: 1, fireRate: 1600, projectileSpeed:42, magSize: 5, reloadTime: 4000, ammotype:'7mm', size: {length:42, width:3}}, 
-    'mk14':{travelDistance:1088, damage: 3, shake:1, num: 1, fireRate: 600, projectileSpeed:32, magSize:14, reloadTime: 3300, ammotype:'7mm', size: {length:34, width:2} }, 
-    'SLR':{travelDistance:1216, damage: 3.5, shake:1, num: 1, fireRate: 350, projectileSpeed:36, magSize: 10, reloadTime: 2700, ammotype:'7mm', size: {length:38, width:2}}, 
-    'AWM':{travelDistance:1600, damage: 9, shake:0, num: 1, fireRate: 2000, projectileSpeed:30, magSize:  7, reloadTime: 4000, ammotype:'7mm', size: {length:50, width:3}}, 
-
+    'M1':{travelDistance:1472, damage: 6, shake:0, num: 1, fireRate: 1600, projectileSpeed:42, magSize: 5, reloadTime: 4000, ammotype:'7mm', size: {length:42, width:3}}, 
+    'mk14':{travelDistance:1088, damage: 3.5, shake:1, num: 1, fireRate: 650, projectileSpeed:32, magSize:14, reloadTime: 3300, ammotype:'7mm', size: {length:34, width:2} }, 
+    'SLR':{travelDistance:1216, damage: 2.5, shake:1, num: 1, fireRate: 300, projectileSpeed:36, magSize: 10, reloadTime: 2700, ammotype:'7mm', size: {length:38, width:2}}, 
+    'AWM':{travelDistance:1600, damage: 11, shake:0, num: 1, fireRate: 2000, projectileSpeed:30, magSize:  7, reloadTime: 4000, ammotype:'7mm', size: {length:50, width:3}}, 
+    'Deagle':{travelDistance:576, damage: 3, shake:1, num: 1, fireRate: 350, projectileSpeed:18, magSize:7, reloadTime: 3300, ammotype:'7mm', size: {length:18, width:3}}, 
+    
     'pistol':{travelDistance:576, damage: 1, shake:2, num: 1, fireRate: 300, projectileSpeed:15, magSize:15, reloadTime: 1100, ammotype:'5mm', size: {length:17, width:2}}, 
-    'M249':{travelDistance:832, damage: 1, shake:1, num: 1, fireRate: 75, projectileSpeed:23, magSize:150, reloadTime: 7400, ammotype:'5mm', size: {length:28, width:6}},
+    'M249':{travelDistance:832, damage: 1, shake:1, num: 1, fireRate: 80, projectileSpeed:23, magSize:150, reloadTime: 7400, ammotype:'5mm', size: {length:28, width:6}},
     'VSS':{travelDistance:1088, damage: 1, shake:1, num: 1, fireRate: 100, projectileSpeed:19, magSize:20, reloadTime: 2300, ammotype:'5mm' , size: {length:27, width:2}}, 
     'ak47':{travelDistance:704, damage: 1, shake:1, num: 1, fireRate: 110, projectileSpeed:21, magSize:30, reloadTime: 2000, ammotype:'5mm', size: {length:28, width:3}}, 
     'FAMAS':{travelDistance:576, damage: 1, shake:2, num: 1, fireRate: 90, projectileSpeed:17, magSize: 30, reloadTime: 3200, ammotype:'5mm', size: {length:22, width:3}}, 
-    'Deagle':{travelDistance:576, damage: 3, shake:1, num: 1, fireRate: 350, projectileSpeed:18, magSize:7, reloadTime: 3300, ammotype:'7mm', size: {length:18, width:3}}, 
-    
-    's686':{travelDistance:180, damage: 1, shake:4, num: 5, fireRate: 180, projectileSpeed:10, magSize:2, reloadTime: 1200, ammotype:'12G', size: {length:13, width:5}},
+
+    's686':{travelDistance:180, damage: 1, shake:4, num: 5, fireRate: 180, projectileSpeed:10, magSize:2, reloadTime: 2500, ammotype:'12G', size: {length:13, width:5}},
     'DBS':{travelDistance:320, damage: 1, shake:2, num: 3, fireRate: 400, projectileSpeed:13, magSize:14, reloadTime: 6000, ammotype:'12G', size: {length:16, width:5}},
-    'usas12':{travelDistance:256, damage: 0, shake:1, num: 1, fireRate: 200, projectileSpeed:14, magSize:5, reloadTime: 2500, ammotype:'12G', size: {length:18, width:4}},
+    'usas12':{travelDistance:256, damage: 0, shake:1, num: 1, fireRate: 260, projectileSpeed:14, magSize:5, reloadTime: 2800, ammotype:'12G', size: {length:18, width:4}},
     
-    'ump45':{travelDistance:700, damage: 0.8, shake:1, num: 1, fireRate: 85, projectileSpeed:16, magSize:25, reloadTime: 2800, ammotype:'45ACP', size: {length:19, width:4}},
+    'ump45':{travelDistance:700, damage: 0.8, shake:1, num: 1, fireRate: 85, projectileSpeed:16, magSize:25, reloadTime: 2700, ammotype:'45ACP', size: {length:19, width:4}},
     'vector':{travelDistance:500, damage: 0.8, shake:1, num: 1, fireRate: 45, projectileSpeed:17, magSize:19, reloadTime: 2600, ammotype:'45ACP', size: {length:18, width:3}},
     'mp5':{travelDistance:550, damage: 0.8, shake:1, num: 1, fireRate: 70, projectileSpeed:19, magSize:30, reloadTime: 2100, ammotype:'45ACP', size: {length:20, width:3}},
     
-    'fist':{travelDistance:24, damage: 0.2, shake:0, num: 1, fireRate: 300, projectileSpeed:6, magSize:0, reloadTime: 0, ammotype:'bio', size: {length:0, width:4}},
-    'knife':{travelDistance:32, damage: 0.4, shake:0, num: 1, fireRate: 200, projectileSpeed:8, magSize:0, reloadTime: 0, ammotype:'sharp', size: {length:0, width:2}},
-    'bat':{travelDistance:48, damage: 1, shake:1, num: 1, fireRate: 500, projectileSpeed:6, magSize:0, reloadTime: 0, ammotype:'hard', size: {length:0, width:3}},
+    'fist':{travelDistance:24, damage: 0.5, shake:0, num: 1, fireRate: 300, projectileSpeed:6, magSize:0, reloadTime: 0, ammotype:'bio', size: {length:0, width:4}},
+    'knife':{travelDistance:32, damage: 1, shake:0, num: 1, fireRate: 200, projectileSpeed:8, magSize:0, reloadTime: 0, ammotype:'sharp', size: {length:0, width:2}},
+    'bat':{travelDistance:48, damage: 2, shake:1, num: 1, fireRate: 500, projectileSpeed:6, magSize:0, reloadTime: 0, ammotype:'hard', size: {length:0, width:3}},
 
   }
 const gunOrderInDeathmatch = ['grenadeLauncher','AWM','vector','s686','ak47','SLR','FAMAS','usas12','mp5','M249','mk14','VSS','DBS','ump45','M1','Deagle','pistol']
