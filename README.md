@@ -107,6 +107,7 @@ Future plan:
 - particle effect when hit 
 - grenade (throwable - countdown like traveldistance / not a projectile / explosion when deleted)
 - Inventory selection show up
+- ping in minimap + ping direction showup (on frontend only)
 - Gun recoil effect 
 - Consumables and placeable as a held item (draw when holding them!)
 - reacon (shows location of enemy in the map & direction for 1 seconds)
