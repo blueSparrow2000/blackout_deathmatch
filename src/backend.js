@@ -105,10 +105,10 @@ const gunInfo = {
     'explosion':{travelDistance:32, damage: 1, shake:3, num: 1, fireRate: 500, projectileSpeed:6, magSize:1, reloadTime: 1000, ammotype:'hard', size: {length:0, width:3}},
 
 
-    'M1':{travelDistance:1600, damage: 6, shake:0, num: 1, fireRate: 1400, projectileSpeed:42, magSize: 5, reloadTime: 3600, ammotype:'7mm', size: {length:42, width:3}}, 
+    'M1':{travelDistance:2000, damage: 6, shake:0, num: 1, fireRate: 1400, projectileSpeed:42, magSize: 5, reloadTime: 3600, ammotype:'7mm', size: {length:42, width:3}}, 
     'mk14':{travelDistance:1088, damage: 3.5, shake:1, num: 1, fireRate: 650, projectileSpeed:32, magSize:14, reloadTime: 3300, ammotype:'7mm', size: {length:34, width:2} }, 
     'SLR':{travelDistance:1216, damage: 2.5, shake:1, num: 1, fireRate: 300, projectileSpeed:36, magSize: 10, reloadTime: 2700, ammotype:'7mm', size: {length:38, width:2}}, 
-    'AWM':{travelDistance:2000, damage: 11, shake:0, num: 1, fireRate: 2000, projectileSpeed:30, magSize:  7, reloadTime: 4000, ammotype:'7mm', size: {length:50, width:3}}, 
+    'AWM':{travelDistance:2400, damage: 11, shake:0, num: 1, fireRate: 2000, projectileSpeed:30, magSize:  7, reloadTime: 4000, ammotype:'7mm', size: {length:50, width:3}}, 
     'Deagle':{travelDistance:576, damage: 3, shake:1, num: 1, fireRate: 350, projectileSpeed:18, magSize:7, reloadTime: 3300, ammotype:'7mm', size: {length:18, width:3}}, 
     
     'pistol':{travelDistance:576, damage: 1, shake:2, num: 1, fireRate: 300, projectileSpeed:15, magSize:15, reloadTime: 1100, ammotype:'5mm', size: {length:17, width:2}}, 
