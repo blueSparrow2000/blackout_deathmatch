@@ -1025,7 +1025,7 @@ socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles,
             sightdistanceProjectile = (sightChunk)*TILE_SIZE // minimize sound
           }
           const thatGunSoundDistance = Math.max(gunSoundRange, sightdistanceProjectile)  //900
-          if (gunName === 'shockWave' ||gunName === 'fragment'){// these are explosions
+          if (gunName === 'shockWave' ||gunName === 'fragment'||gunName === 'explosion'){// these are explosions
             // pass
           } else if (gunName && (DISTANCE-100 < thatGunSoundDistance) ){ 
             playSoundEffectGun(gunName,DISTANCE,thatGunSoundDistance)
