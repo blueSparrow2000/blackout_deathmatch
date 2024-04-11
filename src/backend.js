@@ -43,6 +43,7 @@ backEndItems[0] = {
 let backEndObjects = {}
 let backEndAirstrikes = {}
 let backEndSoundRequest = {}
+let backEndParticleRequest = {}
 let backEndKillLog = []
 
 let enemyId = 0
@@ -52,6 +53,8 @@ let objectId = 0
 let vehicleId = 0
 let airstrikeId = 0
 let soundID = 0
+let ParticleID = 0
+
 
 // player attributes
 const INVENTORYSIZE = 4
@@ -705,6 +708,9 @@ function resetServer(){
   for (const entityid in backEndSoundRequest) {
     safeDeleteSoundRequest(entityid)
   }
+  for (const entityid in backEndParticleRequest) {
+    safeDeleteParticleRequest(entityid)
+  }
   
   enemyId = 0
   projectileId = 0
@@ -1101,7 +1107,8 @@ setInterval(() => {
     "\nVehicles      ",Object.keys(backEndVehicles).length,
     "\nObjects       ",Object.keys(backEndObjects).length,
     "\nAirstrikes    ",Object.keys(backEndAirstrikes).length,
-    "\nSoundRequests ",Object.keys(backEndSoundRequest).length )
+    "\nSoundRequests ",Object.keys(backEndSoundRequest).length,
+    "\nParticleRequests ",Object.keys(backEndParticleRequest).length )
     ServerTime += 1
   }
 
@@ -1410,7 +1417,11 @@ setInterval(() => {
     updateSoundRequest(id)
   }
 
-  io.emit('updateFrontEnd',{backEndPlayers, backEndEnemies, backEndProjectiles, backEndObjects, backEndItems,backEndVehicles,backEndAirstrikes,backEndSoundRequest, backEndKillLog})
+  for (const id in backEndParticleRequest){
+    updateParticleRequest(id)
+  }
+
+  io.emit('updateFrontEnd',{backEndPlayers, backEndEnemies, backEndProjectiles, backEndObjects, backEndItems,backEndVehicles,backEndAirstrikes,backEndSoundRequest, backEndParticleRequest, backEndKillLog})
 }, TICKRATE)
 
 
@@ -2272,3 +2283,24 @@ function safeDeleteSoundRequest(soundRequestID){
   delete backEndSoundRequest[soundRequestID]
 }
 
+
+function pushParticleRequest(location,particleName, velocity, duration=1){
+  ParticleID++
+  const x = location.x
+  const y = location.y
+  backEndParticleRequest[ParticleID] = {
+    x,y, myID:ParticleID,particleName, velocity, duration
+  }
+}
+
+function updateParticleRequest(particleRequestID){
+  let particleObject = backEndParticleRequest[particleRequestID]
+  if (particleObject.duration<=0){
+    safeDeleteParticleRequest(particleRequestID)
+  } 
+  particleObject.duration -= 1
+}
+
+function safeDeleteParticleRequest(particleRequestID){
+  delete backEndParticleRequest[particleRequestID]
+}

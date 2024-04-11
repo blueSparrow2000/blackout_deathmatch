@@ -104,15 +104,16 @@ or
 2024.4.9 VSS sound range reduced significantly again / USAS12 now have an explosive ammo / Deagle added 
 
 Future plan:
-- particle effect when hit 
+- particle effect when hit (particle request: pos, velocity, duration)
 - grenade (throwable - countdown like traveldistance / not a projectile / explosion when deleted)
+- flash / smoke
+- wind update
 - Inventory selection show up
 - ping in minimap + ping direction showup (on frontend only)
 - Gun recoil effect 
 - Consumables and placeable as a held item (draw when holding them!)
 - reacon (shows location of enemy in the map & direction for 1 seconds)
-- flash / smoke
-- smarter AI
+- smarter AI (zombies shoots projectiles)
 
 
 

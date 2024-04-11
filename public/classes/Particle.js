@@ -75,3 +75,59 @@ class Particle {
 
   }
   
+
+  class Blood {
+    constructor({x, y, velocity, name}) {
+      this.x = x
+      this.y = y
+      this.color = 'DarkRed'
+      this.velocity = velocity
+      this.name = name
+      this.deleteRequest = false
+      this.duration = 256 // ticks
+    }
+    update(){ // blood particle do not have to move
+        this.duration -= 1
+        this.x += this.velocity.x
+        this.y += this.velocity.y
+
+        if (this.duration < 0){
+            this.deleteRequest = true
+        }
+    }
+    draw(canvas, camX, camY) {
+      // canvas.fillStyle = this.color // should be done outside
+      canvas.beginPath()
+      canvas.arc(this.x-camX, this.y-camY, this.radius , 0, Math.PI * 2, false)
+      canvas.fill()
+    }
+  }
+
+  
+class Ping {
+  constructor({x, y, x_map, y_map}) {
+    this.x = x
+    this.y = y
+    this.x_map = x_map
+    this.y_map = y_map
+    this.color = 'Aqua'
+    this.deleteRequest = false
+    this.duration = 520 // ticks
+  }
+  draw(canvas, camX, camY,centerX,centerY) { // a line that links player and a ping (player location is the center!)
+      // line
+      canvas.beginPath()
+      canvas.moveTo(centerX,centerY)
+      canvas.lineTo(this.x - camX,this.y - camY)
+      canvas.stroke()
+
+      this.duration -= 1
+
+      if (this.duration < 0){
+          this.deleteRequest = true
+      }
+  }
+  // this is done on the code
+  // draw_on_minimap(){
+  // }
+}

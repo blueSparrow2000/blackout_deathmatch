@@ -32,6 +32,9 @@ const frontEndObjects = {}
 const frontEndVehicles = {}
 const frontEndAirstrikes = {}
 const frontEndSoundRequest = {}
+const frontEndParticleRequest = {}
+const frontEndPing = {}
+
 
 // player info 
 let Myskin = 'default'
@@ -53,6 +56,7 @@ const LobbyBGM = new Audio("/sound/Lobby.mp3")
 const shothitsound = new Audio("/sound/shothit.mp3")
 const playerdeathsound = new Audio("/sound/playerdeath.mp3")
 const interactSound = new Audio("/sound/interact.mp3")
+const pingSound = new Audio("/sound/ping.mp3")
 
 
 const mapImage = new Image();
@@ -64,7 +68,8 @@ planeImage.src = "/images/plane.png"
 const planeImageMINIMAP = new Image();
 planeImageMINIMAP.src = "/images/plane_minimap.png"
 
-
+const pingImageMINIMAP = new Image();
+pingImageMINIMAP.src = "/images/ping_minimap.png"
 
 let skinImages = {}
 const skinKeys = ['default','HALO','VOID','FROST','TAEGEUK','GRADIENT','CANDY','JAVA','PYTHON','LINUX']
@@ -153,6 +158,7 @@ let lastWinnerNameFRONTEND = ''
 let frontEndParticles = {}
 let killlogID = 0
 let particleID = 0
+let pingID = 0
 
 function showKillLog(loglist){
 
@@ -500,9 +506,30 @@ function shootCheck(event,holding = false){
   //console.log("ready to fire")
 }
 
+function mapLoc_to_realLoc(x_map,y_map){
+  const MiniMapRatio = MINIMAPSIZE/MAPWIDTH
+  return {x: Math.round( (x_map - centerX + MINIMAPSIZE_HALF)/MiniMapRatio ), y: Math.round( (y_map - centerY + MINIMAPSIZE_HALF)/MiniMapRatio )}
+}
+
 
 addEventListener('click', (event) => {
-  shootCheck(event)
+  if (keys.g.pressed){ // in this case, make a ping
+    pingID ++ 
+    // this is a location in a map
+    const RealLoc = mapLoc_to_realLoc(event.clientX, event.clientY)
+    frontEndPing[pingID] = new Ping({
+      x: RealLoc.x,
+      y: RealLoc.y,
+      x_map: event.clientX,
+      y_map: event.clientY,
+    })
+    console.log(pingID)
+    // add ping sound if needed here
+    pingSound.play()
+  }
+  else{
+    shootCheck(event)
+  }
 
 })
 
@@ -842,7 +869,7 @@ function showInventory(){
 }
 
 // backend -> front end signaling
-socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles, backEndObjects, backEndItems,backEndVehicles,backEndAirstrikes,backEndSoundRequest, backEndKillLog})=>{
+socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles, backEndObjects, backEndItems,backEndVehicles,backEndAirstrikes,backEndSoundRequest,backEndParticleRequest, backEndKillLog})=>{
     /////////////////////////////////////////////////// 1.PLAYER //////////////////////////////////////////////////
     const myPlayerID = socket.id
 
@@ -997,6 +1024,7 @@ socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles,
     }
   
     /////////////////////////////////////////////////// 3.PROJECTILES //////////////////////////////////////////////////
+    const me = frontEndPlayers[myPlayerID]
     for (const id in backEndProjectiles) {
       const backEndProjectile = backEndProjectiles[id]
       const gunName = backEndProjectile.gunName
@@ -1012,7 +1040,6 @@ socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles,
         })
   
         // player close enough should hear the sound (when projectile created) - for me
-        const me = frontEndPlayers[myPlayerID]
         if (me){
 
           const DISTANCE = Math.hypot(backEndProjectile.x - me.x, backEndProjectile.y - me.y)
@@ -1188,7 +1215,6 @@ socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles,
         }
 
         // player close enough should hear the sound (when projectile created) - for me
-        const me = frontEndPlayers[myPlayerID]
         if (me){
           const DISTANCE = Math.hypot(backendSR.x - me.x, backendSR.y - me.y)
           const thatGunSoundDistance = backendSR.soundDistance
@@ -1212,7 +1238,33 @@ socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles,
 
     showKillLog(backEndKillLog)
 
-  
+    /////////////////////////////////////////////////// 10. Particle effects //////////////////////////////////////////////////
+    for (const id in backEndParticleRequest) {
+      const backendPR = backEndParticleRequest[id]
+
+      if (!frontEndParticleRequest[id]){ // new 
+        // if player is close enough to see the particle
+
+        if (me){
+          if (me.IsVisible(getChunk(me.x,me.y),getChunk(backendPR.x,backendPR.y),sightChunk)){
+            if (backendPR.name === 'blood'){
+              frontEndParticleRequest[id] = Blood({
+                x:backendPR.x,
+                y:backendPR.y,
+                velocity: backendPR.velocity,
+                name: backendPR.name,
+              })
+
+            }
+
+          }
+        }
+
+
+    }
+    // deleting is done only in the client side
+
+  }
 
 })
 
@@ -1267,6 +1319,10 @@ function safeDeleteParticle(patricleID){
     firework(particle.x, particle.y, particle.color) // make firework!
   }
   delete frontEndParticles[patricleID]
+}
+
+function safeDeletePing(pingID){
+  delete frontEndPing[pingID]
 }
 
 // return {x:,y:} multiple arguement by container
@@ -1373,6 +1429,11 @@ function loop(){
           canvas.drawImage(planeImageMINIMAP, centerX - MINIMAPSIZE_HALF + currentplaneloc.x - 24, centerY - MINIMAPSIZE_HALF + currentplaneloc.y - 32)
         }
 
+        // draw ping location
+        for (const id in frontEndPing){ 
+          const thisPing = frontEndPing[id]
+          canvas.drawImage(pingImageMINIMAP, thisPing.x_map-4, thisPing.y_map-4)
+        }
 
         window.requestAnimationFrame(loop);
         return
@@ -1622,9 +1683,20 @@ function loop(){
       }
     }
 
+    // draw ping direction
+    canvas.strokeStyle = 'Aqua'
+    canvas.lineWidth = 3
+    for (const id in frontEndPing){ 
+      const thisPing = frontEndPing[id]
+      thisPing.draw(canvas, camX, camY,centerX,centerY) 
+      if (thisPing.deleteRequest){
+        safeDeletePing(id)
+      }
+    }
+
+
     canvas.restore();
     // GLOBAL ALPHA CHANGES
-
 
 
 
