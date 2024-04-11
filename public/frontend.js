@@ -4,6 +4,7 @@ const SCREENWIDTH = 1024
 const SCREENHEIGHT = 576
 const ITEMRADIUS = 24
 const PROJECTILERADIUS = 3
+let SHOWBLOODPARTICLEFRONTEND = true // give option to the player: blood graphics may slow down performance!
 
 // map info
 let groundMap = [[]];
@@ -1237,29 +1238,26 @@ socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles,
     showKillLog(backEndKillLog)
 
     /////////////////////////////////////////////////// 10. Particle effects //////////////////////////////////////////////////
-    for (const id in backEndParticleRequest) {
-      const backendPR = backEndParticleRequest[id]
-
-      if (!frontEndParticleRequest[id]){ // new 
-        // if player is close enough to see the particle
-
-        if (me){
-          //if (me.IsVisible(getChunk(me.x,me.y),getChunk(backendPR.x,backendPR.y),sightChunk)){
-          const DIST = Math.hypot(backendPR.x - me.x, backendPR.y - me.y)
-          if (DIST < 832){ // this is some number...
-            frontEndParticleRequest[id] = new Blood({
-              x:backendPR.x,
-              y:backendPR.y,
-              velocity: backendPR.velocity,
-              name: backendPR.particleName,
-            })
+    if (SHOWBLOODPARTICLEFRONTEND){
+      for (const id in backEndParticleRequest) {
+        const backendPR = backEndParticleRequest[id]
+        if (!frontEndParticleRequest[id]){ // new 
+          // if player is close enough to see the particle
+          if (me){
+            //if (me.IsVisible(getChunk(me.x,me.y),getChunk(backendPR.x,backendPR.y),sightChunk)){
+            const DIST = Math.hypot(backendPR.x - me.x, backendPR.y - me.y)
+            if (DIST < 832){ // this is some number...
+              frontEndParticleRequest[id] = new Blood({
+                x:backendPR.x,
+                y:backendPR.y,
+                velocity: backendPR.velocity,
+                name: backendPR.particleName,
+              })
+            }
           }
-        }
-
-
+      }
+      // deleting is done only in the client side
     }
-    // deleting is done only in the client side
-
   }
 
 })
@@ -1694,15 +1692,16 @@ function loop(){
       }
     }
 
-    canvas.fillStyle = 'Crimson'
-    for (const id in frontEndParticleRequest){ 
-      const frontEndPR = frontEndParticleRequest[id]
-      frontEndPR.draw(canvas, camX, camY)
-      if (frontEndPR.deleteRequest){
-        safeDeletePR(id)
+    if (SHOWBLOODPARTICLEFRONTEND){
+      canvas.fillStyle = 'Crimson'
+      for (const id in frontEndParticleRequest){ 
+        const frontEndPR = frontEndParticleRequest[id]
+        frontEndPR.draw(canvas, camX, camY)
+        if (frontEndPR.deleteRequest){
+          safeDeletePR(id)
+        }
       }
     }
-
 
     canvas.restore();
     // GLOBAL ALPHA CHANGES
