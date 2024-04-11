@@ -530,7 +530,6 @@ addEventListener('click', (event) => {
   else{
     shootCheck(event)
   }
-
 })
 
 
