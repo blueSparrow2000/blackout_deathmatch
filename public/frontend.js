@@ -523,7 +523,6 @@ addEventListener('click', (event) => {
       x_map: event.clientX,
       y_map: event.clientY,
     })
-    console.log(pingID)
     // add ping sound if needed here
     pingSound.play()
   }
@@ -1245,17 +1244,15 @@ socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles,
         // if player is close enough to see the particle
 
         if (me){
-          if (me.IsVisible(getChunk(me.x,me.y),getChunk(backendPR.x,backendPR.y),sightChunk)){
-            if (backendPR.name === 'blood'){
-              frontEndParticleRequest[id] = Blood({
-                x:backendPR.x,
-                y:backendPR.y,
-                velocity: backendPR.velocity,
-                name: backendPR.name,
-              })
-
-            }
-
+          //if (me.IsVisible(getChunk(me.x,me.y),getChunk(backendPR.x,backendPR.y),sightChunk)){
+          const DIST = Math.hypot(backendPR.x - me.x, backendPR.y - me.y)
+          if (DIST < 832){ // this is some number...
+            frontEndParticleRequest[id] = new Blood({
+              x:backendPR.x,
+              y:backendPR.y,
+              velocity: backendPR.velocity,
+              name: backendPR.particleName,
+            })
           }
         }
 
@@ -1322,6 +1319,10 @@ function safeDeleteParticle(patricleID){
 
 function safeDeletePing(pingID){
   delete frontEndPing[pingID]
+}
+
+function safeDeletePR(PRID){
+  delete frontEndParticleRequest[PRID]
 }
 
 // return {x:,y:} multiple arguement by container
@@ -1690,6 +1691,15 @@ function loop(){
       thisPing.draw(canvas, camX, camY,centerX,centerY) 
       if (thisPing.deleteRequest){
         safeDeletePing(id)
+      }
+    }
+
+    canvas.fillStyle = 'Crimson'
+    for (const id in frontEndParticleRequest){ 
+      const frontEndPR = frontEndParticleRequest[id]
+      frontEndPR.draw(canvas, camX, camY)
+      if (frontEndPR.deleteRequest){
+        safeDeletePR(id)
       }
     }
 

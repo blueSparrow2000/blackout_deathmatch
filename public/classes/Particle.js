@@ -80,26 +80,28 @@ class Particle {
     constructor({x, y, velocity, name}) {
       this.x = x
       this.y = y
-      this.color = 'DarkRed'
+      this.color = 'Crimson'
       this.velocity = velocity
       this.name = name
       this.deleteRequest = false
-      this.duration = 256 // ticks
-    }
-    update(){ // blood particle do not have to move
-        this.duration -= 1
-        this.x += this.velocity.x
-        this.y += this.velocity.y
-
-        if (this.duration < 0){
-            this.deleteRequest = true
-        }
+      this.radius = 7
+      this.duration = 10 // ticks
     }
     draw(canvas, camX, camY) {
       // canvas.fillStyle = this.color // should be done outside
       canvas.beginPath()
       canvas.arc(this.x-camX, this.y-camY, this.radius , 0, Math.PI * 2, false)
       canvas.fill()
+
+      // update
+      this.duration -= 1
+      // this.x += this.velocity.x
+      // this.y += this.velocity.y
+
+      if (this.duration < 0){
+          this.deleteRequest = true
+      }
+
     }
   }
 

@@ -104,11 +104,11 @@ or
 2024.4.9 VSS sound range reduced significantly again / USAS12 now have an explosive ammo / Deagle added 
 
 
-2024.4.11 Added pings: make a ping in the minimap => ping direction will show up (on frontend only)
+2024.4.11 Added pings: make a ping in the minimap => ping direction will show up (on frontend only) 
+/ Added particle: Blood effect when enemy or player is hit by a projectile
 
 
 Future plan:
-- particle effect when hit (particle request: pos, velocity, duration)
 - grenade (throwable - countdown like traveldistance / not a projectile / explosion when deleted)
 - flash / smoke
 - wind update

@@ -4,6 +4,7 @@ const SCREENWIDTH = 1024
 const SCREENHEIGHT = 576
 const ITEMRADIUS = 16
 let signalReset = false
+const SHOWBLOODPARTICLE = true
 
 ///////////////////////////////////// MAP CONFIGURATION /////////////////////////////////////
 const MAPDICT = {'Wilderness':30, 'Sahara':50, 'MilitaryBase':100} // mapName : map tile number
@@ -53,8 +54,7 @@ let objectId = 0
 let vehicleId = 0
 let airstrikeId = 0
 let soundID = 0
-let ParticleID = 0
-
+let ParticleRequestID = 0
 
 // player attributes
 const INVENTORYSIZE = 4
@@ -108,14 +108,14 @@ const gunInfo = {
     'explosion':{travelDistance:32, damage: 1, shake:3, num: 1, fireRate: 500, projectileSpeed:6, magSize:1, reloadTime: 1000, ammotype:'hard', size: {length:0, width:3}},
 
 
-    'M1':{travelDistance:2000, damage: 6, shake:0, num: 1, fireRate: 1400, projectileSpeed:42, magSize: 5, reloadTime: 3600, ammotype:'7mm', size: {length:42, width:3}}, 
-    'mk14':{travelDistance:1088, damage: 3.5, shake:1, num: 1, fireRate: 650, projectileSpeed:32, magSize:14, reloadTime: 3300, ammotype:'7mm', size: {length:34, width:2} }, 
+    'M1':{travelDistance:2000, damage: 6, shake:0, num: 1, fireRate: 1300, projectileSpeed:42, magSize: 5, reloadTime: 3600, ammotype:'7mm', size: {length:42, width:3}}, 
+    'mk14':{travelDistance:1088, damage: 3.5, shake:1, num: 1, fireRate: 650, projectileSpeed:34, magSize:14, reloadTime: 3300, ammotype:'7mm', size: {length:34, width:2} }, 
     'SLR':{travelDistance:1216, damage: 2.5, shake:1, num: 1, fireRate: 300, projectileSpeed:36, magSize: 10, reloadTime: 2700, ammotype:'7mm', size: {length:38, width:2}}, 
-    'AWM':{travelDistance:2400, damage: 11, shake:0, num: 1, fireRate: 2000, projectileSpeed:30, magSize:  7, reloadTime: 4000, ammotype:'7mm', size: {length:50, width:3}}, 
+    'AWM':{travelDistance:2400, damage: 11, shake:0, num: 1, fireRate: 2000, projectileSpeed:32, magSize:  7, reloadTime: 4000, ammotype:'7mm', size: {length:50, width:3}}, 
     'Deagle':{travelDistance:576, damage: 3, shake:1, num: 1, fireRate: 350, projectileSpeed:18, magSize:7, reloadTime: 3300, ammotype:'7mm', size: {length:18, width:3}}, 
     
     'pistol':{travelDistance:576, damage: 1, shake:2, num: 1, fireRate: 300, projectileSpeed:15, magSize:15, reloadTime: 1100, ammotype:'5mm', size: {length:17, width:2}}, 
-    'M249':{travelDistance:832, damage: 1, shake:1, num: 1, fireRate: 80, projectileSpeed:23, magSize:150, reloadTime: 7400, ammotype:'5mm', size: {length:28, width:6}},
+    'M249':{travelDistance:832, damage: 1, shake:1, num: 1, fireRate: 100, projectileSpeed:23, magSize:100, reloadTime: 7200, ammotype:'5mm', size: {length:28, width:6}},
     'VSS':{travelDistance:1088, damage: 1, shake:1, num: 1, fireRate: 100, projectileSpeed:19, magSize:20, reloadTime: 2300, ammotype:'5mm' , size: {length:27, width:2}}, 
     'ak47':{travelDistance:704, damage: 1, shake:1, num: 1, fireRate: 110, projectileSpeed:21, magSize:30, reloadTime: 2000, ammotype:'5mm', size: {length:28, width:3}}, 
     'FAMAS':{travelDistance:576, damage: 1, shake:2, num: 1, fireRate: 90, projectileSpeed:20, magSize: 30, reloadTime: 3200, ammotype:'5mm', size: {length:22, width:3}}, 
@@ -1259,9 +1259,14 @@ setInterval(() => {
  
               safeDeletePlayer(playerId)} 
           }
+          // add blood particle
+          if (SHOWBLOODPARTICLE){
+            pushParticleRequest(projGET.x, projGET.y, 'blood', 0,duration=1)
+          }
           // delete projectile after inspecting who shot the projectile & calculating damage
           BULLETDELETED = true
           safeDeleteProjectile(id)
+
           break // only one player can get hit by a projectile
         }
     }
@@ -1287,6 +1292,9 @@ setInterval(() => {
                 updateGunBasedOnScore(projGET.playerId)
               }
               safeDeleteEnemy(enemyId)} 
+        }
+        if (SHOWBLOODPARTICLE){
+          pushParticleRequest(projGET.x, projGET.y, 'blood', 0,duration=1)
         }
         // delete projectile after inspecting who shot the projectile & calculating damage
         BULLETDELETED = true
@@ -2284,12 +2292,10 @@ function safeDeleteSoundRequest(soundRequestID){
 }
 
 
-function pushParticleRequest(location,particleName, velocity, duration=1){
-  ParticleID++
-  const x = location.x
-  const y = location.y
-  backEndParticleRequest[ParticleID] = {
-    x,y, myID:ParticleID,particleName, velocity, duration
+function pushParticleRequest(x,y,particleName, velocity, duration=1){
+  ParticleRequestID++
+  backEndParticleRequest[ParticleRequestID] = {
+    x,y, myID:ParticleRequestID,particleName, velocity, duration
   }
 }
 
