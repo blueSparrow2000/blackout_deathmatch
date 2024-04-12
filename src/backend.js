@@ -120,7 +120,7 @@ const gunInfo = {
     'ak47':{travelDistance:704, damage: 1, shake:1, num: 1, fireRate: 110, projectileSpeed:21, magSize:30, reloadTime: 2000, ammotype:'5mm', size: {length:28, width:3}}, 
     'FAMAS':{travelDistance:576, damage: 1, shake:2, num: 1, fireRate: 90, projectileSpeed:20, magSize: 30, reloadTime: 3200, ammotype:'5mm', size: {length:22, width:3}}, 
 
-    's686':{travelDistance:180, damage: 1, shake:4, num: 5, fireRate: 180, projectileSpeed:10, magSize:2, reloadTime: 2500, ammotype:'12G', size: {length:13, width:5}},
+    's686':{travelDistance:256, damage: 1, shake:4, num: 5, fireRate: 180, projectileSpeed:10, magSize:2, reloadTime: 2500, ammotype:'12G', size: {length:13, width:5}},
     'DBS':{travelDistance:320, damage: 1, shake:2, num: 3, fireRate: 400, projectileSpeed:13, magSize:14, reloadTime: 6000, ammotype:'12G', size: {length:16, width:5}},
     'usas12':{travelDistance:256, damage: 0, shake:1, num: 1, fireRate: 260, projectileSpeed:14, magSize:5, reloadTime: 2800, ammotype:'12G', size: {length:18, width:4}},
     
