@@ -88,7 +88,7 @@ class Particle {
       this.duration = 10 // ticks
     }
     draw(canvas, camX, camY) {
-      // canvas.fillStyle = this.color // should be done outside
+      canvas.fillStyle = this.color
       canvas.beginPath()
       canvas.arc(this.x-camX, this.y-camY, this.radius , 0, Math.PI * 2, false)
       canvas.fill()
@@ -105,6 +105,40 @@ class Particle {
     }
   }
 
+  class Smoke {
+    constructor({x, y, velocity, name}) {
+      this.x = x
+      this.y = y
+      this.color = 'gray'
+      this.velocity = velocity
+      this.name = name
+      this.deleteRequest = false
+      this.radius = 10
+      this.max_duration = 3000
+      this.duration = this.max_duration // ticks
+    }
+    draw(canvas, camX, camY) {
+      canvas.fillStyle = this.color
+      canvas.beginPath()
+      canvas.arc(this.x-camX, this.y-camY, this.radius , 0, Math.PI * 2, false)
+      canvas.fill()
+  
+      // update
+      this.duration -= 1
+      if (this.duration > 2900){
+        this.radius += 2
+      } else if (this.duration > 2600){
+        this.radius += 1
+      } else if (this.duration < 300){
+        if (this.radius>0){
+          this.radius -= 1
+        }
+      } else if(this.duration < 0){
+          this.deleteRequest = true
+      }
+    }
+  }
+  
   
 class Ping {
   constructor({x, y, x_map, y_map}) {
@@ -133,3 +167,4 @@ class Ping {
   // draw_on_minimap(){
   // }
 }
+

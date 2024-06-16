@@ -174,3 +174,26 @@ class Placeable extends Item {
     }
   }
 }
+
+
+let throwableItemImages = {}
+const throwableItemkeys = ['grenade', 'smoke', 'flash']
+for (let i=0;i<throwableItemkeys.length;i++){
+  const throwablekey = throwableItemkeys[i]
+  throwableItemImages[throwablekey] = new Image()
+  throwableItemImages[throwablekey].src = `/images/${throwablekey}_item.png`
+}
+
+class throwableItem extends Item {
+  constructor({groundx, groundy, size, name, onground=true, color = 'white',iteminfo = {}}) {
+      super({groundx, groundy, size, name, onground, color})
+      this.imgName = name
+      this.itemtype = 'throwable'
+  }
+  draw(canvas, camX, camY, {img,offset}) { // on the ground
+    // console.log(this.imgName)
+    if (this.onground){
+      canvas.drawImage(throwableItemImages[this.imgName], this.groundx-camX-offset, this.groundy-camY-offset)
+    }
+  }
+}

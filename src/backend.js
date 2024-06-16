@@ -171,6 +171,13 @@ const placeableInfo = {
 'mine':{color: 'gray',size:{length:12, width:12},variantName:''},
 }
 
+const throwableTypes = ['grenade', 'smoke', 'flash']
+const throwableInfo = {
+  'grenade':{travelDistance:1000, speed:25, shake:1, color: 'black', size: {length:0, width:3}},
+  'smoke':{travelDistance:1000, speed:25,  shake:1, color: 'gray',  size: {length:0, width:3}},
+  'flash':{travelDistance:1000, speed:25, shake:1, color: 'white', size: {length:0, width:3}},
+}
+
 
 function updateKillLog(killerName,killedName,reason='',serverkill= false){
   if (!killedName){
@@ -373,27 +380,51 @@ function get_player_center_mouse_distance(mousePos, centerX, centerY){
   return Math.hypot(mousePos.x - centerX,mousePos.y - centerY)
 }
 
-// function addThrowable(angle,playerID,location,startDistance){
-//   throwableId++
-//   const guninfoGET = gunInfo[currentGun]
-//   let  shakeProj = guninfoGET.shake
+function addThrowable(angle,playerID,location, type='grenade',holding=false){
+  throwableId++
+  const infoGET = throwableInfo[type] 
+  let  shakeProj = infoGET.shake
+  if (holding){
+    shakeProj = 2*shakeProj+1 // double spread + extra spread
+  }
+  let speed = infoGET.speed
 
-//   const bulletSpeed = guninfoGET.projectileSpeed
-//   const velocity = { // with shake!
-//     x: Math.cos(angle) * bulletSpeed + (Math.random()-0.5) * shakeProj,
-//     y: Math.sin(angle) * bulletSpeed + (Math.random()-0.5) * shakeProj
-//   }
-//   const radius = 10
+  const thisPlayer = backEndPlayers[playerID]
+  // recalculate speed: max speed or player mouse pos
+  const max_mouse_distance = 50
+  speed = Math.min(speed, Math.max(0, get_player_center_mouse_distance(thisPlayer.mousePos, thisPlayer.canvasWidth/2, thisPlayer.canvasHeight/2)/max_mouse_distance))
 
-//   let travelDistance = guninfoGET.travelDistance
-//   const projDamage =  guninfoGET.damage
+  const velocity = { // with shake!
+    x: Math.cos(angle) * speed + (Math.random()-0.5) * shakeProj,
+    y: Math.sin(angle) * speed + (Math.random()-0.5) * shakeProj
+  }
+  const radius = 4
 
-//   let color = 'black'
+  let travelDistance = infoGET.travelDistance
 
-//   backEndThrowables[projectileId] = {
-//       x:location.x, y:location.y,radius,velocity, speed:bulletSpeed, playerId: playerID, gunName:currentGun, travelDistance, projDamage, color
-//     }
-// }
+  let color = infoGET.color
+
+  backEndThrowables[throwableId] = {
+      x:location.x, y:location.y,radius,velocity, speed, playerId: playerID, travelDistance, color, type, myID:throwableId
+    }
+}
+
+function safeDeleteThrowable(throwID){
+  const backEndThrowable = backEndThrowables[throwID]
+
+  if (backEndThrowable.type==='grenade'){
+    explosion(backEndThrowable,24,playerID=backEndThrowable.playerId,shockWave=false,small = false)
+  } else if(backEndThrowable.type==='flash'){
+    // make a flash screen
+
+  } else if(backEndThrowable.type==='smoke'){
+    // deploy a smoke drawable
+    pushParticleRequest(backEndThrowable.x, backEndThrowable.y, 'smoke', 0)
+
+  }
+
+  delete backEndThrowables[throwID]
+}
 
 function addProjectile(angle,currentGun,playerID,location,startDistance,holding=false){
   projectileId++
@@ -641,7 +672,12 @@ function resetMap(MapNameGiven){
     // MANUAL DROP
     // test feature
     makeNdropItem('scope', "3" ,getCoordTilesCenter({row:1,col:1})) // get with your own risk: will be laggy!
-  
+    for (let i=0;i<5;i++){
+      makeNdropItem('throwable', "grenade" ,getCoordTilesCenter({row:1,col:2})) // get with your own risk: will be laggy!
+      makeNdropItem('throwable', "smoke" ,getCoordTilesCenter({row:1,col:3})) // get with your own risk: will be laggy!
+      makeNdropItem('throwable', "flash" ,getCoordTilesCenter({row:1,col:4})) // get with your own risk: will be laggy!
+    }
+
     // makeNdropItem('placeable', 'barrel' ,getCoordTilesCenter({row:2,col:3})) 
     makeNdropItem('placeable', 'barrel' ,getCoordTilesCenter({row:2,col:4}),onground=true,variantNameGiven='SaharaBarrel') 
    
@@ -710,6 +746,10 @@ function resetServer(){
   for (const entityid in backEndProjectiles) {
     // safeDeleteProjectile(entityid)
     delete backEndProjectiles[entityid]
+  }
+  for (const entityid in backEndThrowables) {
+    // safeDeleteProjectile(entityid)
+    delete backEndThrowables[entityid]
   }
   for (const entityid in backEndVehicles) {
     // safeDeleteVehicle(entityid)
@@ -945,9 +985,23 @@ async function main(){
           makeObjects(itemName, hitpoints, {center: {x:curplayer.x,y:curplayer.y}, radius: hitRadius, color:'gray',placerID:playerId}, givenname = imgName, placerID = playerId)
 
           APIdeleteItem()
-
         })
         
+       
+        // throw
+        socket.on('throw',({itemName,playerId,deleteflag, itemid,currentSlot,angle,holding}) => {
+          let curplayer = backEndPlayers[playerId]
+          if (!curplayer) {return}
+          if (curplayer.onBoard){return} // cannot shoot if on board
+          function APIdeleteItem(){ // change player current holding item to fist
+            curplayer.inventory[currentSlot-1] = backEndItems[0]
+            backEndItems[itemid].deleteflag = deleteflag
+          }
+
+          addThrowable(angle, socket.id, backEndPlayers[socket.id],type= itemName,holding)
+          APIdeleteItem()
+        })
+
         // change gound item info from client side
         socket.on('updateitemrequest', ({itemid, requesttype,currentSlot=1, playerId=0})=>{
           let itemToUpdate = backEndItems[itemid]
@@ -1127,6 +1181,7 @@ setInterval(() => {
       "Players       ",Object.keys(backEndPlayers).length,
     "\nEnemies       ",Object.keys(backEndEnemies).length,
     "\nProjectiles   ",Object.keys(backEndProjectiles).length,
+    "\nThrowables    ",Object.keys(backEndThrowables).length,
     "\nItems         ",Object.keys(backEndItems).length,
     "\nVehicles      ",Object.keys(backEndVehicles).length,
     "\nObjects       ",Object.keys(backEndObjects).length,
@@ -1195,7 +1250,7 @@ setInterval(() => {
 
     projGET.travelDistance -= myspeed
     // travel distance check for projectiles
-    if (projGET.travelDistance <= 0 || myspeed<=0.1){
+    if (projGET.travelDistance <= 0 || myspeed<=1){
       // console.log(projGET.travelDistance,myspeed)
       BULLETDELETED = true
       safeDeleteProjectile(id)
@@ -1354,6 +1409,40 @@ setInterval(() => {
 
   }
 
+  
+  // update throwables 
+  for (const id in backEndThrowables){
+    // let THROWABLEDELETED = false
+    let throwGET = backEndThrowables[id]
+    const PROJECTILERADIUS = throwGET.radius
+    let myspeed = throwGET.speed
+
+    throwGET.velocity.x *= HIGHFRICTION
+    throwGET.velocity.y *= HIGHFRICTION
+    myspeed *= HIGHFRICTION
+    throwGET.x += throwGET.velocity.x
+    throwGET.y += throwGET.velocity.y
+
+    throwGET.travelDistance -= myspeed
+    // travel distance check for projectiles
+    if (throwGET.travelDistance <= 0 || myspeed<=1){
+      // console.log(throwGET.travelDistance,myspeed)
+      // THROWABLEDELETED = true
+      safeDeleteThrowable(id)
+    } else if (throwGET.x - PROJECTILERADIUS >= MAPWIDTH ||
+        throwGET.x + PROJECTILERADIUS <= 0 ||
+        throwGET.y - PROJECTILERADIUS >= MAPHEIGHT ||
+        throwGET.y + PROJECTILERADIUS <= 0 
+      ) {
+      // boundary check for projectiles
+      // THROWABLEDELETED = true
+      safeDeleteThrowable(id)
+    }
+
+  }
+
+
+
   // update objects
   for (const id in backEndObjects){
     const backEndObject = backEndObjects[id]
@@ -1453,7 +1542,7 @@ setInterval(() => {
     updateParticleRequest(id)
   }
 
-  io.emit('updateFrontEnd',{backEndPlayers, backEndEnemies, backEndProjectiles, backEndObjects, backEndItems,backEndVehicles,backEndAirstrikes,backEndSoundRequest, backEndParticleRequest, backEndKillLog})
+  io.emit('updateFrontEnd',{backEndPlayers, backEndEnemies, backEndProjectiles, backEndObjects, backEndItems,backEndVehicles,backEndAirstrikes,backEndSoundRequest, backEndParticleRequest, backEndKillLog,backEndThrowables})
 }, TICKRATE)
 
 
@@ -1511,6 +1600,11 @@ function makeNdropItem(itemtype, name, groundloc,onground=true,variantNameGiven=
     color = placeableinfoGET.color // default drawing color if no image
 
     iteminfo = {variantName:variantNameGiven} 
+  } else if(itemtype==='throwable'){
+    const throwableinfoGET = throwableInfo[name]
+    size = throwableinfoGET.size
+    color = throwableinfoGET.color // default drawing color if no image
+    iteminfo = {} 
   } else{
     console.log("invalid itemtype requested in makeNdropItem")
     return -1
@@ -1877,6 +1971,81 @@ function borderCheckWithObjects(entity){
 
 }
 
+
+function throwable_reflection_with_Objects(entity){
+  if (!entity) {return} // no need to check
+  for (const id in backEndObjects){
+    const obj = backEndObjects[id]
+
+    if (obj.objecttype === 'wall'){
+      const objSides = obj.objectsideforbackend
+      const entitySides = {
+        left: entity.x - entity.radius,
+        right: entity.x + entity.radius,
+        top: entity.y - entity.radius,
+        bottom: entity.y + entity.radius
+      }
+      if (entity){// only when entity exists
+        // LR check (hori)
+        if (objSides.top < entity.y && entity.y < objSides.bottom){
+          if (objSides.centerx < entity.x && entitySides.left < objSides.right){ // restore position for backend
+            entity.velocity.x = -entity.velocity.x
+          }
+          if (objSides.centerx >= entity.x && entitySides.right > objSides.left){ // restore position for backend
+            entity.velocity.x = -entity.velocity.x
+          }
+        } 
+
+        //TB check (verti)
+        if (objSides.left < entity.x && entity.x < objSides.right){
+          if (objSides.centery < entity.y && entitySides.top < objSides.bottom){ // restore position for backend
+            entity.velocity.y = -entity.velocity.y
+          }
+          if (objSides.centery >= entity.y && entitySides.bottom > objSides.top){ // restore position for backend
+            entity.velocity.y = -entity.velocity.y
+          }
+        }
+      }
+    } 
+    
+    // if(obj.objecttype === 'hut' || obj.objecttype === 'barrel'){
+    //   const objinfoGET = obj.objectinfo
+    //   const radiusSum = objinfoGET.radius + entity.radius
+    //   const xDist = entity.x - objinfoGET.center.x
+    //   const yDist = entity.y - objinfoGET.center.y 
+    //   const Dist = Math.hypot(xDist,yDist)
+
+    //   if (Dist < radiusSum){
+    //     const angle = Math.atan2(
+    //       yDist,
+    //       xDist
+    //     )
+    //     entity.x = objinfoGET.center.x + Math.cos(angle) * radiusSum
+    //     entity.y = objinfoGET.center.y + Math.sin(angle) * radiusSum
+    //   }
+    // }
+  }
+  // vehicle hitbox check
+  // for (const id in backEndVehicles){
+  //   const obj = backEndVehicles[id]
+
+  //   const radiusSum = obj.radius + entity.radius - VehicleTolerance
+  //   const xDist = entity.x - obj.x
+  //   const yDist = entity.y - obj.y 
+  //   const Dist = Math.hypot(xDist,yDist)
+
+  //   if (Dist < radiusSum){
+  //     const angle = Math.atan2(
+  //       yDist,
+  //       xDist
+  //     )
+  //     entity.x = obj.x + Math.cos(angle) * radiusSum
+  //     entity.y = obj.y + Math.sin(angle) * radiusSum
+  //   }
+
+  // }
+
+}
 
 
 

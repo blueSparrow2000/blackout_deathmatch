@@ -35,6 +35,7 @@ const frontEndAirstrikes = {}
 const frontEndSoundRequest = {}
 const frontEndParticleRequest = {}
 const frontEndPing = {}
+const frontEndThrowables = {}
 
 
 // player info 
@@ -50,7 +51,7 @@ let fireTimeout
 let reloadTimeout
 let interactTimeout
 const INTERACTTIME = 300
-const ITEM_THAT_TAKESUP_INVENTORY = ['consumable', 'placeable','melee']
+const ITEM_THAT_TAKESUP_INVENTORY = ['consumable', 'placeable','melee','throwable']
 const UNDROPPABLE_ITEM = ['gun']
 
 const LobbyBGM = new Audio("/sound/Lobby.mp3")
@@ -58,7 +59,7 @@ const shothitsound = new Audio("/sound/shothit.mp3")
 const playerdeathsound = new Audio("/sound/playerdeath.mp3")
 const interactSound = new Audio("/sound/interact.mp3")
 const pingSound = new Audio("/sound/ping.mp3")
-
+const throwSound = new Audio("/sound/throw.mp3")
 
 const mapImage = new Image();
 mapImage.src = "/tiles1.png"
@@ -482,6 +483,30 @@ function shootCheck(event,holding = false){
     return
   }
 
+  if ((currentHoldingItem.itemtype==='throwable')){ // place
+    // dont need to check amount since we will delete item if eaten
+    const currentItemName = currentHoldingItem.name
+    const THROWRATE = 200
+
+    if (!listen) {return} // not ready to eat
+    listen = false // block
+
+    throwSound.play()
+
+    fireTimeout = window.setTimeout(function(){ if (!frontEndPlayer) {clearTimeout(fireTimeout);return}; socket.emit('throw',{
+      itemName: currentHoldingItem.name,
+      playerId: socket.id,
+      deleteflag: true, // current version, delete right away
+      itemid: currentHoldingItemId,
+      currentSlot: frontEndPlayer.currentSlot,
+      angle:getAngle(event),
+      holding,
+    }) ;
+      clearTimeout(fireTimeout);
+      listen = true},THROWRATE)
+    return
+  }
+
   if ((!(currentHoldingItem.itemtype==='melee')) && currentHoldingItem.ammo <= 0){ // no ammo - unable to shoot
     reloadGun() // auto reload when out of ammo
     return
@@ -868,7 +893,7 @@ function showInventory(){
 }
 
 // backend -> front end signaling
-socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles, backEndObjects, backEndItems,backEndVehicles,backEndAirstrikes,backEndSoundRequest,backEndParticleRequest, backEndKillLog})=>{
+socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles, backEndObjects, backEndItems,backEndVehicles,backEndAirstrikes,backEndSoundRequest,backEndParticleRequest, backEndKillLog, backEndThrowables})=>{
     /////////////////////////////////////////////////// 1.PLAYER //////////////////////////////////////////////////
     const myPlayerID = socket.id
 
@@ -1247,18 +1272,71 @@ socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles,
             //if (me.IsVisible(getChunk(me.x,me.y),getChunk(backendPR.x,backendPR.y),sightChunk)){
             const DIST = Math.hypot(backendPR.x - me.x, backendPR.y - me.y)
             if (DIST < 832){ // this is some number...
-              frontEndParticleRequest[id] = new Blood({
-                x:backendPR.x,
-                y:backendPR.y,
-                velocity: backendPR.velocity,
-                name: backendPR.particleName,
-              })
+              if (backendPR.particleName=='blood'){
+                frontEndParticleRequest[id] = new Blood({
+                  x:backendPR.x,
+                  y:backendPR.y,
+                  velocity: backendPR.velocity,
+                  name: backendPR.particleName,
+                })
+              } else if (backendPR.particleName=='smoke'){
+                frontEndParticleRequest[id] = new Smoke({
+                  x:backendPR.x,
+                  y:backendPR.y,
+                  velocity: backendPR.velocity,
+                  name: backendPR.particleName,
+                })
+              }
+
+              
             }
           }
       }
       // deleting is done only in the client side
     }
   }
+  /////////////////////////////////////////////////// 11. Throwables //////////////////////////////////////////////////
+  for (const id in backEndThrowables) {
+    const backEndThrowable = backEndThrowables[id]
+
+    if (!frontEndThrowables[id]){ // new projectile
+      frontEndThrowables[id] = new Throwable({
+        x: backEndThrowable.x, 
+        y: backEndThrowable.y, 
+        radius: backEndThrowable.radius, 
+        color: backEndThrowable.color, // only call when available
+        velocity: backEndThrowable.velocity,
+        type:backEndThrowable.type
+      })
+
+      // do not hear throw sound
+      // if (me){
+      //   const DISTANCE = Math.hypot(backEndThrowable.x - me.x, backEndThrowable.y - me.y)
+
+      //   let sightdistanceProjectile = (sightChunk+1)*TILE_SIZE + TILE_SIZE_HALF
+
+      //   let gunSoundRange = backEndThrowable.travelDistance
+      //   if (gunName && (DISTANCE-100 < thatGunSoundDistance) ){ 
+      //     playSoundEffectGun(gunName,DISTANCE,thatGunSoundDistance)
+      //   }
+      // }
+
+    } else { // already exist
+      let frontEndProj = frontEndThrowables[id]
+      frontEndProj.x = backEndThrowable.x
+      frontEndProj.y = backEndThrowable.y
+
+    }
+  
+  }
+  // remove deleted projectiles
+  for (const throwableId in frontEndThrowables){
+    if (!backEndThrowables[throwableId]){
+     delete frontEndThrowables[throwableId]
+    }
+  }
+
+  
 
 })
 
@@ -1515,6 +1593,14 @@ function loop(){
         }
     }
 
+    // THROWABLES
+    for (const id in frontEndThrowables){ 
+        const frontEndThrowable = frontEndThrowables[id]
+        if (frontEndPlayer.IsVisible(chunkInfo,getChunk(frontEndThrowable.x,frontEndThrowable.y),sightChunk) ){
+          frontEndThrowable.draw(canvas, camX, camY)
+        }
+    }
+
     // VEHICLES
     //canvas.strokeStyle = "black" // same stroke style with projectiles
     canvas.lineWidth = 4
@@ -1673,7 +1759,6 @@ function loop(){
 
 
     // Air strike
-    // canvas.globalAlpha = 0.9;
     for (const id in frontEndAirstrikes){ 
       const frontEndAirstrike = frontEndAirstrikes[id]
       if (frontEndPlayer.IsVisible(chunkInfo,getChunk(frontEndAirstrike.x,frontEndAirstrike.y),sightChunk+AIRSTRIKEDIST_ADDITIONAL) ){
@@ -1692,8 +1777,14 @@ function loop(){
       }
     }
 
+    //canvas.globalAlpha = 0.9;
+
+
+    canvas.restore();
+    // GLOBAL ALPHA CHANGES
+
+
     if (SHOWBLOODPARTICLEFRONTEND){
-      canvas.fillStyle = 'Crimson'
       for (const id in frontEndParticleRequest){ 
         const frontEndPR = frontEndParticleRequest[id]
         frontEndPR.draw(canvas, camX, camY)
@@ -1703,11 +1794,7 @@ function loop(){
       }
     }
 
-    canvas.restore();
-    // GLOBAL ALPHA CHANGES
-
-
-
+    
     if (frontEndPlayer.onBoard){ // show text message
       canvas.fillText('Press F to take off!', centerX - 110, centerY + PLAYERRADIUS*2)
     }
@@ -1955,6 +2042,16 @@ document.querySelector('#usernameForm').addEventListener('submit', (event) => {
       onground: backendItem.onground, 
       color: backendItem.color,
       iteminfo:{variantName:backendItem.iteminfo.variantName }
+    })
+    return true
+  } else if (backendItem.itemtype==='throwable') {
+    frontEndItems[id] = new throwableItem({groundx:backendItem.groundx, 
+      groundy:backendItem.groundy, 
+      size:backendItem.size, 
+      name:backendItem.name, 
+      onground: backendItem.onground, 
+      color: backendItem.color,
+      iteminfo:{}
     })
     return true
   } else{

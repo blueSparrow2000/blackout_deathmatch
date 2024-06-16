@@ -24,4 +24,24 @@ class Projectile {
     }
 
   }
+
+
+class Throwable {
+    constructor({x, y, radius,velocity, color = 'black',type}) {
+      this.x = x
+      this.y = y
+      this.radius = radius
+      this.color = color
+      this.velocity = velocity
+      this.type = type
+    }
+  
+    draw(canvas, camX, camY) {
+        canvas.fillStyle = this.color
+        canvas.beginPath()
+        canvas.arc(this.x-camX, this.y-camY, this.radius , 0, Math.PI * 2, false)
+        canvas.fill()
+    }
+
+}
   
