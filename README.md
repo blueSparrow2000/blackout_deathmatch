@@ -110,22 +110,17 @@ or
 / Added particle: Blood effect when enemy or player is hit by a projectile
 
 
-2024.6.16 Added throwables: grenade, smoke (grenade), flash / 
-To be updated: holding items including placable, consumable and throwable will be displayed
+2024.6.16 Added throwables: grenade, smoke (grenade), flash / Holding items including placable, consumable and throwable will be displayed
 
 
 
 Future plan:
-- grenade (throwable - countdown like traveldistance / not a projectile / explosion when deleted)
-- flash / smoke
-- wind update
 - Inventory selection show up
 - Gun recoil effect 
-- Consumables and placeable as a held item (draw when holding them!)
 - SONA (shows location of enemy in the map & direction for 1 seconds)
 - smarter AI (zombies shoots projectiles)
-
-
+- wind update
+- make melee weapon skin (katana etc.) + more powerful melee weapons!
 
 ## Various Tips
 - Maps should be square & need to specify tile number of one side 

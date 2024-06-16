@@ -21,7 +21,10 @@ class Player{
       this.canvasHeight = canvasHeight
       this.canvasWidth = canvasWidth
       this.skin = skin
-
+      // calculate relative rotation vector
+      this.start_offset =  16
+      this.rotation_alpha = Math.PI/6
+      
     }
     drawPlayer(canvas, skin, xloc, yloc){
       canvas.drawImage(skin, xloc, yloc)
@@ -184,6 +187,25 @@ class Player{
           canvas.lineTo(xReal + direction.x * itemlength, yReal + direction.y * itemlength)
           canvas.stroke()
           canvas.strokeStyle = 'black'
+        }
+
+      }else{ // draw circle 
+        
+        if (currentHoldingItem.name !== 'fist'){
+          let angle = Math.atan2(
+            (this.cursorPos.y) - this.canvasHeight/2,
+            (this.cursorPos.x) - this.canvasWidth/2
+          )
+          const direction_of_hand = { 
+            x: Math.cos(angle+this.rotation_alpha),
+            y: Math.sin(angle+this.rotation_alpha) 
+          }
+
+          canvas.fillStyle = currentHoldingItem.color
+          canvas.beginPath()
+          canvas.arc(this.x-camX + this.start_offset*direction_of_hand.x, this.y-camY+this.start_offset*direction_of_hand.y, 5 , 0, Math.PI * 2, false)
+          canvas.fill()
+          canvas.fillStyle = 'white'
         }
 
       }

@@ -109,7 +109,7 @@ class Particle {
     constructor({x, y, velocity, name}) {
       this.x = x
       this.y = y
-      this.color = 'gray'
+      this.color = 'Pastel Indigo'
       this.velocity = velocity
       this.name = name
       this.deleteRequest = false

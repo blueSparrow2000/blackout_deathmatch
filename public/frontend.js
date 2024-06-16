@@ -48,7 +48,7 @@ let winnerCeremony = false
 const PLAYERRADIUS = 16 
 
 // flash info
-const MAX_FLASH_DURATION = 1000
+const MAX_FLASH_DURATION = 180
 let flash_duration = MAX_FLASH_DURATION
 let flashed = false
 
@@ -816,7 +816,7 @@ socket.on('flash',({x,y})=>{
 
   // only if closer than sight distance & closer than 512 = scope 2's radius
   if (DISTANCE < Math.min(512, sight_dist_proj)){
-    canvas.fillStyle = 'white' // white fill
+    canvas.fillStyle = 'DeepSkyBlue' // white fill
     flashed = true // set the flag
     flash_duration = MAX_FLASH_DURATION // reset duration
   }

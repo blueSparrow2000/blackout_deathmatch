@@ -149,8 +149,8 @@ const meleeTypes = ['knife','bat']
 
 const consumableTypes = ['bandage','medkit']
 const consumableInfo = {
-'bandage': {size:{length:8, width:8}, color: 'gray', healamount: 2 },
-'medkit': {size:{length:12, width:12}, color: 'gray', healamount: PLAYERHEALTHMAX},
+'bandage': {size:{length:8, width:8}, color: '#99A3A3', healamount: 2 },
+'medkit': {size:{length:12, width:12}, color: '#560319', healamount: PLAYERHEALTHMAX},
 }
 
 const armorTypes = ['absorb', 'reduce']
@@ -167,15 +167,15 @@ const SHOOTER_VEHICLES_BACKEND = ["APC", "tank" ,"turret" ,"raptor","B2"]
 
 const placeableTypes = ['barrel', 'mine']
 const placeableInfo = {
-'barrel':{color: 'gray',size:{length:12, width:12},variantName:''},
-'mine':{color: 'gray',size:{length:12, width:12},variantName:''},
+'barrel':{color: '#0B6121',size:{length:12, width:12},variantName:''},
+'mine':{color: '#AEB404',size:{length:12, width:12},variantName:''},
 }
 
 const throwableTypes = ['grenade', 'smoke', 'flash']
 const throwableInfo = {
-  'grenade':{travelDistance:1000, speed:25, shake:1, color: 'black', size: {length:0, width:3}},
-  'smoke':{travelDistance:1000, speed:25,  shake:1, color: 'gray',  size: {length:0, width:3}},
-  'flash':{travelDistance:1000, speed:25, shake:1, color: 'white', size: {length:0, width:3}},
+  'grenade':{travelDistance:1000, speed:25, shake:1, color: '#2A0A12', size: {length:0, width:3}},
+  'smoke':{travelDistance:1000, speed:25,  shake:1, color: '#04B4AE',  size: {length:0, width:3}},
+  'flash':{travelDistance:1000, speed:25, shake:1, color: '#A9F5F2', size: {length:0, width:3}},
 }
 
 
@@ -1426,7 +1426,7 @@ setInterval(() => {
 
     throwGET.travelDistance -= myspeed
     // travel distance check for projectiles
-    if (throwGET.travelDistance <= 0 || myspeed<=1){
+    if (throwGET.travelDistance <= 0 || myspeed<=2){
       // console.log(throwGET.travelDistance,myspeed)
       // THROWABLEDELETED = true
       safeDeleteThrowable(id)
