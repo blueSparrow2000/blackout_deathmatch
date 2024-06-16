@@ -33,6 +33,8 @@ or
 
 - nodemon src/backend.js
 
+- nodemon ./src/backend.js
+
 
 ## How to join the server
  - on hosting device
@@ -115,7 +117,7 @@ Future plan:
 - Inventory selection show up
 - Gun recoil effect 
 - Consumables and placeable as a held item (draw when holding them!)
-- reacon (shows location of enemy in the map & direction for 1 seconds)
+- SONA (shows location of enemy in the map & direction for 1 seconds)
 - smarter AI (zombies shoots projectiles)
 
 

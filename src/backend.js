@@ -36,6 +36,7 @@ const io = new Server(httpServer);
 let backEndPlayers = {}
 let backEndEnemies = {}
 let backEndProjectiles = {}
+let backEndThrowables = {}
 let backEndItems = {}
 let backEndVehicles = {}
 backEndItems[0] = {
@@ -49,6 +50,7 @@ let backEndKillLog = []
 
 let enemyId = 0
 let projectileId = 0
+let throwableId = 0
 let itemsId = 0 
 let objectId = 0
 let vehicleId = 0
@@ -120,7 +122,7 @@ const gunInfo = {
     'ak47':{travelDistance:704, damage: 1, shake:1, num: 1, fireRate: 110, projectileSpeed:21, magSize:30, reloadTime: 2000, ammotype:'5mm', size: {length:28, width:3}}, 
     'FAMAS':{travelDistance:576, damage: 1, shake:2, num: 1, fireRate: 90, projectileSpeed:20, magSize: 30, reloadTime: 3200, ammotype:'5mm', size: {length:22, width:3}}, 
 
-    's686':{travelDistance:256, damage: 1, shake:4, num: 5, fireRate: 180, projectileSpeed:10, magSize:2, reloadTime: 2500, ammotype:'12G', size: {length:13, width:5}},
+    's686':{travelDistance:256, damage: 1, shake:4, num: 6, fireRate: 180, projectileSpeed:10, magSize:2, reloadTime: 2500, ammotype:'12G', size: {length:13, width:5}},
     'DBS':{travelDistance:320, damage: 1, shake:2, num: 3, fireRate: 400, projectileSpeed:13, magSize:14, reloadTime: 6000, ammotype:'12G', size: {length:16, width:5}},
     'usas12':{travelDistance:256, damage: 0, shake:1, num: 1, fireRate: 260, projectileSpeed:14, magSize:5, reloadTime: 2800, ammotype:'12G', size: {length:18, width:4}},
     
@@ -370,6 +372,28 @@ function getCurItem(currentPlayer){
 function get_player_center_mouse_distance(mousePos, centerX, centerY){
   return Math.hypot(mousePos.x - centerX,mousePos.y - centerY)
 }
+
+// function addThrowable(angle,playerID,location,startDistance){
+//   throwableId++
+//   const guninfoGET = gunInfo[currentGun]
+//   let  shakeProj = guninfoGET.shake
+
+//   const bulletSpeed = guninfoGET.projectileSpeed
+//   const velocity = { // with shake!
+//     x: Math.cos(angle) * bulletSpeed + (Math.random()-0.5) * shakeProj,
+//     y: Math.sin(angle) * bulletSpeed + (Math.random()-0.5) * shakeProj
+//   }
+//   const radius = 10
+
+//   let travelDistance = guninfoGET.travelDistance
+//   const projDamage =  guninfoGET.damage
+
+//   let color = 'black'
+
+//   backEndThrowables[projectileId] = {
+//       x:location.x, y:location.y,radius,velocity, speed:bulletSpeed, playerId: playerID, gunName:currentGun, travelDistance, projDamage, color
+//     }
+// }
 
 function addProjectile(angle,currentGun,playerID,location,startDistance,holding=false){
   projectileId++
