@@ -110,6 +110,11 @@ or
 / Added particle: Blood effect when enemy or player is hit by a projectile
 
 
+2024.6.16 Added throwables: grenade, smoke (grenade), flash / 
+To be updated: holding items including placable, consumable and throwable will be displayed
+
+
+
 Future plan:
 - grenade (throwable - countdown like traveldistance / not a projectile / explosion when deleted)
 - flash / smoke

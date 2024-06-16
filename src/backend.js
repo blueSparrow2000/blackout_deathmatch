@@ -415,7 +415,7 @@ function safeDeleteThrowable(throwID){
   if (backEndThrowable.type==='grenade'){
     explosion(backEndThrowable,24,playerID=backEndThrowable.playerId,shockWave=false,small = false)
   } else if(backEndThrowable.type==='flash'){
-    // make a flash screen
+    io.emit('flash',{x:backEndThrowable.x, y:backEndThrowable.y}) // send location
 
   } else if(backEndThrowable.type==='smoke'){
     // deploy a smoke drawable
@@ -896,6 +896,7 @@ async function main(){
                 skin:Myskin,
                 onBoard:false,
                 strikeID:-1,
+                flashed:false,
 
             };
             USERCOUNT[0]++;

@@ -46,6 +46,13 @@ const AIRSTRIKEDIST_ADDITIONAL = 8 // additional distance to see the airdrop (+3
 let winnerCeremony = false
 
 const PLAYERRADIUS = 16 
+
+// flash info
+const MAX_FLASH_DURATION = 1000
+let flash_duration = MAX_FLASH_DURATION
+let flashed = false
+
+
 // semaphores
 let fireTimeout
 let reloadTimeout
@@ -796,6 +803,28 @@ function interactItem(itemId,backEndItems){
     }}, INTERACTTIME)
 }
 
+
+// flash
+socket.on('flash',({x,y})=>{
+  if (!frontEndPlayer){
+    return
+  }
+  // calculate flash distance
+  const DISTANCE = Math.hypot(x - frontEndPlayer.x, y - frontEndPlayer.y)
+
+  const sight_dist_proj = (sightChunk+1)*TILE_SIZE
+
+  // only if closer than sight distance & closer than 512 = scope 2's radius
+  if (DISTANCE < Math.min(512, sight_dist_proj)){
+    canvas.fillStyle = 'white' // white fill
+    flashed = true // set the flag
+    flash_duration = MAX_FLASH_DURATION // reset duration
+  }
+
+  
+})
+
+
 // iteract
 socket.on('interact',({backEndItems,backEndVehicles})=>{
     if (!frontEndPlayer){return}
@@ -1329,13 +1358,12 @@ socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles,
     }
   
   }
-  // remove deleted projectiles
+  // remove deleted
   for (const throwableId in frontEndThrowables){
     if (!backEndThrowables[throwableId]){
      delete frontEndThrowables[throwableId]
     }
-  }
-
+  } 
   
 
 })
@@ -1513,6 +1541,18 @@ function loop(){
 
         window.requestAnimationFrame(loop);
         return
+    }
+
+    if (flashed){
+      // pass : draw nothing!
+      flash_duration -= 1
+      if (flash_duration<0){
+        flashed = false
+        flash_duration = MAX_FLASH_DURATION
+      }
+      canvas.fillRect(0,0,canvasEl.width, canvasEl.height)  
+      window.requestAnimationFrame(loop);
+      return
     }
 
 
@@ -1794,7 +1834,7 @@ function loop(){
       }
     }
 
-    
+
     if (frontEndPlayer.onBoard){ // show text message
       canvas.fillText('Press F to take off!', centerX - 110, centerY + PLAYERRADIUS*2)
     }
