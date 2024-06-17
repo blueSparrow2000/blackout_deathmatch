@@ -78,6 +78,9 @@ or
 <p align="center">map: MilitaryBase (Comming Soon!)<br /></p>
 
 
+![interface](../main/run_images/minimap_MilitaryBase.png)
+
+
  ## Version history
 2024.2.3~2024.2.12 Basic game mechanics
 
