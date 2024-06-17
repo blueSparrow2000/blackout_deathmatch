@@ -116,7 +116,7 @@ or
 2024.6.16 Added throwables: grenade, smoke (grenade), flash / Holding items including placable, consumable and throwable will be displayed
 
 
-2024.6.17 Added new map: Militaray base
+2024.6.17 Added new map: Military base
 
 
 
