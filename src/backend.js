@@ -2017,6 +2017,55 @@ function makeHouse_Courtyard(location){ // location given is top left inner corn
   }
 }
 
+function makeHouse_CommandCenter(location){ // location given is
+  const WALLWIDTH_HALF = 10
+  const WALLWIDTH = WALLWIDTH_HALF*2
+
+  const houseRows = 6
+  const houseCols = 6
+
+  // adjust to have location to top left tile
+  const x = location.x - TILE_SIZE*5
+  const y = location.y - TILE_SIZE*5
+
+  for (let i=0;i<2;i++){ // both sides
+    for (let j=0;j<houseCols;j++){
+      one_tile_wall_horizontal({x: x+TILE_SIZE*j , y: y+i*houseRows*TILE_SIZE})
+    }
+
+    for (let j=0;j<houseRows;j++){
+      if (i===0 && j===2){
+        // door here
+      } else{
+        one_tile_wall_vertical({x: x+i*houseCols*TILE_SIZE , y: y+TILE_SIZE*j})
+      }
+
+    }
+
+  }
+}
+
+function makeHouse_Barracks(location){ // location given is
+}
+
+function makeHouse_MedicCenter(location){ // location given is
+}
+
+function makeHouse_Tanks(location){ // location given is
+}
+
+function makeHouse_Armory(location){ // location given is
+}
+
+function makeHouse_Guarage(location){ // location given is
+}
+
+function makeHouse_Cargo(location){ // location given is
+}
+
+function makeHouse_Hangar(location){ // location given is
+}
+
 
 function safeDeleteObject(id){
   //console.log(`obj removed ID: ${id}`)
