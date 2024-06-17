@@ -113,8 +113,12 @@ or
 2024.6.16 Added throwables: grenade, smoke (grenade), flash / Holding items including placable, consumable and throwable will be displayed
 
 
+2024.6.17 Added new map: Militaray base
+
+
 
 Future plan:
+- water slowdown effect / vehicle stop
 - Inventory selection show up
 - Gun recoil effect 
 - SONA (shows location of enemy in the map & direction for 1 seconds)

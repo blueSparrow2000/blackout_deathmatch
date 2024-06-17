@@ -1,4 +1,5 @@
-f = open("./locations.txt", 'r')
+# f = open("./sahara.txt", 'r')
+f = open("./MB.txt", 'r')
 lines = f.readlines()
 
 LocationName = ""

@@ -49,7 +49,7 @@ class Hut extends ObjectEntity {
 
 
 let placeableObjectImages = {}
-const placeableObjectKeys = ['SaharaBarrel','barrel','mine','SaharaMine']
+const placeableObjectKeys = ['Saharabarrel','barrel','mine','Saharamine','MilitaryBasebarrel','MilitaryBasemine']
 for (let i=0;i<placeableObjectKeys.length;i++){
   const placeableObjectkey = placeableObjectKeys[i]
   placeableObjectImages[placeableObjectkey] = new Image()

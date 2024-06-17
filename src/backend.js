@@ -8,8 +8,9 @@ const SHOWBLOODPARTICLE = true
 
 ///////////////////////////////////// MAP CONFIGURATION /////////////////////////////////////
 const MAPDICT = {'Wilderness':30, 'Sahara':50, 'MilitaryBase':100} // mapName : map tile number
-let MAPNAME = 'Sahara' // 'Wilderness' //'Sahara' 
+let MAPNAME = 'MilitaryBase' //'Sahara' //   'Wilderness' //'Sahara' 
 let MAPTILENUM = MAPDICT[MAPNAME] // can vary, but map is SQUARE!
+const variantMapName = ['Sahara','MilitaryBase']
 ///////////////////////////////////// MAP CONFIGURATION /////////////////////////////////////
 
 // map info
@@ -61,7 +62,8 @@ let ParticleRequestID = 0
 // player attributes
 const INVENTORYSIZE = 4
 const PLAYERRADIUS = 16 
-const PLAYERSPEED = 2 // pixel
+const PLAYERSPEED = 16//2 // pixel
+const PLAYERSPEED_ONWATER = 1
 const PLAYERHEALTH = 8
 const PLAYERHEALTHMAX = 8
 const GUNHEARRANGE = 700
@@ -163,7 +165,7 @@ const scopeTypes = ['1','2'] // currently available scope!
 
 const vehicleTypes = ['car','Fennek','APC', 'tank', 'turret', 'raptor','B2']
 const SHOOTER_VEHICLES_BACKEND = ["APC", "tank" ,"turret" ,"raptor","B2"]
-
+const FLYING_VEHICLES = ["raptor","B2"]
 
 const placeableTypes = ['barrel', 'mine']
 const placeableInfo = {
@@ -173,9 +175,9 @@ const placeableInfo = {
 
 const throwableTypes = ['grenade', 'smoke', 'flash']
 const throwableInfo = {
-  'grenade':{travelDistance:1000, speed:25, shake:1, color: '#2A0A12', size: {length:0, width:3}},
-  'smoke':{travelDistance:1000, speed:25,  shake:1, color: '#04B4AE',  size: {length:0, width:3}},
-  'flash':{travelDistance:1000, speed:25, shake:1, color: '#A9F5F2', size: {length:0, width:3}},
+  'grenade':{travelDistance:1200, speed:21, shake:1, color: '#2A0A12', size: {length:0, width:3}},
+  'smoke':{travelDistance:1200, speed:21,  shake:1, color: '#B6B6B4',  size: {length:0, width:3}},
+  'flash':{travelDistance:1200, speed:21, shake:1, color: '#E0FFFF', size: {length:0, width:3}},
 }
 
 
@@ -352,6 +354,9 @@ if (GROUNDITEMFLAG){
   else if (MAPNAME==='Sahara' && ENTITYDISTRIBUTIONS[ENTITYDISTRIBUTION_MARK]==="battleRoyale"){
     resetMap('Sahara')
   }
+  else if (MAPNAME==='MilitaryBase' && ENTITYDISTRIBUTIONS[ENTITYDISTRIBUTION_MARK]==="battleRoyale"){
+    resetMap('MilitaryBase')
+  }
 }
 
 
@@ -391,7 +396,7 @@ function addThrowable(angle,playerID,location, type='grenade',holding=false){
 
   const thisPlayer = backEndPlayers[playerID]
   // recalculate speed: max speed or player mouse pos
-  const max_mouse_distance = 50
+  const max_mouse_distance = 30
   speed = Math.min(speed, Math.max(0, get_player_center_mouse_distance(thisPlayer.mousePos, thisPlayer.canvasWidth/2, thisPlayer.canvasHeight/2)/max_mouse_distance))
 
   const velocity = { // with shake!
@@ -413,7 +418,8 @@ function safeDeleteThrowable(throwID){
   const backEndThrowable = backEndThrowables[throwID]
 
   if (backEndThrowable.type==='grenade'){
-    explosion(backEndThrowable,24,playerID=backEndThrowable.playerId,shockWave=false,small = false)
+    explosion(backEndThrowable,12,playerID=backEndThrowable.playerId,shockWave=true,small = false)
+    explosion(backEndThrowable,24,playerID=backEndThrowable.playerId,shockWave=false,small = false)    
   } else if(backEndThrowable.type==='flash'){
     io.emit('flash',{x:backEndThrowable.x, y:backEndThrowable.y}) // send location
 
@@ -566,6 +572,72 @@ function killAllPlayers(){
   }
 }
 
+// AUTO DROPPER
+function auto_dropper(TILESLOC_N_REQUEST){
+const mapDropKeys = Object.keys(TILESLOC_N_REQUEST)
+const ItemDictionary_For_Random = {'gun':gunTypes, 'scope':scopeTypes, 'consumable':consumableTypes,'melee':meleeTypes,'armor':armorTypes,'throwable':throwableTypes, 'placeable': placeableTypes}
+for (let i=0;i<mapDropKeys.length;i++){
+  const mapDropKey = mapDropKeys[i] // name of location
+  const tileloc_request = TILESLOC_N_REQUEST[mapDropKey] // info
+
+  if (tileloc_request.request[0]==="vehicle"){ // vehicle
+    if (tileloc_request.request[1]==='random'){
+      const maxVariationOfItem = vehicleTypes.length
+      const idxItem = Math.round(Math.random()*(maxVariationOfItem-1))
+      spawnVehicle(getCoordTilesCenter(tileloc_request),vehicleTypes[idxItem])
+
+    }else{ // specified
+      spawnVehicle(getCoordTilesCenter(tileloc_request),tileloc_request.request[1])
+    }
+    
+  } else if (tileloc_request.request[0]==="flare"){ 
+    if (tileloc_request.request[1]==='random'){
+      const maxVariationOfItem = flareTypes.length
+      const idxItem = Math.round(Math.random()*(maxVariationOfItem-1))
+      makeNdropItem('gun', 'flareGun', getCoordTilesCenter(tileloc_request),onground=true,variantNameGiven=flareTypes[idxItem]) //spawnVehicle(getCoordTilesCenter(tileloc_request),vehicleTypes[idxItem])
+
+    }else{ // specified
+      makeNdropItem('gun', 'flareGun', getCoordTilesCenter(tileloc_request),onground=true,variantNameGiven=tileloc_request.request[1]) //spawnVehicle(getCoordTilesCenter(tileloc_request),tileloc_request.request[1])
+    }
+
+  } else if (tileloc_request.request[0]==="placeable" && variantMapName.includes(MAPNAME)){ // only if in variant maps
+    if (tileloc_request.request[1]==='random'){
+      const maxVariationOfItem = placeableTypes.length
+      const idxItem = Math.round(Math.random()*(maxVariationOfItem-1))
+      makeNdropItem(tileloc_request.request[0], ItemList[idxItem],getCoordTilesCenter(tileloc_request),onground=true,variantNameGiven=`${MAPNAME}${ItemList[idxItem]}`) 
+
+    }else{ // specified
+      makeNdropItem(tileloc_request.request[0], tileloc_request.request[1],getCoordTilesCenter(tileloc_request),onground=true,variantNameGiven=`${MAPNAME}${tileloc_request.request[1]}`) 
+    }
+
+  } else{ // item
+
+    if (tileloc_request.request[1]==='random'){
+      const ItemList = ItemDictionary_For_Random[tileloc_request.request[0]]
+      const maxVariationOfItem = ItemList.length
+      const idxItem = Math.round(Math.random()*(maxVariationOfItem-1)) // first and last item has less prob! Must be at least 2
+      makeNdropItem(tileloc_request.request[0], ItemList[idxItem],getCoordTilesCenter(tileloc_request)) 
+      //console.log(tileloc_request.request[0], ItemList[idxItem],getCoordTilesCenter(tileloc_request))
+    } else{ // specified drop
+      makeNdropItem(tileloc_request.request[0], tileloc_request.request[1],getCoordTilesCenter(tileloc_request))
+      //console.log(tileloc_request.request[0], tileloc_request.request[1],getCoordTilesCenter(tileloc_request))
+    }
+  }
+}
+}
+
+const waterY1 = 50*TILE_SIZE
+const waterY2 = 60*TILE_SIZE
+const waterX1 = 46*TILE_SIZE
+const waterX2 = 49*TILE_SIZE
+function waterCheck(playerGET){ // for military map only
+  if ( (playerGET.x <= waterX1|| playerGET.x >= waterX2) && (waterY1 <= playerGET.y && playerGET.y <= waterY2) ){
+    return true
+  }
+  return false
+
+}
+
 function resetMap(MapNameGiven){
   if (MapNameGiven==='Sahara'){
     const TILESLOC_N_REQUEST = {
@@ -635,54 +707,22 @@ function resetMap(MapNameGiven){
     } 
   
     // AUTO DROPPER
-    const mapDropKeys = Object.keys(TILESLOC_N_REQUEST)
-    const ItemDictionary_For_Random = {'gun':gunTypes, 'scope':scopeTypes, 'consumable':consumableTypes,'melee':meleeTypes,'armor':armorTypes,}
-    for (let i=0;i<mapDropKeys.length;i++){
-      const mapDropKey = mapDropKeys[i] // name of location
-      const tileloc_request = TILESLOC_N_REQUEST[mapDropKey] // info
-  
-      if (tileloc_request.request[0]==="vehicle"){ // vehicle
-        if (tileloc_request.request[1]==='random'){
-          const maxVariationOfItem = vehicleTypes.length
-          const idxItem = Math.round(Math.random()*(maxVariationOfItem-1))
-          spawnVehicle(getCoordTilesCenter(tileloc_request),vehicleTypes[idxItem])
-  
-        }else{ // specified
-          spawnVehicle(getCoordTilesCenter(tileloc_request),tileloc_request.request[1])
-        }
-  
-      } else{ // item
-  
-        if (tileloc_request.request[1]==='random'){
-          const ItemList = ItemDictionary_For_Random[tileloc_request.request[0]]
-          const maxVariationOfItem = ItemList.length
-          const idxItem = Math.round(Math.random()*(maxVariationOfItem-1)) // first and last item has less prob! Must be at least 2
-          makeNdropItem(tileloc_request.request[0], ItemList[idxItem],getCoordTilesCenter(tileloc_request))
-          //console.log(tileloc_request.request[0], ItemList[idxItem],getCoordTilesCenter(tileloc_request))
-        } else{ // specified drop
-          makeNdropItem(tileloc_request.request[0], tileloc_request.request[1],getCoordTilesCenter(tileloc_request))
-          //console.log(tileloc_request.request[0], tileloc_request.request[1],getCoordTilesCenter(tileloc_request))
-        }
-  
-      }
-  
-    }
-    // AUTO DROPPER
-    
+    auto_dropper(TILESLOC_N_REQUEST)
+
     // MANUAL DROP
     // test feature
     makeNdropItem('scope', "3" ,getCoordTilesCenter({row:1,col:1})) // get with your own risk: will be laggy!
-    for (let i=0;i<5;i++){
-      makeNdropItem('throwable', "grenade" ,getCoordTilesCenter({row:1,col:2})) // get with your own risk: will be laggy!
-      makeNdropItem('throwable', "smoke" ,getCoordTilesCenter({row:1,col:3})) // get with your own risk: will be laggy!
-      makeNdropItem('throwable', "flash" ,getCoordTilesCenter({row:1,col:4})) // get with your own risk: will be laggy!
-    }
+    // for (let i=0;i<5;i++){
+    //   makeNdropItem('throwable', "grenade" ,getCoordTilesCenter({row:1,col:2})) // get with your own risk: will be laggy!
+    //   makeNdropItem('throwable', "smoke" ,getCoordTilesCenter({row:1,col:3})) // get with your own risk: will be laggy!
+    //   makeNdropItem('throwable', "flash" ,getCoordTilesCenter({row:1,col:4})) // get with your own risk: will be laggy!
+    // }
 
     // makeNdropItem('placeable', 'barrel' ,getCoordTilesCenter({row:2,col:3})) 
-    makeNdropItem('placeable', 'barrel' ,getCoordTilesCenter({row:2,col:4}),onground=true,variantNameGiven='SaharaBarrel') 
+    makeNdropItem('placeable', 'barrel' ,getCoordTilesCenter({row:2,col:4}),onground=true,variantNameGiven='Saharabarrel') 
    
     for (let i=0;i<2;i++){
-      makeNdropItem('placeable', 'mine' ,getCoordTilesCenter({row:47,col:2}),onground=true,variantNameGiven='SaharaMine') 
+      makeNdropItem('placeable', 'mine' ,getCoordTilesCenter({row:47,col:2}),onground=true,variantNameGiven='Saharamine') 
     }
     for (let i=0;i<2;i++){
       makeNdropItem('placeable', 'mine' ,getCoordTilesCenter({row:1,col:46}),onground=true,variantNameGiven='') 
@@ -704,7 +744,8 @@ function resetMap(MapNameGiven){
     makeHouse_36Tiles(getCoordTiles(TILESLOC_N_REQUEST['House_36TilesRoof1']))
     makeHouse_42Tiles(getCoordTiles(TILESLOC_N_REQUEST['House_42TilesRoof1']))
     makeHouse_Courtyard(getCoordTiles(TILESLOC_N_REQUEST['House_CourtyardCorner2'])) // top left inner corner
-  
+
+
   
     // Make custom vehicles
     // spawnVehicle(getCoordTilesCenter({row:46,col:1}),'car')
@@ -717,23 +758,108 @@ function resetMap(MapNameGiven){
     // spawnVehicle(getCoordTilesCenter({row:46,col:7}), 'turret')
   
   
+    // MAKE OBJECTS
     const BarrelRowNum = 2
     const BarrelColNum = 3
     
     for (let i=0;i<BarrelRowNum;i++){
       for (let j=0;j<BarrelColNum;j++){
-        makeObjects("barrel", BARREL_HEALTH, {center:getCoordTilesCenter({row: 6+i, col:1+j}), radius: BARREL_RADIUS, color:'gray',placerID:0}, givenname ='SaharaBarrel')
+        makeObjects("barrel", BARREL_HEALTH, {center:getCoordTilesCenter({row: 6+i, col:1+j}), radius: BARREL_RADIUS, color:'gray',placerID:0}, givenname ='Saharabarrel')
       }
     }
   
     for (let i=0;i<BarrelRowNum;i++){
       for (let j=0;j<BarrelColNum;j++){
-        makeObjects("barrel", BARREL_HEALTH, {center:getCoordTilesCenter({row: 40+i, col:1+j}), radius: BARREL_RADIUS, color:'gray',placerID:0}, givenname ='SaharaBarrel')
+        makeObjects("barrel", BARREL_HEALTH, {center:getCoordTilesCenter({row: 40+i, col:1+j}), radius: BARREL_RADIUS, color:'gray',placerID:0}, givenname ='Saharabarrel')
       }
     }
   
 
+  }else if (MapNameGiven=== 'MilitaryBase'){   
+    const TILESLOC_N_REQUEST = {
+      'WatchTower1':{row: 7, col:7, request:['vehicle','turret']},
+      'WatchTower2':{row: 7, col:77, request:['vehicle','turret']},
+      'WatchTower3':{row: 32, col:7, request:['vehicle','turret']},
+      'WatchTower4':{row: 32, col:77, request:['vehicle','turret']},
+      'WatchTower5':{row: 32, col:52, request:['vehicle','turret']},
+      'WatchTowerScope1':{row: 8, col:8, request:['scope','3']},
+      'WatchTowerScope2':{row: 8, col:76, request:['scope','3']},
+      'WatchTowerScope3':{row: 31, col:76, request:['scope','3']},
+      'WatchTowerScope4':{row: 31, col:52, request:['scope','3']},
+      'WatchTowerScope5':{row: 31, col:8, request:['scope','3']},
+      'HangarCargo1':{row: 84, col:13, request:['vehicle','raptor']},
+      'HangarCargo2':{row: 84, col:27, request:['vehicle','raptor']},
+      'HangarCargo3':{row: 81, col:21, request:['vehicle','raptor']},
+      'Cargo1':{row: 28, col:16, request:['vehicle','car']},
+      'Cargo2':{row: 28, col:23, request:['vehicle','car']},
+      'Cargo3':{row: 26, col:23, request:['vehicle','car']},
+      'Cargo4':{row: 26, col:16, request:['vehicle','car']},
+      'House_15TilesRoof1':{row: 65, col:22, request:['consumable','bandage']},
+      'House_15TilesRoof2':{row: 65, col:27, request:['consumable','bandage']},
+      'House_15TilesRoof3':{row: 65, col:32, request:['consumable','bandage']},
+      'House_15TilesRoof4':{row: 65, col:37, request:['consumable','bandage']},
+      'House_15TilesCenter1':{row: 63, col:21, request:['throwable','random']},
+      'House_15TilesCenter2':{row: 63, col:26, request:['throwable','random']},
+      'House_15TilesCenter3':{row: 63, col:31, request:['throwable','random']},
+      'House_15TilesCenter4':{row: 63, col:36, request:['throwable','random']},
+      'House_CourtyardCorner1':{row: 39, col:93, request:['consumable','medkit']},
+      'House_CourtyardCorner2':{row: 39, col:88, request:['consumable','medkit']},
+      'House_CourtyardCorner3':{row: 44, col:88, request:['consumable','medkit']},
+      'House_CourtyardCorner4':{row: 44, col:93, request:['consumable','medkit']},
+      'House_CourtyardCorner5':{row: 65, col:95, request:['consumable','medkit']},
+      'House_CourtyardCorner6':{row: 65, col:90, request:['consumable','medkit']},
+      'House_CourtyardCorner7':{row: 70, col:90, request:['consumable','medkit']},
+      'House_CourtyardCorner8':{row: 70, col:95, request:['consumable','medkit']},
+      'CourtyardCorner1':{row: 41, col:90, request:['scope','random']},
+      'CourtyardCorner2':{row: 41, col:91, request:['scope','random']},
+      'CourtyardCorner3':{row: 42, col:90, request:['scope','random']},
+      'CourtyardCorner4':{row: 42, col:91, request:['scope','random']},
+      'CourtyardCorner5':{row: 67, col:92, request:['scope','random']},
+      'CourtyardCorner6':{row: 67, col:93, request:['scope','random']},
+      'CourtyardCorner7':{row: 68, col:93, request:['scope','random']},
+      'CourtyardCorner8':{row: 68, col:92, request:['scope','random']},
+      'House_36TilesRoof1':{row: 95, col:95, request:['throwable','smoke']},
+      'House_36TilesItemPoints1':{row: 90, col:95, request:['armor','random']},
+      'House_36TilesItemPoints2':{row: 90, col:90, request:['armor','random']},
+      'House_36TilesItemPoints3':{row: 95, col:90, request:['armor','random']},
+      'House_42TilesRoof1':{row: 83, col:84, request:['throwable','flash']},
+      'House_42TilesItemPoints1':{row: 76, col:77, request:['armor','random']},
+      'House_42TilesItemPoints2':{row: 75, col:84, request:['armor','random']},
+    } 
+  
+    // AUTO DROPPER - GENERATE ITEMS / VEHICLES
+    auto_dropper(TILESLOC_N_REQUEST)
+
+
+    // MAKE HOUSES
+    for (let i=0;i<4;i++){
+      makeHouse_15Tiles(getCoordTiles(TILESLOC_N_REQUEST[`House_15TilesCenter${i+1}`]))
+    }
+    makeHouse_36Tiles(getCoordTiles(TILESLOC_N_REQUEST['House_36TilesRoof1']))
+    makeHouse_42Tiles(getCoordTiles(TILESLOC_N_REQUEST['House_42TilesRoof1']))
+    for (let i=0;i<2;i++){
+      makeHouse_Courtyard(getCoordTiles(TILESLOC_N_REQUEST[`House_CourtyardCorner${2+(i)*4}`])) // top left inner corner
+    }
+      
+    // MAKE OBJECTS
+    const BarrelRowNum = 2
+    const BarrelColNum = 3
+    
+    for (let i=0;i<BarrelRowNum;i++){
+      for (let j=0;j<BarrelColNum;j++){
+        makeObjects("barrel", BARREL_HEALTH, {center:getCoordTilesCenter({row: 6+i, col:1+j}), radius: BARREL_RADIUS, color:'gray',placerID:0}, givenname ='Saharabarrel')
+      }
+    }
+  
+    for (let i=0;i<BarrelRowNum;i++){
+      for (let j=0;j<BarrelColNum;j++){
+        makeObjects("barrel", BARREL_HEALTH, {center:getCoordTilesCenter({row: 40+i, col:1+j}), radius: BARREL_RADIUS, color:'gray',placerID:0}, givenname ='Saharabarrel')
+      }
+    }
+
   }
+
+ 
   
 }
 
@@ -897,6 +1023,7 @@ async function main(){
                 onBoard:false,
                 strikeID:-1,
                 flashed:false,
+                on_water:false,
 
             };
             USERCOUNT[0]++;
@@ -1202,15 +1329,44 @@ setInterval(() => {
   // update players - speed info
   for (const id in backEndPlayers){
     let playerGET = backEndPlayers[id]
+    const VID = playerGET.ridingVehicleID
 
     if (playerGET.onBoard){
       const planeLocation = backEndAirstrikes[playerGET.strikeID]
       playerGET.x = planeLocation.x
       playerGET.y = planeLocation.y
-    } else if (playerGET.ridingVehicleID>0){// riding something
+      //////////// WATER CHECKING /////////
+    } else if (MAPNAME==='MilitaryBase' && !playerGET.on_water && waterCheck(playerGET) && VID>0){//entering water with vehicle
+      if (!FLYING_VEHICLES.includes(backEndVehicles[VID].type)){
+        // getoff vehicle!
+        getOffVehicle(id,VID)
+        // playerGET.speed = PLAYERSPEED_ONWATER
+      }else{
+      /// same VID>0 case ///
+      playerGET.speed = Math.max(0, playerGET.speed - 0.1)
+      }
+      playerGET.on_water = true
+
+    } else if (MAPNAME==='MilitaryBase' && !playerGET.on_water && waterCheck(playerGET) && !(VID>0)){//entering water without vehicle
+      // playerGET.speed = PLAYERSPEED_ONWATER
+      playerGET.on_water = true
+
+    } else if (MAPNAME==='MilitaryBase' && playerGET.on_water && !waterCheck(playerGET)){// escaping water
+      // playerGET.speed = PLAYERSPEED
+      playerGET.on_water = false
+      ////////////// WATER CHECKING //////////
+    } else if (VID>0){// riding something
+      /// same VID>0 case ///
       // lower the speed!
       playerGET.speed = Math.max(0, playerGET.speed - 0.1)
-    } else { // not riding 
+    }else { // not riding 
+      ////////////// WATER CHECKING //////////
+      if (playerGET.on_water){
+        playerGET.speed = PLAYERSPEED_ONWATER
+      }else{
+        playerGET.speed = PLAYERSPEED
+      }
+      ////////////// WATER CHECKING //////////
       Moveplayer(playerGET, false, false, false, false)
     }
     playerGET.x = Math.round(playerGET.x)
@@ -1430,6 +1586,7 @@ setInterval(() => {
       // console.log(throwGET.travelDistance,myspeed)
       // THROWABLEDELETED = true
       safeDeleteThrowable(id)
+      continue
     } else if (throwGET.x - PROJECTILERADIUS >= MAPWIDTH ||
         throwGET.x + PROJECTILERADIUS <= 0 ||
         throwGET.y - PROJECTILERADIUS >= MAPHEIGHT ||
@@ -1438,6 +1595,7 @@ setInterval(() => {
       // boundary check for projectiles
       // THROWABLEDELETED = true
       safeDeleteThrowable(id)
+      continue
     }
 
   }

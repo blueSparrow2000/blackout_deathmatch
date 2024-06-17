@@ -15,6 +15,9 @@ const TILE_SIZE = TILE_SIZE_HALF*2 //128;
 let MAPTILENUM // can vary get from the server
 let MAPNAME // get from the server
 let WALLCOLOR = 'gray' // default
+const floor_of_house_tile_id = [50, 278, 280] 
+const ceiling_of_house_tile_id = [188, 277]
+
 
 //'PowderBlue' // glass color
 let SHOOTER_VEHICLES
@@ -67,9 +70,11 @@ const playerdeathsound = new Audio("/sound/playerdeath.mp3")
 const interactSound = new Audio("/sound/interact.mp3")
 const pingSound = new Audio("/sound/ping.mp3")
 const throwSound = new Audio("/sound/throw.mp3")
+const flashSound = new Audio("/sound/flash.mp3")
+
 
 const mapImage = new Image();
-mapImage.src = "/tiles1.png"
+mapImage.src =  "/military_base_tile.png" //"/tiles1.png" //"/military_base_tile.png" //
 
 const planeImage = new Image();
 planeImage.src = "/images/plane.png"
@@ -816,9 +821,17 @@ socket.on('flash',({x,y})=>{
 
   // only if closer than sight distance & closer than 512 = scope 2's radius
   if (DISTANCE < Math.min(512, sight_dist_proj)){
-    canvas.fillStyle = 'DeepSkyBlue' // white fill
+    // canvas.fillStyle = 'white'
+    // canvas.beginPath()
+    // canvas.arc(x-camX, y-camY, 100 , 0, Math.PI * 2, false)
+    // canvas.fill()
+
+    canvas.fillStyle = '#E0FFFF' // white fill
+
     flashed = true // set the flag
     flash_duration = MAX_FLASH_DURATION // reset duration
+    // flash sound effect
+    flashSound.play()
   }
 
   
@@ -1551,6 +1564,7 @@ function loop(){
         flash_duration = MAX_FLASH_DURATION
       }
       canvas.fillRect(0,0,canvasEl.width, canvasEl.height)  
+
       window.requestAnimationFrame(loop);
       return
     }
@@ -1568,12 +1582,12 @@ function loop(){
 
       const { id } =groundMap[chunkInfo.rowNum][chunkInfo.colNum]
       
-      if (!frontEndPlayer.getinhouse && id === 50 && !frontEndPlayer.onBoard){ //  get in house for the first time
+      if (!frontEndPlayer.getinhouse && (floor_of_house_tile_id.includes(id)) && !frontEndPlayer.onBoard){ //  get in house for the first time
         frontEndPlayer.getinhouse = true // prediction
         socket.emit('houseEnter')
         updateSightChunk(-1)
       }
-      if (frontEndPlayer.getinhouse && id !== 50){ // get out of the house for the first time
+      if (frontEndPlayer.getinhouse && (!floor_of_house_tile_id.includes(id))){ // get out of the house for the first time
         frontEndPlayer.getinhouse = false // prediction
         socket.emit('houseLeave')
         if (frontEndPlayer.wearingscopeID>0){// if scope
@@ -1735,7 +1749,7 @@ function loop(){
 
         if ((130 <= id && id <= 134) || id===107 ){ //opacity
           // not customed here
-        } else if(id === 188 || id === 50){ // ceiling of the house
+        } else if(floor_of_house_tile_id.includes(id) || ceiling_of_house_tile_id.includes(id) ){ // ceiling of the house 
           if (!frontEndPlayer.getinhouse){ // not in a house, draw ceiling
             canvas.drawImage(mapImage, 
               imageCol * TILE_SIZE,
