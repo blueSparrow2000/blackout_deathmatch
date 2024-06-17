@@ -176,7 +176,7 @@ const placeableInfo = {
 const throwableTypes = ['grenade', 'smoke', 'flash']
 const throwableInfo = {
   'grenade':{travelDistance:1200, speed:21, shake:1, color: '#2A0A12', size: {length:0, width:3}},
-  'smoke':{travelDistance:1200, speed:21,  shake:1, color: '#B6B6B4',  size: {length:0, width:3}},
+  'smoke':{travelDistance:600, speed:10,  shake:1, color: '#B6B6B4',  size: {length:0, width:3}},
   'flash':{travelDistance:1200, speed:21, shake:1, color: '#E0FFFF', size: {length:0, width:3}},
 }
 
@@ -2360,7 +2360,7 @@ function spawnVehicle(location, type='car'){ // currently only makes cars
     warningcolor = "SteelBlue"
     damage = 10 // bump into damage
     health = 40
-    speed = 10 // max speed
+    speed = 12 // max speed
     info = {turretName:"ak47"}
   } else if(type==='B2'){ // with turrets!
     radius = 28
@@ -2368,7 +2368,7 @@ function spawnVehicle(location, type='car'){ // currently only makes cars
     warningcolor = "PeachPuff"
     damage = 10 // bump into damage
     health = 50
-    speed = 8 
+    speed = 10 
     info = {turretName:"tankBuster"} // becareful not to shoot itself!
   }
 
