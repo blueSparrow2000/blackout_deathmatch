@@ -63,19 +63,19 @@ or
 
 ![interface](../main/run_images/ingame.png)
 
-<p align="center">map: Wilderness<br /></p>
+<p align="center">map: Wilderness [30 x 30] <br /></p>
 
 
 ![interface](../main/run_images/minimap_Wilderness_no_frame.png)
 
 
-<p align="center">map: Sahara<br /></p>
+<p align="center">map: Sahara [50 x 50] <br /></p>
 
 
 ![interface](../main/run_images/minimap_Sahara_no_frame.png)
 
 
-<p align="center">map: MilitaryBase (Comming Soon!)<br /></p>
+<p align="center">map: MilitaryBase [100 x 100]  (Comming Soon!)<br /></p>
 
 
 ![interface](../main/run_images/minimap_MilitaryBase.png)
