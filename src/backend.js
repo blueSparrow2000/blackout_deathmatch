@@ -8,7 +8,7 @@ const SHOWBLOODPARTICLE = true
 
 ///////////////////////////////////// MAP CONFIGURATION /////////////////////////////////////
 const MAPDICT = {'Wilderness':30, 'Sahara':50, 'MilitaryBase':100} // mapName : map tile number
-let MAPNAME = 'Sahara' //'MilitaryBase' //  'MilitaryBase' // //   'Wilderness' //'Sahara' 
+let MAPNAME = 'MilitaryBase' //  'Sahara' //'MilitaryBase' //    'Wilderness' //'Sahara' 
 let MAPTILENUM = MAPDICT[MAPNAME] // can vary, but map is SQUARE!
 const variantMapName = ['Sahara','MilitaryBase']
 ///////////////////////////////////// MAP CONFIGURATION /////////////////////////////////////
@@ -106,7 +106,7 @@ const gunInfo = {
     // 'GuideGun':{travelDistance:800, damage: 3, shake:0, num: 1, fireRate: 2100, projectileSpeed:6, magSize: 5, reloadTime: 1800, ammotype:'superconductor', size: {length:35, width:8}}, 
     'grenadeLauncher':{travelDistance:576, damage: 3, shake:0, num: 1, fireRate: 1600, projectileSpeed:13, magSize: 3, reloadTime: 1800, ammotype:'fragment', size: {length:25, width:4}}, 
     'fragment':{travelDistance:192, damage: 2, shake:3, num: 1, fireRate: 100, projectileSpeed:8, magSize: 5, reloadTime: 1400, ammotype:'fragment', size: {length:13, width:1}}, 
-    'tankBuster':{travelDistance:832, damage: 50, shake:0, num: 1, fireRate: 4000, projectileSpeed:10, magSize: 1, reloadTime: 6000, ammotype:'rocket', size: {length:35, width:4}}, 
+    'tankBuster':{travelDistance:704, damage: 50, shake:0, num: 1, fireRate: 4000, projectileSpeed:10, magSize: 1, reloadTime: 6000, ammotype:'rocket', size: {length:35, width:4}}, 
     'shockWave':{travelDistance:192, damage: 15, shake:6, num: 1, fireRate: 300, projectileSpeed:18, magSize: 1, reloadTime: 1400, ammotype:'shockWave', size: {length:14, width:2}}, 
     'flareGun':{travelDistance:320, damage: 0, shake:0, num: 1, fireRate: 1000, projectileSpeed:3, magSize: 1, reloadTime: 1000, ammotype:'red', size: {length:15, width:4}}, // default is red
     'explosion':{travelDistance:32, damage: 1, shake:3, num: 1, fireRate: 500, projectileSpeed:6, magSize:1, reloadTime: 1000, ammotype:'hard', size: {length:0, width:3}},
@@ -747,15 +747,15 @@ function resetMap(MapNameGiven){
 
 
   
-    // Make custom vehicles
-    spawnVehicle(getCoordTilesCenter({row:46,col:1}),'car')
-    spawnVehicle(getCoordTilesCenter({row:46,col:2}), 'tank')
-    // // these are for next map: military base
-    spawnVehicle(getCoordTilesCenter({row:46,col:3}), 'raptor')
-    spawnVehicle(getCoordTilesCenter({row:46,col:4}), 'B2')
-    spawnVehicle(getCoordTilesCenter({row:46,col:5}), 'Fennek')
-    spawnVehicle(getCoordTilesCenter({row:46,col:6}), 'APC')
-    spawnVehicle(getCoordTilesCenter({row:46,col:7}), 'turret')
+    // // Make custom vehicles
+    // spawnVehicle(getCoordTilesCenter({row:46,col:1}),'car')
+    // spawnVehicle(getCoordTilesCenter({row:46,col:2}), 'tank')
+    // // // these are for next map: military base
+    // spawnVehicle(getCoordTilesCenter({row:46,col:3}), 'raptor')
+    // spawnVehicle(getCoordTilesCenter({row:46,col:4}), 'B2')
+    // spawnVehicle(getCoordTilesCenter({row:46,col:5}), 'Fennek')
+    // spawnVehicle(getCoordTilesCenter({row:46,col:6}), 'APC')
+    // spawnVehicle(getCoordTilesCenter({row:46,col:7}), 'turret')
   
   
     // MAKE OBJECTS
@@ -792,6 +792,12 @@ function resetMap(MapNameGiven){
 'CommandCenterPoint3':{row: 11, col:15, request:['flare','random']},
 'CommandCenterPoint4':{row: 11, col:19, request:['flare','random']},
 'CommandCenterPoint5':{row: 17, col:17, request:['flare','random']},
+'Tanks1':{row: 7, col:32, request:['vehicle','tank']},
+'Tanks2':{row: 12, col:32, request:['vehicle','tank']},
+'Fenneks1':{row: 7, col:37, request:['vehicle','Fennek']},
+'Fenneks2':{row: 12, col:37, request:['vehicle','Fennek']},
+'APCs1':{row: 7, col:42, request:['vehicle','APC']},
+'APCs2':{row: 12, col:42, request:['vehicle','APC']},
 'HangarCargo1':{row: 84, col:13, request:['vehicle','raptor']},
 'HangarCargo2':{row: 84, col:27, request:['vehicle','raptor']},
 'HangarCargo3':{row: 81, col:21, request:['vehicle','raptor']},
@@ -834,7 +840,6 @@ function resetMap(MapNameGiven){
 'Bridge2':{row: 49, col:48, request:['throwable','random']},
 'Bridge3':{row: 60, col:46, request:['throwable','random']},
 'Bridge4':{row: 60, col:48, request:['throwable','random']},
-
     } 
   
     // AUTO DROPPER - GENERATE ITEMS / VEHICLES
@@ -1374,11 +1379,13 @@ setInterval(() => {
       playerGET.y = Math.round(planeLocation.y)      
     } 
     //////////// WATER CHECKING /////////
-    else if (MAPNAME==='MilitaryBase' && !playerGET.on_water && waterCheck(playerGET) && VID>0){//entering water with vehicle
+    else if (MAPNAME==='MilitaryBase'  && waterCheck(playerGET) && VID>0){//entering water with vehicle
       if (!FLYING_VEHICLES.includes(backEndVehicles[VID].type)){
         // getoff vehicle!
         getOffVehicle(id,VID)
         // playerGET.speed = PLAYERSPEED_ONWATER
+        waterLogVehicle(VID)
+        
       }
       playerGET.on_water = true
     } else if (MAPNAME==='MilitaryBase' && !playerGET.on_water && waterCheck(playerGET) && !(VID>0)){//entering water without vehicle
@@ -2518,6 +2525,11 @@ function getOnVehicle(playerID,vehicleID){
   backEndVehicles[vehicleID].occupied = true
   backEndVehicles[vehicleID].ridingPlayerID = playerID
   //console.log(`player ${playerID} got on ${vehicleID}`)
+}
+
+function waterLogVehicle(vehicleID){ // when on water, vehicle may never be used again
+  backEndVehicles[vehicleID].occupied = true
+  backEndVehicles[vehicleID].ridingPlayerID = -1
 }
 
 function getOffVehicle(playerID,vehicleID=-1){ // vehicleID should be given if player cannot give vehicle id (e.g. death)

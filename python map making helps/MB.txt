@@ -31,6 +31,16 @@ CommandCenterPoint - flare - random
 17, 17
 
 Tanks - vehicle - tank
+32, 7
+32, 12
+
+Fenneks - vehicle - Fennek
+37, 7
+37, 12
+
+APCs - vehicle - APC
+42, 7
+42, 12
 
 HangarCargo - vehicle - raptor
 13, 84
