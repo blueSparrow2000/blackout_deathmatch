@@ -138,4 +138,4 @@ Future plan:
 - minimap size should be fixed to 550 with frame(used in game) and 512 without frame(used for location calculation)
 - Decibel Amplification site online) https://www.mp3louder.com/ko/
 
-Tiled tip: If you hover over a tile and press ALT+C, tile (col,row) value is copied to a clipboard. Use it when map making!
+Tiled tip: If you hover over a tile and press ALT+C, tile (col,row) value is copied to a clipboard. Use it when map making! You can directly modify tile png file (military_base_tile) in the public & src directory for different texture pack! 
