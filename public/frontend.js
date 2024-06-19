@@ -46,7 +46,7 @@ let Myskin = 'default'
 let frontEndPlayer
 let listen = true // very important for event listener 
 const AIRSTRIKEDIST_ADDITIONAL = 8 // additional distance to see the airdrop (+3 is just enough to see it)
-let winnerCeremony = true//false
+let winnerCeremony = false
 
 const PLAYERRADIUS = 16 
 
