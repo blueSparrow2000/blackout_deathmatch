@@ -120,6 +120,8 @@ or
 2024.6.17 Added new map: Military base
 
 
+2024.6.19 Smooth vehicle movement
+
 
 Future plan:
 - water slowdown effect / vehicle stop

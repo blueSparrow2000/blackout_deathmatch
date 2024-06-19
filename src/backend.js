@@ -106,7 +106,7 @@ const gunInfo = {
     // 'GuideGun':{travelDistance:800, damage: 3, shake:0, num: 1, fireRate: 2100, projectileSpeed:6, magSize: 5, reloadTime: 1800, ammotype:'superconductor', size: {length:35, width:8}}, 
     'grenadeLauncher':{travelDistance:576, damage: 3, shake:0, num: 1, fireRate: 1600, projectileSpeed:13, magSize: 3, reloadTime: 1800, ammotype:'fragment', size: {length:25, width:4}}, 
     'fragment':{travelDistance:192, damage: 2, shake:3, num: 1, fireRate: 100, projectileSpeed:8, magSize: 5, reloadTime: 1400, ammotype:'fragment', size: {length:13, width:1}}, 
-    'tankBuster':{travelDistance:832, damage: 50, shake:0, num: 1, fireRate: 4000, projectileSpeed:8, magSize: 1, reloadTime: 6000, ammotype:'rocket', size: {length:35, width:4}}, 
+    'tankBuster':{travelDistance:832, damage: 50, shake:0, num: 1, fireRate: 4000, projectileSpeed:10, magSize: 1, reloadTime: 6000, ammotype:'rocket', size: {length:35, width:4}}, 
     'shockWave':{travelDistance:192, damage: 15, shake:6, num: 1, fireRate: 300, projectileSpeed:18, magSize: 1, reloadTime: 1400, ammotype:'shockWave', size: {length:14, width:2}}, 
     'flareGun':{travelDistance:320, damage: 0, shake:0, num: 1, fireRate: 1000, projectileSpeed:3, magSize: 1, reloadTime: 1000, ammotype:'red', size: {length:15, width:4}}, // default is red
     'explosion':{travelDistance:32, damage: 1, shake:3, num: 1, fireRate: 500, projectileSpeed:6, magSize:1, reloadTime: 1000, ammotype:'hard', size: {length:0, width:3}},
@@ -748,14 +748,14 @@ function resetMap(MapNameGiven){
 
   
     // Make custom vehicles
-    // spawnVehicle(getCoordTilesCenter({row:46,col:1}),'car')
-    // spawnVehicle(getCoordTilesCenter({row:46,col:2}), 'tank')
+    spawnVehicle(getCoordTilesCenter({row:46,col:1}),'car')
+    spawnVehicle(getCoordTilesCenter({row:46,col:2}), 'tank')
     // // these are for next map: military base
-    // spawnVehicle(getCoordTilesCenter({row:46,col:3}), 'raptor')
-    // spawnVehicle(getCoordTilesCenter({row:46,col:4}), 'B2')
-    // spawnVehicle(getCoordTilesCenter({row:46,col:5}), 'Fennek')
-    // spawnVehicle(getCoordTilesCenter({row:46,col:6}), 'APC')
-    // spawnVehicle(getCoordTilesCenter({row:46,col:7}), 'turret')
+    spawnVehicle(getCoordTilesCenter({row:46,col:3}), 'raptor')
+    spawnVehicle(getCoordTilesCenter({row:46,col:4}), 'B2')
+    spawnVehicle(getCoordTilesCenter({row:46,col:5}), 'Fennek')
+    spawnVehicle(getCoordTilesCenter({row:46,col:6}), 'APC')
+    spawnVehicle(getCoordTilesCenter({row:46,col:7}), 'turret')
   
   
     // MAKE OBJECTS
@@ -1001,6 +1001,8 @@ function Moveplayer(playerGIVEN, WW, AA, SS, DD){
       playerGIVEN.y = MAPHEIGHT - playerGIVEN.radius
     }
 
+    playerGIVEN.x = Math.round(playerGIVEN.x)
+    playerGIVEN.y = Math.round(playerGIVEN.y)
   }
   
 
@@ -1368,9 +1370,8 @@ setInterval(() => {
 
     if (playerGET.onBoard){
       const planeLocation = backEndAirstrikes[playerGET.strikeID]
-      playerGET.x = planeLocation.x
-      playerGET.y = planeLocation.y
-      
+      playerGET.x = Math.round(planeLocation.x)
+      playerGET.y = Math.round(planeLocation.y)      
     } 
     //////////// WATER CHECKING /////////
     else if (MAPNAME==='MilitaryBase' && !playerGET.on_water && waterCheck(playerGET) && VID>0){//entering water with vehicle
@@ -1378,12 +1379,8 @@ setInterval(() => {
         // getoff vehicle!
         getOffVehicle(id,VID)
         // playerGET.speed = PLAYERSPEED_ONWATER
-      }else{
-      /// same VID>0 case ///
-
       }
       playerGET.on_water = true
-
     } else if (MAPNAME==='MilitaryBase' && !playerGET.on_water && waterCheck(playerGET) && !(VID>0)){//entering water without vehicle
       // playerGET.speed = PLAYERSPEED_ONWATER
       playerGET.on_water = true
@@ -1393,12 +1390,7 @@ setInterval(() => {
       playerGET.on_water = false
 
     }
-        //   ////////////// WATER CHECKING //////////
-    else if (VID>0){// riding something
-      /// same VID>0 case ///
-      // lower the speed!
-    }else { // not riding 
-      ////////////// WATER CHECKING //////////
+    else { 
       if (playerGET.on_water){
         playerGET.speed = PLAYERSPEED_ONWATER
       }else{
@@ -1407,8 +1399,8 @@ setInterval(() => {
       ////////////// WATER CHECKING //////////
       Moveplayer(playerGET, false, false, false, false)
     }
-    playerGET.x = Math.round(playerGET.x)
-    playerGET.y = Math.round(playerGET.y)
+    // playerGET.x = Math.round(playerGET.x)
+    // playerGET.y = Math.round(playerGET.y)
 
   }
 
@@ -2202,17 +2194,38 @@ function borderCheckWithObjects(entity){
     
   }
 
+
   if (entity.entityType==="vehicle" ){
+    // for (const id in backEndVehicles){
+    //   const obj = backEndVehicles[id]
+  
+    //   if (entity.myID === id){
+    //     continue 
+    //   }
+      
+    //   const radiusSum2 = obj.radius + entity.radius - VehicleTolerance
+    //   const xDist = entity.x - obj.x
+    //   const yDist = entity.y - obj.y 
+    //   const Dist = Math.hypot(xDist,yDist)
+
+    //   if (Dist < radiusSum2){
+    //     const angle2 = Math.atan2(
+    //       yDist,
+    //       xDist
+    //     )
+    //     entity.x = obj.x + Math.cos(angle2) * radiusSum2
+    //     entity.y = obj.y + Math.sin(angle2) * radiusSum2
+    //   }
+    // }
     return
   }
+
   //vehicle hitbox check
   for (const id in backEndVehicles){
     const obj = backEndVehicles[id]
 
-    if (entity.entityType==="player" ){
-      if (entity.ridingVehicleID === id){
-        continue 
-      }
+    if (entity.entityType=== "player" && entity.ridingVehicleID === id){
+      continue 
     }
     const radiusSum = obj.radius + entity.radius - VehicleTolerance
     const xDist = entity.x - obj.x
@@ -2420,7 +2433,7 @@ function spawnVehicle(location, type='car'){ // currently only makes cars
   let damage = 5 // bump into damage
   let health = 30
   let speed = 6 // for a car
-  let acceleration = 0.2
+  let acceleration = 0.12
   let info = {}
   //let travelDistance = TILE_SIZE*100 // fuel etc ?
 
@@ -2433,7 +2446,7 @@ function spawnVehicle(location, type='car'){ // currently only makes cars
     damage = 10 // bump into damage
     health = 90
     speed = 4 
-    acceleration = 0.1
+    acceleration = 0.08
   } else if(type==='APC'){ // with turrets!
     radius = 30
     color = "OliveDrab"
@@ -2441,7 +2454,7 @@ function spawnVehicle(location, type='car'){ // currently only makes cars
     damage = 5 // bump into damage
     health = 60
     speed = 3
-    acceleration = 0.15
+    acceleration = 0.1
     info = {turretName:"FAMAS"}
   } else if(type==='tank'){ // with turrets!
     radius = 45
@@ -2450,7 +2463,7 @@ function spawnVehicle(location, type='car'){ // currently only makes cars
     damage = 10 // bump into damage
     health = 192
     speed = 1 
-    acceleration = 0.1
+    acceleration = 0.05
     info = {turretName:"grenadeLauncher"}
   } else if(type==='turret'){ // with turrets! - no sound effect
     radius = 52
@@ -2468,7 +2481,7 @@ function spawnVehicle(location, type='car'){ // currently only makes cars
     damage = 10 // bump into damage
     health = 40
     speed = 12 // max speed
-    acceleration = 0.5
+    acceleration = 0.18
     info = {turretName:"ak47"}
   } else if(type==='B2'){ // with turrets!
     radius = 28
@@ -2477,7 +2490,7 @@ function spawnVehicle(location, type='car'){ // currently only makes cars
     damage = 10 // bump into damage
     health = 50
     speed = 10 
-    acceleration = 0.4
+    acceleration = 0.14
     info = {turretName:"tankBuster"} // becareful not to shoot itself!
   }
 
@@ -2554,15 +2567,29 @@ function safeDeleteVehicle(vehicleid){
   delete backEndVehicles[vehicleid]
 }
 
+const vehicle_speed_tolerance = 0.01
 function updateVehiclePos(vehicle){
   const riderID = vehicle.ridingPlayerID
   const rider = backEndPlayers[riderID]
+
+  if (vehicle.v_x**2 + vehicle.v_y**2 === 0){ // 0 velocity then do nothing
+    return 
+  }
+
   vehicle.x = Math.round(vehicle.x + vehicle.v_x)
   vehicle.y = Math.round(vehicle.y + vehicle.v_y)
 
   // decelerate 
   vehicle.v_x = (vehicle.v_x>0) ? vehicle.v_x - vehicle.deceleration : vehicle.v_x + vehicle.deceleration
   vehicle.v_y = (vehicle.v_y>0) ? vehicle.v_y - vehicle.deceleration : vehicle.v_y + vehicle.deceleration
+
+  if (Math.abs(vehicle.v_x) < vehicle_speed_tolerance){
+    vehicle.v_x = 0
+  }
+  if (Math.abs(vehicle.v_y) < vehicle_speed_tolerance){
+    vehicle.v_y = 0
+  }
+
 
   // collision check
   // check boundary with objects also
