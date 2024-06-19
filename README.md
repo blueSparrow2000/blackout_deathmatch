@@ -13,6 +13,7 @@ Your gun changes each kill, getting harder to kill others!
 - line-circle-collision
 - tmx-parser
 - nodemon (optional)
+- npm install --save-optional bufferutil utf-8-validate
 
 Do: npm i tmx-parser
 

@@ -8,7 +8,7 @@ const SHOWBLOODPARTICLE = true
 
 ///////////////////////////////////// MAP CONFIGURATION /////////////////////////////////////
 const MAPDICT = {'Wilderness':30, 'Sahara':50, 'MilitaryBase':100} // mapName : map tile number
-let MAPNAME = 'MilitaryBase' //'Sahara' //   'Wilderness' //'Sahara' 
+let MAPNAME = 'MilitaryBase' //'Sahara' //  'MilitaryBase' // //   'Wilderness' //'Sahara' 
 let MAPTILENUM = MAPDICT[MAPNAME] // can vary, but map is SQUARE!
 const variantMapName = ['Sahara','MilitaryBase']
 ///////////////////////////////////// MAP CONFIGURATION /////////////////////////////////////
@@ -62,7 +62,7 @@ let ParticleRequestID = 0
 // player attributes
 const INVENTORYSIZE = 4
 const PLAYERRADIUS = 16 
-const PLAYERSPEED = 16//2 // pixel
+const PLAYERSPEED = 2 // pixel
 const PLAYERSPEED_ONWATER = 1
 const PLAYERHEALTH = 8
 const PLAYERHEALTHMAX = 8
@@ -82,7 +82,7 @@ const EXTREMEFRICTION = 0.88
 
 // enemy setting (manual)
 const SPAWNENEMYFLAG = true
-let ENEMYSPAWNRATE = 30000
+let ENEMYSPAWNRATE = 15000//30000
 let ENEMYNUM = 1
 let ENEMYCOUNT = 0
 
@@ -669,11 +669,11 @@ function resetMap(MapNameGiven){
       // 'RandomTreeLoc14':{row: 39, col:14, request:['gun','random']},
       // 'RandomTreeLoc15':{row: 42, col:13, request:['gun','random']},
       // 'RandomTreeLoc16':{row: 44, col:15, request:['gun','random']},
-      'House_15TilesRoof1':{row: 46, col:24, request:['consumable','bandage']},
-      'House_15TilesRoof2':{row: 46, col:29, request:['consumable','bandage']},
-      'House_15TilesRoof3':{row: 46, col:34, request:['consumable','bandage']},
-      'House_15TilesRoof4':{row: 46, col:39, request:['consumable','bandage']},
-      'House_15TilesRoof5':{row: 46, col:44, request:['consumable','bandage']},
+      'House_15TilesRoof1':{row: 46, col:24, request:['throwable','random']},
+      'House_15TilesRoof2':{row: 46, col:29, request:['throwable','random']},
+      'House_15TilesRoof3':{row: 46, col:34, request:['throwable','random']},
+      'House_15TilesRoof4':{row: 46, col:39, request:['throwable','random']},
+      'House_15TilesRoof5':{row: 46, col:44, request:['throwable','random']},
       'House_15TilesCenter1':{row: 44, col:23, request:['consumable','random']},
       'House_15TilesCenter2':{row: 44, col:28, request:['consumable','random']},
       'House_15TilesCenter3':{row: 44, col:33, request:['consumable','random']},
@@ -777,54 +777,64 @@ function resetMap(MapNameGiven){
 
   }else if (MapNameGiven=== 'MilitaryBase'){   
     const TILESLOC_N_REQUEST = {
-      'WatchTower1':{row: 7, col:7, request:['vehicle','turret']},
-      'WatchTower2':{row: 7, col:77, request:['vehicle','turret']},
-      'WatchTower3':{row: 32, col:7, request:['vehicle','turret']},
-      'WatchTower4':{row: 32, col:77, request:['vehicle','turret']},
-      'WatchTower5':{row: 32, col:52, request:['vehicle','turret']},
-      'WatchTowerScope1':{row: 8, col:8, request:['scope','3']},
-      'WatchTowerScope2':{row: 8, col:76, request:['scope','3']},
-      'WatchTowerScope3':{row: 31, col:76, request:['scope','3']},
-      'WatchTowerScope4':{row: 31, col:52, request:['scope','3']},
-      'WatchTowerScope5':{row: 31, col:8, request:['scope','3']},
-      'HangarCargo1':{row: 84, col:13, request:['vehicle','raptor']},
-      'HangarCargo2':{row: 84, col:27, request:['vehicle','raptor']},
-      'HangarCargo3':{row: 81, col:21, request:['vehicle','raptor']},
-      'Cargo1':{row: 28, col:16, request:['vehicle','car']},
-      'Cargo2':{row: 28, col:23, request:['vehicle','car']},
-      'Cargo3':{row: 26, col:23, request:['vehicle','car']},
-      'Cargo4':{row: 26, col:16, request:['vehicle','car']},
-      'House_15TilesRoof1':{row: 65, col:22, request:['consumable','bandage']},
-      'House_15TilesRoof2':{row: 65, col:27, request:['consumable','bandage']},
-      'House_15TilesRoof3':{row: 65, col:32, request:['consumable','bandage']},
-      'House_15TilesRoof4':{row: 65, col:37, request:['consumable','bandage']},
-      'House_15TilesCenter1':{row: 63, col:21, request:['throwable','random']},
-      'House_15TilesCenter2':{row: 63, col:26, request:['throwable','random']},
-      'House_15TilesCenter3':{row: 63, col:31, request:['throwable','random']},
-      'House_15TilesCenter4':{row: 63, col:36, request:['throwable','random']},
-      'House_CourtyardCorner1':{row: 39, col:93, request:['consumable','medkit']},
-      'House_CourtyardCorner2':{row: 39, col:88, request:['consumable','medkit']},
-      'House_CourtyardCorner3':{row: 44, col:88, request:['consumable','medkit']},
-      'House_CourtyardCorner4':{row: 44, col:93, request:['consumable','medkit']},
-      'House_CourtyardCorner5':{row: 65, col:95, request:['consumable','medkit']},
-      'House_CourtyardCorner6':{row: 65, col:90, request:['consumable','medkit']},
-      'House_CourtyardCorner7':{row: 70, col:90, request:['consumable','medkit']},
-      'House_CourtyardCorner8':{row: 70, col:95, request:['consumable','medkit']},
-      'CourtyardCorner1':{row: 41, col:90, request:['scope','random']},
-      'CourtyardCorner2':{row: 41, col:91, request:['scope','random']},
-      'CourtyardCorner3':{row: 42, col:90, request:['scope','random']},
-      'CourtyardCorner4':{row: 42, col:91, request:['scope','random']},
-      'CourtyardCorner5':{row: 67, col:92, request:['scope','random']},
-      'CourtyardCorner6':{row: 67, col:93, request:['scope','random']},
-      'CourtyardCorner7':{row: 68, col:93, request:['scope','random']},
-      'CourtyardCorner8':{row: 68, col:92, request:['scope','random']},
-      'House_36TilesRoof1':{row: 95, col:95, request:['throwable','smoke']},
-      'House_36TilesItemPoints1':{row: 90, col:95, request:['armor','random']},
-      'House_36TilesItemPoints2':{row: 90, col:90, request:['armor','random']},
-      'House_36TilesItemPoints3':{row: 95, col:90, request:['armor','random']},
-      'House_42TilesRoof1':{row: 83, col:84, request:['throwable','flash']},
-      'House_42TilesItemPoints1':{row: 76, col:77, request:['armor','random']},
-      'House_42TilesItemPoints2':{row: 75, col:84, request:['armor','random']},
+'WatchTower1':{row: 7, col:7, request:['vehicle','turret']},
+'WatchTower2':{row: 7, col:77, request:['vehicle','turret']},
+'WatchTower3':{row: 32, col:7, request:['vehicle','turret']},
+'WatchTower4':{row: 32, col:77, request:['vehicle','turret']},
+'WatchTower5':{row: 32, col:52, request:['vehicle','turret']},
+'WatchTowerScope1':{row: 8, col:8, request:['scope','3']},
+'WatchTowerScope2':{row: 8, col:76, request:['scope','3']},
+'WatchTowerScope3':{row: 31, col:76, request:['scope','3']},
+'WatchTowerScope4':{row: 31, col:52, request:['scope','3']},
+'WatchTowerScope5':{row: 31, col:8, request:['scope','3']},
+'CommandCenterPoint1':{row: 11, col:11, request:['flare','random']},
+'CommandCenterPoint2':{row: 11, col:23, request:['flare','random']},
+'CommandCenterPoint3':{row: 11, col:15, request:['flare','random']},
+'CommandCenterPoint4':{row: 11, col:19, request:['flare','random']},
+'CommandCenterPoint5':{row: 17, col:17, request:['flare','random']},
+'HangarCargo1':{row: 84, col:13, request:['vehicle','raptor']},
+'HangarCargo2':{row: 84, col:27, request:['vehicle','raptor']},
+'HangarCargo3':{row: 81, col:21, request:['vehicle','raptor']},
+'Cargo1':{row: 28, col:16, request:['vehicle','car']},
+'Cargo2':{row: 28, col:23, request:['vehicle','car']},
+'Cargo3':{row: 26, col:23, request:['vehicle','car']},
+'Cargo4':{row: 26, col:16, request:['vehicle','car']},
+'House_15TilesRoof1':{row: 65, col:22, request:['throwable','random']},
+'House_15TilesRoof2':{row: 65, col:27, request:['throwable','random']},
+'House_15TilesRoof3':{row: 65, col:32, request:['throwable','random']},
+'House_15TilesRoof4':{row: 65, col:37, request:['throwable','random']},
+'House_15TilesCenter1':{row: 63, col:21, request:['consumable','bandage']},
+'House_15TilesCenter2':{row: 63, col:26, request:['consumable','bandage']},
+'House_15TilesCenter3':{row: 63, col:31, request:['consumable','bandage']},
+'House_15TilesCenter4':{row: 63, col:36, request:['consumable','bandage']},
+'House_CourtyardCorner1':{row: 39, col:93, request:['consumable','medkit']},
+'House_CourtyardCorner2':{row: 39, col:88, request:['consumable','medkit']},
+'House_CourtyardCorner3':{row: 44, col:88, request:['consumable','medkit']},
+'House_CourtyardCorner4':{row: 44, col:93, request:['consumable','medkit']},
+'House_CourtyardCorner5':{row: 65, col:95, request:['consumable','medkit']},
+'House_CourtyardCorner6':{row: 65, col:90, request:['consumable','medkit']},
+'House_CourtyardCorner7':{row: 70, col:90, request:['consumable','medkit']},
+'House_CourtyardCorner8':{row: 70, col:95, request:['consumable','medkit']},
+'CourtyardCorner1':{row: 41, col:90, request:['scope','random']},
+'CourtyardCorner2':{row: 41, col:91, request:['scope','random']},
+'CourtyardCorner3':{row: 42, col:90, request:['scope','random']},
+'CourtyardCorner4':{row: 42, col:91, request:['scope','random']},
+'CourtyardCorner5':{row: 67, col:92, request:['scope','random']},
+'CourtyardCorner6':{row: 67, col:93, request:['scope','random']},
+'CourtyardCorner7':{row: 68, col:93, request:['scope','random']},
+'CourtyardCorner8':{row: 68, col:92, request:['scope','random']},
+'House_36TilesRoof1':{row: 95, col:95, request:['throwable','smoke']},
+'House_36TilesItemPoints1':{row: 90, col:95, request:['armor','random']},
+'House_36TilesItemPoints2':{row: 90, col:90, request:['armor','random']},
+'House_36TilesItemPoints3':{row: 95, col:90, request:['armor','random']},
+'House_42TilesRoof1':{row: 83, col:84, request:['throwable','flash']},
+'House_42TilesItemPoints1':{row: 76, col:77, request:['armor','random']},
+'House_42TilesItemPoints2':{row: 75, col:84, request:['armor','random']},
+'Bridge1':{row: 49, col:46, request:['throwable','random']},
+'Bridge2':{row: 49, col:48, request:['throwable','random']},
+'Bridge3':{row: 60, col:46, request:['throwable','random']},
+'Bridge4':{row: 60, col:48, request:['throwable','random']},
+
     } 
   
     // AUTO DROPPER - GENERATE ITEMS / VEHICLES
@@ -840,6 +850,7 @@ function resetMap(MapNameGiven){
     for (let i=0;i<2;i++){
       makeHouse_Courtyard(getCoordTiles(TILESLOC_N_REQUEST[`House_CourtyardCorner${2+(i)*4}`])) // top left inner corner
     }
+    makeBridge(getCoordTiles(TILESLOC_N_REQUEST['Bridge1']))
       
     // MAKE OBJECTS
     const BarrelRowNum = 2
@@ -974,10 +985,11 @@ async function main(){
     const {ground2D, decals2D} = await loadMap(MAPNAME);
 
     io.on("connect", (socket) => {
+      socket.request=null; // save memory
+
         console.log("user connected",socket.id);
-        socket.emit('map',{loadedMap:{ground:ground2D, decals: decals2D},MAPTILENUMBACKEND: MAPTILENUM, MAPNAMEBACKEND:MAPNAME})
         // give server info to a frontend
-        socket.emit('serverVars', {gunInfo, consumableInfo,SHOOTER_VEHICLES_BACKEND, lastWinnerName})
+        socket.emit('serverVars', {loadedMap:{ground:ground2D, decals: decals2D},MAPTILENUMBACKEND: MAPTILENUM, MAPNAMEBACKEND:MAPNAME, gunInfo, consumableInfo,SHOOTER_VEHICLES_BACKEND, lastWinnerName})
 
         // remove player when disconnected (F5 etc.)
         socket.on('disconnect',(reason) => {
@@ -1335,8 +1347,10 @@ setInterval(() => {
       const planeLocation = backEndAirstrikes[playerGET.strikeID]
       playerGET.x = planeLocation.x
       playerGET.y = planeLocation.y
-      //////////// WATER CHECKING /////////
-    } else if (MAPNAME==='MilitaryBase' && !playerGET.on_water && waterCheck(playerGET) && VID>0){//entering water with vehicle
+      
+    } 
+    //////////// WATER CHECKING /////////
+    else if (MAPNAME==='MilitaryBase' && !playerGET.on_water && waterCheck(playerGET) && VID>0){//entering water with vehicle
       if (!FLYING_VEHICLES.includes(backEndVehicles[VID].type)){
         // getoff vehicle!
         getOffVehicle(id,VID)
@@ -1354,8 +1368,10 @@ setInterval(() => {
     } else if (MAPNAME==='MilitaryBase' && playerGET.on_water && !waterCheck(playerGET)){// escaping water
       // playerGET.speed = PLAYERSPEED
       playerGET.on_water = false
-      ////////////// WATER CHECKING //////////
-    } else if (VID>0){// riding something
+
+    }
+        //   ////////////// WATER CHECKING //////////
+    else if (VID>0){// riding something
       /// same VID>0 case ///
       // lower the speed!
       playerGET.speed = Math.max(0, playerGET.speed - 0.1)
@@ -1850,6 +1866,20 @@ function one_tile_wall_horizontal(location){
   const WALLWIDTH = WALLWIDTH_HALF*2
   makeObjects("wall", 30, {orientation: 'horizontal',start:{x:location.x-WALLWIDTH_HALF,y:location.y}, end:{x:location.x+TILE_SIZE+WALLWIDTH_HALF,y:location.y}, width:WALLWIDTH, color: 'gray'})
 }
+
+
+function makeBridge(location){ // location given is top left
+  // adjust to have location to top left tile
+  const x = location.x
+  const y = location.y
+  const wall_length = 12
+  for (let i=0;i<2;i++){
+    for (let j=0;j<wall_length;j++){
+      one_tile_wall_vertical({x: x+i*3*TILE_SIZE , y: y+TILE_SIZE*j})
+    }
+  }
+}
+
 
 function makeHouse_15Tiles(location){ // location given is center tile's top left corner for these houses
   const WALLWIDTH_HALF = 10

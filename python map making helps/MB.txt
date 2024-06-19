@@ -24,6 +24,11 @@ Armory - armor - random
 MedicCenter - consumable - random
 
 CommandCenterPoint - flare - random
+11, 11
+23, 11
+15, 11
+19, 11
+17, 17
 
 Tanks - vehicle - tank
 
@@ -44,13 +49,13 @@ Cargo - vehicle - car
 
 NearMilitaryBase - throwable - random
 
-House_15TilesRoof - consumable - bandage
+House_15TilesRoof - throwable - random
 22, 65
 27, 65
 32, 65
 37, 65
 
-House_15TilesCenter - throwable - random
+House_15TilesCenter - consumable - bandage
 21, 63
 26, 63
 31, 63
@@ -96,10 +101,11 @@ Riverside - melee - random
 
 DenseForest - throwable - random
 
-
-
-
-
+Bridge - throwable - random
+46, 49
+48, 49
+46, 60
+48, 60
 
 
 

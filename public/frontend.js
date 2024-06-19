@@ -46,7 +46,7 @@ let Myskin = 'default'
 let frontEndPlayer
 let listen = true // very important for event listener 
 const AIRSTRIKEDIST_ADDITIONAL = 8 // additional distance to see the airdrop (+3 is just enough to see it)
-let winnerCeremony = false
+let winnerCeremony = true//false
 
 const PLAYERRADIUS = 16 
 
@@ -130,24 +130,71 @@ socket.on('connect', ()=>{
     console.log("connected!");
 })
 
-socket.on('map', ({loadedMap,MAPTILENUMBACKEND,MAPNAMEBACKEND})=>{
-    groundMap = loadedMap.ground;
-    decalMap = loadedMap.decals;
 
-    MAPTILENUM = MAPTILENUMBACKEND
-    MAPNAME = MAPNAMEBACKEND
-    MAPWIDTH = TILE_SIZE*MAPTILENUM
-    MAPHEIGHT =TILE_SIZE*MAPTILENUM
 
-    // set minimap
-    minimapImage.src = `/minimap_${MAPNAME}.png`
 
-    // set wall color
-    if (MAPNAME==='Sahara'){
-      WALLCOLOR = 'Wheat'//'DarkGoldenRod' //'BurlyWood'//'DarkGoldenRod' //'Peru'
+socket.on('serverVars',( {loadedMap,MAPTILENUMBACKEND,MAPNAMEBACKEND,gunInfo, consumableInfo, SHOOTER_VEHICLES_BACKEND,lastWinnerName})=>{
+      ///////////////// map config /////////////////////////
+  groundMap = loadedMap.ground;
+  decalMap = loadedMap.decals;
+
+  MAPTILENUM = MAPTILENUMBACKEND
+  MAPNAME = MAPNAMEBACKEND
+  MAPWIDTH = TILE_SIZE*MAPTILENUM
+  MAPHEIGHT =TILE_SIZE*MAPTILENUM
+
+  // set minimap
+  minimapImage.src = `/minimap_${MAPNAME}.png`
+
+  // set wall color
+  if (MAPNAME==='Sahara'){
+    WALLCOLOR = 'Wheat'//'DarkGoldenRod' //'BurlyWood'//'DarkGoldenRod' //'Peru'
+  }
+
+    ///////////////// server vars /////////////////////////
+  
+  
+  SHOOTER_VEHICLES = SHOOTER_VEHICLES_BACKEND
+  updateLastWinner(lastWinnerName)
+
+  // gun infos
+  gunInfoKeysFrontEnd = Object.keys(gunInfo)
+  for (let i=0;i<gunInfoKeysFrontEnd.length;i++){
+    const gunkey = gunInfoKeysFrontEnd[i]
+    gunInfoFrontEnd[gunkey] = gunInfo[gunkey]
+
+    // load sounds
+    frontEndGunSounds[gunkey] =  new Audio(`/sound/${gunkey}.mp3`)
+    if (gunkey !== 'fist' && gunkey !== 'knife' && gunkey !== 'bat'){ // these three dont have reload sounds
+      frontEndGunReloadSounds[gunkey] = new Audio(`/reloadSound/${gunkey}.mp3`)
     }
 
+    // load images
+    itemImages[gunkey] = new Image()
+    itemImages[gunkey].src = `/images/${gunkey}.png`
+
+  }
+
+  // consumable infos
+  consumableInfoKeysFrontEnd = Object.keys(consumableInfo)
+  for (let i=0;i<consumableInfoKeysFrontEnd.length;i++){
+    const conskey = consumableInfoKeysFrontEnd[i]
+    gunInfoFrontEnd[conskey] = consumableInfo[conskey]
+
+    // load sounds
+    frontEndConsumableSounds[conskey] =  new Audio(`/consumeSound/${conskey}.mp3`)
+
+    // load images
+    itemImages[conskey] = new Image()
+    itemImages[conskey].src = `/images/${conskey}.png`
+
+  }
+
+
+  console.log("front end got the variables from the server")
 })
+
+
 
 socket.on("winnerMessage", ()=>{
   console.log("I am the winner!");
@@ -207,48 +254,6 @@ socket.on('resetServer',({lastWinnerName})=>{
 })
 
 
-socket.on('serverVars',( {gunInfo, consumableInfo, SHOOTER_VEHICLES_BACKEND,lastWinnerName})=>{
-    SHOOTER_VEHICLES = SHOOTER_VEHICLES_BACKEND
-    updateLastWinner(lastWinnerName)
-
-    // gun infos
-    gunInfoKeysFrontEnd = Object.keys(gunInfo)
-    for (let i=0;i<gunInfoKeysFrontEnd.length;i++){
-      const gunkey = gunInfoKeysFrontEnd[i]
-      gunInfoFrontEnd[gunkey] = gunInfo[gunkey]
-  
-      // load sounds
-      frontEndGunSounds[gunkey] =  new Audio(`/sound/${gunkey}.mp3`)
-      if (gunkey !== 'fist' && gunkey !== 'knife' && gunkey !== 'bat'){ // these three dont have reload sounds
-        frontEndGunReloadSounds[gunkey] = new Audio(`/reloadSound/${gunkey}.mp3`)
-      }
-
-      // load images
-      itemImages[gunkey] = new Image()
-      itemImages[gunkey].src = `/images/${gunkey}.png`
-
-    }
-  
-    // consumable infos
-    consumableInfoKeysFrontEnd = Object.keys(consumableInfo)
-    for (let i=0;i<consumableInfoKeysFrontEnd.length;i++){
-      const conskey = consumableInfoKeysFrontEnd[i]
-      gunInfoFrontEnd[conskey] = consumableInfo[conskey]
-  
-      // load sounds
-      frontEndConsumableSounds[conskey] =  new Audio(`/consumeSound/${conskey}.mp3`)
-
-      // load images
-      itemImages[conskey] = new Image()
-      itemImages[conskey].src = `/images/${conskey}.png`
-
-    }
-
-  
-    console.log("front end got the variables from the server")
-  })
-
-  
 const keys = {
     w:{
       pressed: false
@@ -1450,7 +1455,7 @@ function skippedGenerator(maxSize){
   return x
 }
 
-let FIREWORKRATE = 30 // 400
+let FIREWORKRATE = 20 // 400
 const FIREWORKCOLORS = ['Seashell','Orchid','Dusty Rose','Bisque', 'Amaranth', 'pink', 'Coral Pink', ]
 const FIREWORKCOLORSIZE = FIREWORKCOLORS.length-1
 // using particle
@@ -1510,7 +1515,7 @@ function loop(){
             //playSoundEffect('firework',0,100)
           }
           GLOBALCLOCK = 0 // init
-          FIREWORKRATE = 20 + Math.round(Math.random()*20)
+          FIREWORKRATE = 12 + Math.round(Math.random()*15) // reset
         }
 
       }
