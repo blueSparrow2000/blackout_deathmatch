@@ -125,6 +125,7 @@ or
 
 Future plan:
 - Inventory selection show up
+- vehicle-vehicle collision
 - Gun recoil effect 
 - SONA (shows location of enemy in the map & direction for 1 seconds)
 - smarter AI (zombies shoots projectiles)
