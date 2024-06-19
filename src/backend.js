@@ -8,7 +8,7 @@ const SHOWBLOODPARTICLE = true
 
 ///////////////////////////////////// MAP CONFIGURATION /////////////////////////////////////
 const MAPDICT = {'Wilderness':30, 'Sahara':50, 'MilitaryBase':100} // mapName : map tile number
-let MAPNAME = 'MilitaryBase' //'Sahara' //  'MilitaryBase' // //   'Wilderness' //'Sahara' 
+let MAPNAME = 'Sahara' //'MilitaryBase' //  'MilitaryBase' // //   'Wilderness' //'Sahara' 
 let MAPTILENUM = MAPDICT[MAPNAME] // can vary, but map is SQUARE!
 const variantMapName = ['Sahara','MilitaryBase']
 ///////////////////////////////////// MAP CONFIGURATION /////////////////////////////////////
@@ -930,7 +930,30 @@ function Moveplayer(playerGIVEN, WW, AA, SS, DD){
     if (vehicleID>0){ // if riding something
       let vehicleOfPlayer = backEndVehicles[vehicleID]
       const maxSpeedVehicle = vehicleOfPlayer.speed
-      playerGIVEN.speed = Math.min(maxSpeedVehicle, playerGIVEN.speed + 0.11)
+      // playerGIVEN.speed = Math.min(maxSpeedVehicle, playerGIVEN.speed + 0.11)
+      const v_x_prev  = vehicleOfPlayer.v_x
+      const v_y_prev = vehicleOfPlayer.v_y
+      if (WW){
+        vehicleOfPlayer.v_y -= vehicleOfPlayer.acceleration
+      }
+      if (AA){
+        vehicleOfPlayer.v_x -= vehicleOfPlayer.acceleration
+      }
+      if (SS){
+        vehicleOfPlayer.v_y += vehicleOfPlayer.acceleration
+      }
+      if (DD){
+        vehicleOfPlayer.v_x += vehicleOfPlayer.acceleration
+      }
+      // MAX speed bdry
+      if (Math.abs(vehicleOfPlayer.v_y) > maxSpeedVehicle){
+        vehicleOfPlayer.v_y = v_y_prev
+      }
+
+      if (Math.abs(vehicleOfPlayer.v_x) > maxSpeedVehicle){
+        vehicleOfPlayer.v_x = v_x_prev
+      }
+
       // console.log(playerGIVEN.speed )
       // if (vehicleOfPlayer.mytick > 30){ // only use a B2 sound since other sound is bad...
       //   // pushSoundRequest({x:playerGIVEN.x,y:playerGIVEN.y},`${vehicleOfPlayer.type}_moving`,TILE_SIZE*3, duration=1)
@@ -938,7 +961,7 @@ function Moveplayer(playerGIVEN, WW, AA, SS, DD){
       //   vehicleOfPlayer.mytick = 0
       // }
       // vehicleOfPlayer.mytick += 1
-
+      return
     }
 
     if (WW){
@@ -1357,7 +1380,7 @@ setInterval(() => {
         // playerGET.speed = PLAYERSPEED_ONWATER
       }else{
       /// same VID>0 case ///
-      playerGET.speed = Math.max(0, playerGET.speed - 0.1)
+
       }
       playerGET.on_water = true
 
@@ -1374,7 +1397,6 @@ setInterval(() => {
     else if (VID>0){// riding something
       /// same VID>0 case ///
       // lower the speed!
-      playerGET.speed = Math.max(0, playerGET.speed - 0.1)
     }else { // not riding 
       ////////////// WATER CHECKING //////////
       if (playerGET.on_water){
@@ -1637,9 +1659,7 @@ setInterval(() => {
   for (const id in backEndVehicles){
     let vehicle = backEndVehicles[id]
     if (vehicle){ 
-      if (vehicle.occupied){ // occupied then update position accordingly to the player who is riding
-        updateVehiclePos(vehicle)
-      }
+      updateVehiclePos(vehicle)
     }
   }
 
@@ -2182,11 +2202,14 @@ function borderCheckWithObjects(entity){
     
   }
 
-  // vehicle hitbox check
+  if (entity.entityType==="vehicle" ){
+    return
+  }
+  //vehicle hitbox check
   for (const id in backEndVehicles){
     const obj = backEndVehicles[id]
 
-    if (entity.entityType==="player"){
+    if (entity.entityType==="player" ){
       if (entity.ridingVehicleID === id){
         continue 
       }
@@ -2397,6 +2420,7 @@ function spawnVehicle(location, type='car'){ // currently only makes cars
   let damage = 5 // bump into damage
   let health = 30
   let speed = 6 // for a car
+  let acceleration = 0.2
   let info = {}
   //let travelDistance = TILE_SIZE*100 // fuel etc ?
 
@@ -2409,6 +2433,7 @@ function spawnVehicle(location, type='car'){ // currently only makes cars
     damage = 10 // bump into damage
     health = 90
     speed = 4 
+    acceleration = 0.1
   } else if(type==='APC'){ // with turrets!
     radius = 30
     color = "OliveDrab"
@@ -2416,6 +2441,7 @@ function spawnVehicle(location, type='car'){ // currently only makes cars
     damage = 5 // bump into damage
     health = 60
     speed = 3
+    acceleration = 0.15
     info = {turretName:"FAMAS"}
   } else if(type==='tank'){ // with turrets!
     radius = 45
@@ -2424,6 +2450,7 @@ function spawnVehicle(location, type='car'){ // currently only makes cars
     damage = 10 // bump into damage
     health = 192
     speed = 1 
+    acceleration = 0.1
     info = {turretName:"grenadeLauncher"}
   } else if(type==='turret'){ // with turrets! - no sound effect
     radius = 52
@@ -2432,6 +2459,7 @@ function spawnVehicle(location, type='car'){ // currently only makes cars
     damage = 0 // bump into damage
     health = 148
     speed = 0
+    acceleration = 0
     info = {turretName:"M249"}
   } else if(type==='raptor'){ // with turrets!
     radius = 26
@@ -2440,6 +2468,7 @@ function spawnVehicle(location, type='car'){ // currently only makes cars
     damage = 10 // bump into damage
     health = 40
     speed = 12 // max speed
+    acceleration = 0.5
     info = {turretName:"ak47"}
   } else if(type==='B2'){ // with turrets!
     radius = 28
@@ -2448,12 +2477,13 @@ function spawnVehicle(location, type='car'){ // currently only makes cars
     damage = 10 // bump into damage
     health = 50
     speed = 10 
+    acceleration = 0.4
     info = {turretName:"tankBuster"} // becareful not to shoot itself!
   }
 
 
   backEndVehicles[vehicleId] = {
-    x,y,radius,velocity:0, myID:vehicleId, color, warningcolor, damage, health, speed, type,occupied:false,ridingPlayerID:-1,info, mytick:0
+    x,y,radius,v_x:0, v_y:0, acceleration,deceleration:acceleration/2, myID:vehicleId, color, warningcolor, damage, health, speed, type,entityType:'vehicle',occupied:false,ridingPlayerID:-1,info, mytick:0
   }
   NONitemBorderUpdate(backEndVehicles[vehicleId])
 }
@@ -2500,7 +2530,6 @@ function getOffVehicle(playerID,vehicleID=-1){ // vehicleID should be given if p
     } 
     backEndPlayers[playerID].x = backEndVehicles[vehicleID].x + getoffdirectionX
     backEndPlayers[playerID].y = backEndVehicles[vehicleID].y + getoffdirectionY
-    //Moveplayer(backEndPlayers[playerID], false, false, false, false) // border check
 
   }
 
@@ -2528,10 +2557,43 @@ function safeDeleteVehicle(vehicleid){
 function updateVehiclePos(vehicle){
   const riderID = vehicle.ridingPlayerID
   const rider = backEndPlayers[riderID]
-  if (rider){ // rider exist
-    vehicle.x = rider.x
-    vehicle.y = rider.y
+  vehicle.x = Math.round(vehicle.x + vehicle.v_x)
+  vehicle.y = Math.round(vehicle.y + vehicle.v_y)
+
+  // decelerate 
+  vehicle.v_x = (vehicle.v_x>0) ? vehicle.v_x - vehicle.deceleration : vehicle.v_x + vehicle.deceleration
+  vehicle.v_y = (vehicle.v_y>0) ? vehicle.v_y - vehicle.deceleration : vehicle.v_y + vehicle.deceleration
+
+  // collision check
+  // check boundary with objects also
+  borderCheckWithObjects(vehicle)
+      
+  const Sides = {
+    left: vehicle.x - vehicle.radius,
+    right: vehicle.x + vehicle.radius,
+    top: vehicle.y - vehicle.radius,
+    bottom: vehicle.y + vehicle.radius
   }
+
+  // MAP BORDER CHECK
+  if (Sides.left<0){ // restore position for backend
+    vehicle.x = vehicle.radius
+  }
+  if (Sides.right>MAPWIDTH){ // restore position for backend
+    vehicle.x = MAPWIDTH - vehicle.radius
+  }
+  if (Sides.top<0){ // restore position for backend
+    vehicle.y = vehicle.radius
+  }
+  if (Sides.bottom>MAPHEIGHT){ // restore position for backend
+    vehicle.y = MAPHEIGHT - vehicle.radius
+  }
+
+  if (rider){ // rider exist
+    rider.x = vehicle.x 
+    rider.y = vehicle.y 
+  }
+
 }
 
 function explosion(location,BLASTNUM,playerID=0,shockWave=false,small=false){
