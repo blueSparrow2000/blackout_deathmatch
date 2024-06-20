@@ -63,7 +63,7 @@ let interactTimeout
 const INTERACTTIME = 300
 const ITEM_THAT_TAKESUP_INVENTORY = ['consumable', 'placeable','melee','throwable']
 const UNDROPPABLE_ITEM = ['gun']
-const PICKABLE_GUNS = ['flareGun', 'Lynx','tankBuster']
+const PICKABLE_GUNS = ['flareGun', 'Lynx','tankBuster','grenadeLauncher']
 
 const LobbyBGM = new Audio("/sound/Lobby.mp3")
 const shothitsound = new Audio("/sound/shothit.mp3")
@@ -1910,7 +1910,7 @@ document.querySelector('#usernameForm').addEventListener('submit', (event) => {
     //console.log(myPCSkin.src)
     socket.emit('initGame', {username:myUserName, playerX, playerY, playerColor,canvasHeight:canvasEl.height,canvasWidth:canvasEl.width,Myskin})
     
-    updateItemHTML(1,'grenadeLauncher')
+    updateItemHTML(1,'AWM')
     for (let i=1;i<4;i++){ // initialize to fist
       updateItemHTML(i+1,'fist')
     }

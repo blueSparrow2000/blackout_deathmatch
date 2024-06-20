@@ -104,9 +104,9 @@ const gunInfo = {
     // 'railgun':{travelDistance:0, damage: 3, shake:0, num: 1, fireRate: 1000, projectileSpeed:0, magSize:2, reloadTime: 1800, ammotype:'battery', size: {length:50, width:5}}, // pierce walls and entities
     // 'CrossBow':{travelDistance:650, damage: 10, shake:0, num: 1, fireRate: 100, projectileSpeed:8, magSize: 1, reloadTime: 1400, ammotype:'bolt', size: {length:21, width:2}}, 
     // 'GuideGun':{travelDistance:800, damage: 3, shake:0, num: 1, fireRate: 2100, projectileSpeed:6, magSize: 5, reloadTime: 1800, ammotype:'superconductor', size: {length:35, width:8}}, 
-    'grenadeLauncher':{travelDistance:576, damage: 3, shake:0, num: 1, fireRate: 1600, projectileSpeed:13, magSize: 3, reloadTime: 1800, ammotype:'fragment', size: {length:25, width:4}}, 
+    'grenadeLauncher':{travelDistance:576, damage: 3, shake:0, num: 1, fireRate: 1600, projectileSpeed:13, magSize: 6, reloadTime: 1800, ammotype:'fragment', size: {length:25, width:4}}, 
     'fragment':{travelDistance:192, damage: 2, shake:3, num: 1, fireRate: 100, projectileSpeed:8, magSize: 5, reloadTime: 1400, ammotype:'fragment', size: {length:13, width:1}}, 
-    'tankBuster':{travelDistance:704, damage: 50, shake:0, num: 1, fireRate: 4000, projectileSpeed:10, magSize: 1, reloadTime: 6000, ammotype:'rocket', size: {length:35, width:4}}, 
+    'tankBuster':{travelDistance:704, damage: 100, shake:0, num: 1, fireRate: 4000, projectileSpeed:10, magSize: 1, reloadTime: 6000, ammotype:'rocket', size: {length:35, width:4}}, 
     'shockWave':{travelDistance:192, damage: 15, shake:6, num: 1, fireRate: 300, projectileSpeed:18, magSize: 1, reloadTime: 1400, ammotype:'shockWave', size: {length:14, width:2}}, 
     'flareGun':{travelDistance:320, damage: 0, shake:0, num: 1, fireRate: 1000, projectileSpeed:3, magSize: 1, reloadTime: 1000, ammotype:'red', size: {length:15, width:4}}, // default is red
     'explosion':{travelDistance:32, damage: 1, shake:3, num: 1, fireRate: 500, projectileSpeed:6, magSize:1, reloadTime: 1000, ammotype:'hard', size: {length:0, width:3}},
@@ -138,8 +138,8 @@ const gunInfo = {
     'bat':{travelDistance:48, damage: 2, shake:1, num: 1, fireRate: 500, projectileSpeed:6, magSize:0, reloadTime: 0, ammotype:'hard', size: {length:0, width:3}},
 
   }
-const gunOrderInDeathmatch = ['grenadeLauncher','AWM','vector','s686','ak47','SLR','FAMAS','usas12','mp5','M249','mk14','VSS','DBS','ump45','M1','Deagle','pistol']
-const PICKABLE_GUNS = ['flareGun', 'Lynx','tankBuster']
+const gunOrderInDeathmatch = ['AWM','vector','s686','ak47','SLR','FAMAS','usas12','mp5','M249','mk14','VSS','DBS','ump45','M1','Deagle','pistol']
+const PICKABLE_GUNS = ['flareGun', 'Lynx','tankBuster','grenadeLauncher']
 const PENETRATION_GUNS = ['Lynx', 'shockWave']
 const finalScore = gunOrderInDeathmatch.length - 1
 
@@ -791,10 +791,10 @@ function resetMap(MapNameGiven){
 'WatchTowerScope3':{row: 31, col:76, request:['scope','3']},
 'WatchTowerScope4':{row: 31, col:52, request:['scope','3']},
 'WatchTowerScope5':{row: 31, col:8, request:['scope','3']},
-'CommandCenterPoint1':{row: 11, col:11, request:['flare','random']},
-'CommandCenterPoint2':{row: 11, col:23, request:['flare','random']},
-'CommandCenterPoint3':{row: 11, col:15, request:['flare','random']},
-'CommandCenterPoint4':{row: 11, col:19, request:['flare','random']},
+'CommandCenterPoint1':{row: 11, col:11, request:['flare','red']},
+'CommandCenterPoint2':{row: 11, col:23, request:['flare','green']},
+'CommandCenterPoint3':{row: 11, col:15, request:['flare','white']},
+'CommandCenterPoint4':{row: 11, col:19, request:['flare','purple']},
 'CommandCenterPoint5':{row: 17, col:17, request:['flare','random']},
 'Tanks1':{row: 7, col:32, request:['vehicle','tank']},
 'Tanks2':{row: 12, col:32, request:['vehicle','tank']},
@@ -1781,6 +1781,8 @@ function makeNdropItem(itemtype, name, groundloc,onground=true,variantNameGiven=
       ammo = 5
     }else if(name==='tankBuster'){
       ammo = 1
+    }else if(name==='grenadeLauncher'){
+      ammo = 6
     }
 
     iteminfo = {ammo,ammotype}
@@ -2739,7 +2741,7 @@ function updateAirstrike(airstrikeid){
 }
 
 //'item_landing','vehicle_landing'
-const AirstrikeGuns = ['Lynx'] //'tankBuster'
+const AirstrikeGuns = ['Lynx','grenadeLauncher'] //'tankBuster',
 function DeployAirstrike(airstrike){
 
   if (airstrike.signal==='bomb'){ // strike multiple times
