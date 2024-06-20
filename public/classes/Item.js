@@ -92,7 +92,7 @@ class Melee extends Item {
 
 
 let armorImages = {}
-const armorKeys = ['reduce','absorb']
+const armorKeys = ['reduce','absorb', 'turtle', 'anti blast']
 for (let i=0;i<armorKeys.length;i++){
   const armorkey = armorKeys[i]
   armorImages[armorkey] = new Image()

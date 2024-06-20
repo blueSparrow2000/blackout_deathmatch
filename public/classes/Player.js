@@ -1,7 +1,7 @@
 const HEALTHBARHALFLEN = 16
 
 class Player{
-    constructor({x, y, radius, color,username, health, currentSlot = 1,inventory, cursorPos = {y:0,x:0}, score, wearingarmorID=-1,wearingscopeID=-1,ridingVehicleID=-1,getinhouse,canvasHeight,canvasWidth,skin}) {
+    constructor({x, y, radius, color,username, health, currentSlot = 1,inventory, cursorPos = {y:0,x:0}, score, wearingarmorID=-1,wearingscopeID=-1,ridingVehicleID=-1,getinhouse,canvasHeight,canvasWidth,skin, healthboost}) {
       this.x = x
       this.y = y
       this.radius = radius
@@ -24,6 +24,7 @@ class Player{
       // calculate relative rotation vector
       this.start_offset =  16
       this.rotation_alpha = Math.PI/6
+      this.healthboost = healthboost
       
     }
     drawPlayer(canvas, skin, xloc, yloc){
@@ -79,6 +80,17 @@ class Player{
       canvas.moveTo(xReal - HEALTHBARHALFLEN, yReal)
       canvas.lineTo(xReal - HEALTHBARHALFLEN + HPlen, yReal)
       canvas.stroke()
+
+      // Display health boost if exists
+      if (this.healthboost > 0){
+        const yReal_below = yReal + 8
+        canvas.strokeStyle = '#E2F516'
+        canvas.beginPath()
+        canvas.moveTo(xReal - HEALTHBARHALFLEN, yReal_below)
+        canvas.lineTo(xReal - HEALTHBARHALFLEN + this.healthboost, yReal_below)
+        canvas.stroke()
+      }
+
     }
 
     drawGun(canvas, camX, camY, locX, locY, currentHoldingItem, thisguninfo){

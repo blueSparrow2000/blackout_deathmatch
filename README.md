@@ -1,7 +1,7 @@
 # BLACKOUT 
 ## Death match edition
 
-First to reach 16 kills is the winner!
+First to reach 15 kills is the winner!
 
 
 Your gun changes each kill, getting harder to kill others!
@@ -123,12 +123,10 @@ or
 2024.6.19 Smooth vehicle movement
 
 
-2024.6.20 Added airdrop gun: Lynx (penetrates players & enemies) / Added airstrike: emergency cover & plane speeds adjusted
+2024.6.20 Added airdrop gun: Lynx (penetrates players & enemies) / Added airstrike: emergency cover & plane speeds adjusted / Consumable update: Added adrenaline & drink / Armor update: anti-blast & turtle
 
 
 Future plan:
-- Consumable update: adrenaline 
-- Armor update: anti-blast / turtle
 - Melee update: frisby / sakura (jett skill)
 - Inventory selection show up
 - vehicle-vehicle collision

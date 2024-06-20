@@ -24,6 +24,7 @@
 		strikeID:-1, // not passed to frontend
 		flashed:false,
                 on_water:false,
+		healthboost,
 
             };
 

@@ -66,6 +66,7 @@ const PLAYERSPEED = 2 // pixel
 const PLAYERSPEED_ONWATER = 1
 const PLAYERHEALTH = 8
 const PLAYERHEALTHMAX = 8
+const HEALTHBOOSTMAX = 32
 const GUNHEARRANGE = 700
 const PLAYER_JOIN_DELAY = 1000
 let lastWinnerName = ''
@@ -152,16 +153,20 @@ const meleeTypes = ['knife','bat']
 
 
 
-const consumableTypes = ['bandage','medkit']
+const consumableTypes = ['bandage','medkit','adrenaline', 'drink']
 const consumableInfo = {
 'bandage': {size:{length:8, width:8}, color: '#99A3A3', healamount: 2, consumeTime: 1000 },
 'medkit': {size:{length:12, width:12}, color: '#560319', healamount: PLAYERHEALTHMAX, consumeTime: 4000},
+'adrenaline': {size:{length:12, width:12}, color: '#E2F516', healamount: 6.4, consumeTime: 1500},
+'drink': {size:{length:12, width:12}, color: '#C58917', healamount: 3.2, consumeTime: 1000},
 }
 
-const armorTypes = ['absorb', 'reduce']
+const armorTypes = ['absorb', 'reduce', 'turtle', 'anti blast']
 const armorInfo = {
 'absorb':{color: 'DarkTurquoise',size:{length:12, width:12}, amount:5, radius:1},
 'reduce':{color: 'DeepSkyBlue',size:{length:12, width:12}, amount:5, radius:2},
+'turtle':{color: '#006A4E',size:{length:12, width:12}, amount:5, radius:3},
+'anti blast':{color: '#C88141',size:{length:12, width:12}, amount:5, radius:3.5},
 }
 
 const scopeTypes = ['1','2'] // currently available scope!
@@ -227,8 +232,7 @@ function armorEffect(armorID, damage){
   const armortype = backEndItems[armorID].name
   switch (armortype){
     case 'absorb': // absorb 0.2 damage: immune to fist
-    //console.log("absorb")
-      if (damage>0.8){ // absorb more
+      if (damage>0.8){ 
         return Math.max(damage - 0.4, 0)
       }
       return Math.max(damage - 0.2, 0)
@@ -238,6 +242,15 @@ function armorEffect(armorID, damage){
         return (7*damage)/10
       }
       return (9*damage)/10
+    case 'turtle': // 
+      return damage/3
+    case 'anti blast': // 
+      if (damage===15){ // shockwave
+        return 1
+      } else if (damage===2){ // fragment
+        return 0.5
+      }
+      return damage
     default:
       console.log("Item ID is malfunctioning")
       return damage
@@ -683,14 +696,14 @@ function resetMap(MapNameGiven){
       'House_15TilesCenter4':{row: 44, col:38, request:['consumable','random']},
       'House_15TilesCenter5':{row: 44, col:43, request:['consumable','random']},
       'House_CourtyardCorner1':{row: 28, col:38, request:['consumable','medkit']},
-      'House_CourtyardCorner2':{row: 28, col:33, request:['consumable','medkit']},
+      'House_CourtyardCorner2':{row: 28, col:33, request:['consumable','adrenaline']},
       'House_CourtyardCorner3':{row: 33, col:33, request:['consumable','medkit']},
-      'House_CourtyardCorner4':{row: 33, col:38, request:['consumable','medkit']},
+      'House_CourtyardCorner4':{row: 33, col:38, request:['consumable','adrenaline']},
       'CourtyardCorner1':{row: 30, col:35, request:['scope','random']},
       'CourtyardCorner2':{row: 30, col:36, request:['scope','random']},
       'CourtyardCorner3':{row: 31, col:35, request:['scope','random']},
       'CourtyardCorner4':{row: 31, col:36, request:['scope','random']},
-      'GardenCenter1':{row: 19, col:37, request:['consumable','random']},
+      'GardenCenter1':{row: 19, col:37, request:['consumable','adrenaline']},
       'House_36TilesRoof1':{row: 18, col:28, request:['consumable','random']},
       'House_36TilesItemPoints1':{row: 13, col:23, request:['armor','random']},
       'House_36TilesItemPoints2':{row: 13, col:28, request:['armor','random']},
@@ -739,7 +752,10 @@ function resetMap(MapNameGiven){
     }
     makeNdropItem('gun', 'flareGun', getCoordTilesCenter({row:48,col:48}),onground=true,variantNameGiven='purple') //spawnVehicle(getCoordTilesCenter(tileloc_request),vehicleTypes[idxItem])
 
-  
+    makeNdropItem( 'armor', 'turtle', getCoordTilesCenter({row:46,col:48}))
+    makeNdropItem( 'armor', 'anti blast', getCoordTilesCenter({row:45,col:48}))
+
+
     // MAKE HOUSES
     for (let i=0;i<5;i++){
       makeHouse_15Tiles(getCoordTiles(TILESLOC_N_REQUEST[`House_15TilesCenter${i+1}`]))
@@ -818,13 +834,13 @@ function resetMap(MapNameGiven){
 'House_15TilesCenter3':{row: 63, col:31, request:['consumable','bandage']},
 'House_15TilesCenter4':{row: 63, col:36, request:['consumable','bandage']},
 'House_CourtyardCorner1':{row: 39, col:93, request:['consumable','medkit']},
-'House_CourtyardCorner2':{row: 39, col:88, request:['consumable','medkit']},
+'House_CourtyardCorner2':{row: 39, col:88, request:['consumable','adrenaline']},
 'House_CourtyardCorner3':{row: 44, col:88, request:['consumable','medkit']},
-'House_CourtyardCorner4':{row: 44, col:93, request:['consumable','medkit']},
+'House_CourtyardCorner4':{row: 44, col:93, request:['consumable','adrenaline']},
 'House_CourtyardCorner5':{row: 65, col:95, request:['consumable','medkit']},
-'House_CourtyardCorner6':{row: 65, col:90, request:['consumable','medkit']},
+'House_CourtyardCorner6':{row: 65, col:90, request:['consumable','adrenaline']},
 'House_CourtyardCorner7':{row: 70, col:90, request:['consumable','medkit']},
-'House_CourtyardCorner8':{row: 70, col:95, request:['consumable','medkit']},
+'House_CourtyardCorner8':{row: 70, col:95, request:['consumable','adrenaline']},
 'CourtyardCorner1':{row: 41, col:90, request:['scope','random']},
 'CourtyardCorner2':{row: 41, col:91, request:['scope','random']},
 'CourtyardCorner3':{row: 42, col:90, request:['scope','random']},
@@ -1014,6 +1030,10 @@ function Moveplayer(playerGIVEN, WW, AA, SS, DD){
     playerGIVEN.y = Math.round(playerGIVEN.y)
   }
   
+function APIdeleteItem(curplayer,deleteflag, itemid,currentSlot){ // change player current holding item to fist
+  curplayer.inventory[currentSlot-1] = backEndItems[0]
+  backEndItems[itemid].deleteflag = deleteflag
+}
 
 async function main(){
     const {ground2D, decals2D} = await loadMap(MAPNAME);
@@ -1070,6 +1090,7 @@ async function main(){
                 strikeID:-1,
                 flashed:false,
                 on_water:false,
+                healthboost:0,
 
             };
             USERCOUNT[0]++;
@@ -1118,19 +1139,17 @@ async function main(){
         socket.on('consume',({itemName,playerId,healamount,deleteflag, itemid,currentSlot}) => {
           let curplayer = backEndPlayers[playerId]
           if (!curplayer) {return}
-          function APIdeleteItem(){ // change player current holding item to fist
-            curplayer.inventory[currentSlot-1] = backEndItems[0]
-            // delete safely
-            backEndItems[itemid].deleteflag = deleteflag
-          }
 
           if (itemName === 'medkit'){
             curplayer.health = PLAYERHEALTHMAX
-            APIdeleteItem()
-          } else if (curplayer.health + healamount <= PLAYERHEALTHMAX){
+          } else if (itemName === 'adrenaline'){
+            curplayer.healthboost = HEALTHBOOSTMAX  // max boost is 32
+          } else if (itemName === 'drink'){
+            curplayer.healthboost = Math.min(curplayer.healthboost + 16, HEALTHBOOSTMAX )
+          }else if (curplayer.health + healamount <= PLAYERHEALTHMAX){ // bandage
             curplayer.health += healamount
-            APIdeleteItem()
           }
+          APIdeleteItem(curplayer,deleteflag, itemid,currentSlot)
         })
 
         // place
@@ -1138,10 +1157,7 @@ async function main(){
           let curplayer = backEndPlayers[playerId]
           if (!curplayer) {return}
           if (curplayer.onBoard){return} // cannot shoot if on board
-          function APIdeleteItem(){ // change player current holding item to fist
-            curplayer.inventory[currentSlot-1] = backEndItems[0]
-            backEndItems[itemid].deleteflag = deleteflag
-          }
+
 
           // for a barrel
           let hitpoints = BARREL_HEALTH
@@ -1158,7 +1174,7 @@ async function main(){
           }
           makeObjects(itemName, hitpoints, {center: {x:curplayer.x,y:curplayer.y}, radius: hitRadius, color:'gray',placerID:playerId}, givenname = imgName, placerID = playerId)
 
-          APIdeleteItem()
+          APIdeleteItem(curplayer,deleteflag, itemid,currentSlot)
         })
         
        
@@ -1167,13 +1183,9 @@ async function main(){
           let curplayer = backEndPlayers[playerId]
           if (!curplayer) {return}
           if (curplayer.onBoard){return} // cannot shoot if on board
-          function APIdeleteItem(){ // change player current holding item to fist
-            curplayer.inventory[currentSlot-1] = backEndItems[0]
-            backEndItems[itemid].deleteflag = deleteflag
-          }
 
           addThrowable(angle, socket.id, backEndPlayers[socket.id],type= itemName,holding)
-          APIdeleteItem()
+          APIdeleteItem(curplayer,deleteflag, itemid,currentSlot)
         })
 
         // change gound item info from client side
@@ -1376,6 +1388,14 @@ setInterval(() => {
   for (const id in backEndPlayers){
     let playerGET = backEndPlayers[id]
     const VID = playerGET.ridingVehicleID
+
+    
+    // check health boost
+    if (playerGET.healthboost > 0 && GLOBALCLOCK%720===0 ){
+      playerGET.healthboost -= 1
+      playerGET.health = Math.min(playerGET.health+0.2, PLAYERHEALTH) // capacity upto max health
+    }
+    
 
     if (playerGET.onBoard){
       const planeLocation = backEndAirstrikes[playerGET.strikeID]

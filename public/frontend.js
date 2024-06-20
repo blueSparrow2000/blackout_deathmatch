@@ -977,7 +977,9 @@ socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles,
           canvasHeight:backEndPlayer.canvasHeight,
           canvasWidth:backEndPlayer.canvasWidth,
           skin:backEndPlayer.skin,
-          onBoard: backEndPlayer.onBoard
+          onBoard: backEndPlayer.onBoard,
+          healthboost:backEndPlayer.healthboost,
+
         })
   
           document.querySelector('#playerLabels').innerHTML += `<div data-id="${id}"> > ${backEndPlayer.username} </div>`
@@ -997,6 +999,7 @@ socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles,
             frontEndPlayerOthers.ridingVehicleID = backEndPlayer.ridingVehicleID
             frontEndPlayerOthers.skin = backEndPlayer.skin
             frontEndPlayerOthers.onBoard = backEndPlayer.onBoard
+            frontEndPlayerOthers.healthboost = backEndPlayer.healthboost
             // canvas width and height changed => init Game!
 
             // inventory attributes
