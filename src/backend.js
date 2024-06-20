@@ -752,8 +752,8 @@ function resetMap(MapNameGiven){
     }
     makeNdropItem('gun', 'flareGun', getCoordTilesCenter({row:48,col:48}),onground=true,variantNameGiven='purple') //spawnVehicle(getCoordTilesCenter(tileloc_request),vehicleTypes[idxItem])
 
-    makeNdropItem( 'armor', 'turtle', getCoordTilesCenter({row:46,col:48}))
-    makeNdropItem( 'armor', 'anti blast', getCoordTilesCenter({row:45,col:48}))
+    // makeNdropItem( 'armor', 'turtle', getCoordTilesCenter({row:46,col:48}))
+    // makeNdropItem( 'armor', 'anti blast', getCoordTilesCenter({row:45,col:48}))
 
 
     // MAKE HOUSES
