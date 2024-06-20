@@ -111,7 +111,7 @@ const gunInfo = {
     'flareGun':{travelDistance:320, damage: 0, shake:0, num: 1, fireRate: 1000, projectileSpeed:3, magSize: 1, reloadTime: 1000, ammotype:'red', size: {length:15, width:4}}, // default is red
     'explosion':{travelDistance:32, damage: 1, shake:3, num: 1, fireRate: 500, projectileSpeed:6, magSize:1, reloadTime: 1000, ammotype:'hard', size: {length:0, width:3}},
 
-    'Lynx':{travelDistance:3000, damage: 50, shake:0, num: 1, fireRate: 2200, projectileSpeed:36, magSize: 5, reloadTime: 4000, ammotype:'.50BMG', size: {length:60, width:3}}, 
+    'Lynx':{travelDistance:3000, damage: 50, shake:0, num: 1, fireRate: 2200, projectileSpeed:38, magSize: 5, reloadTime: 4000, ammotype:'.50BMG', size: {length:60, width:3}}, 
     
     'M1':{travelDistance:2000, damage: 6, shake:0, num: 1, fireRate: 1300, projectileSpeed:42, magSize: 5, reloadTime: 3600, ammotype:'7mm', size: {length:42, width:3}}, 
     'mk14':{travelDistance:1088, damage: 3.5, shake:1, num: 1, fireRate: 650, projectileSpeed:34, magSize:14, reloadTime: 3300, ammotype:'7mm', size: {length:34, width:2} }, 
@@ -139,7 +139,8 @@ const gunInfo = {
 
   }
 const gunOrderInDeathmatch = ['grenadeLauncher','AWM','vector','s686','ak47','SLR','FAMAS','usas12','mp5','M249','mk14','VSS','DBS','ump45','M1','Deagle','pistol']
-const SPECIAL_GUNS = ['flareGun', 'Lynx','tankBuster']
+const PICKABLE_GUNS = ['flareGun', 'Lynx','tankBuster']
+const PENETRATION_GUNS = ['Lynx', 'shockWave']
 const finalScore = gunOrderInDeathmatch.length - 1
 
 let defaultGuns = [gunOrderInDeathmatch[0]]//['tankBuster','shockWave','fragment','grenadeLauncher']// 
@@ -1095,7 +1096,7 @@ async function main(){
 
           if (currentHoldingItemId>0){ // decrease ammo
             let thisGun = backEndItems[currentHoldingItemId]
-            if (SPECIAL_GUNS.includes(thisGun.name)){
+            if (PICKABLE_GUNS.includes(thisGun.name)){
               if (thisGun.iteminfo.ammo>0){
                 thisGun.iteminfo.ammo -= 1
               }
@@ -1540,7 +1541,7 @@ setInterval(() => {
             pushParticleRequest(projGET.x, projGET.y, 'blood', 0,duration=1)
           }
           // delete projectile after inspecting who shot the projectile & calculating damage
-          if (projGET.gunName !== 'Lynx'){
+          if (!PENETRATION_GUNS.includes(projGET.gunName)){
             BULLETDELETED = true
             safeDeleteProjectile(id)
             break // only one player can get hit by a projectile
@@ -1577,7 +1578,7 @@ setInterval(() => {
           pushParticleRequest(projGET.x, projGET.y, 'blood', 0,duration=1)
         }
         // delete projectile after inspecting who shot the projectile & calculating damage
-        if (projGET.gunName !== 'Lynx'){
+        if (!PENETRATION_GUNS.includes(projGET.gunName)){
           BULLETDELETED = true
           safeDeleteProjectile(id)
           break // only one enemy can get hit by a projectile

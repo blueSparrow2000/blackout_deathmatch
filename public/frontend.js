@@ -63,7 +63,7 @@ let interactTimeout
 const INTERACTTIME = 300
 const ITEM_THAT_TAKESUP_INVENTORY = ['consumable', 'placeable','melee','throwable']
 const UNDROPPABLE_ITEM = ['gun']
-const SPECIAL_GUNS = ['flareGun', 'Lynx','tankBuster']
+const PICKABLE_GUNS = ['flareGun', 'Lynx','tankBuster']
 
 const LobbyBGM = new Audio("/sound/Lobby.mp3")
 const shothitsound = new Audio("/sound/shothit.mp3")
@@ -651,7 +651,7 @@ function reloadGun(){
   const currentGunName = currentHoldingItem.name
   const GUNRELOADRATE = gunInfoFrontEnd[currentGunName].reloadTime
 
-  if (SPECIAL_GUNS.includes(currentGunName) ){ // not reloadable
+  if (PICKABLE_GUNS.includes(currentGunName) ){ // not reloadable
     //console.log("flaregun cannot be reloaded")
     return
   }
@@ -753,8 +753,8 @@ function interactItem(itemId,backEndItems){
   // make the item unpickable for other players => backenditem onground switch to false
   const pickingItem = backEndItems[itemId]
 
-  if(ITEM_THAT_TAKESUP_INVENTORY.includes(pickingItem.itemtype) || SPECIAL_GUNS.includes(pickingItem.name)){ 
-    if (UNDROPPABLE_ITEM.includes(currentHoldingItem.itemtype) && !SPECIAL_GUNS.includes(currentHoldingItem.name)){ // do not drop guns or melee weapons
+  if(ITEM_THAT_TAKESUP_INVENTORY.includes(pickingItem.itemtype) || PICKABLE_GUNS.includes(pickingItem.name)){ 
+    if (UNDROPPABLE_ITEM.includes(currentHoldingItem.itemtype) && !PICKABLE_GUNS.includes(currentHoldingItem.name)){ // do not drop guns or melee weapons
       listen = true
       return
     }
@@ -1211,7 +1211,7 @@ socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles,
         frontEndItem.groundy = backEndItem.groundy
         frontEndItem.onground = backEndItem.onground
         // only update important gun's ammo (flare gun is one time use)
-        if (SPECIAL_GUNS.includes(backEndItem.name)){
+        if (PICKABLE_GUNS.includes(backEndItem.name)){
           frontEndItem.ammo = backEndItem.iteminfo.ammo
         }
       }
