@@ -127,8 +127,7 @@ or
 
 
 Future plan:
-- Consumable update: adrenaline / medkit consume time 1s -> 4s
-- Airstrike update: emergency cover
+- Consumable update: adrenaline 
 - Armor update: anti-blast / turtle
 - Melee update: frisby / sakura (jett skill)
 - Inventory selection show up
