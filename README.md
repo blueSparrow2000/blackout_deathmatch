@@ -123,7 +123,7 @@ or
 2024.6.19 Smooth vehicle movement
 
 
-2024.6.20 Added airdrop gun: Lynx (penetrates players & enemies)
+2024.6.20 Added airdrop gun: Lynx (penetrates players & enemies) / Added airstrike: emergency cover & plane speeds adjusted
 
 
 Future plan:

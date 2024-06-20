@@ -146,7 +146,7 @@ let defaultGuns = [gunOrderInDeathmatch[0]]//['tankBuster','shockWave','fragment
 
 // 'guntypes' is except for grenade launcher and fragments! Since they are OP
 const gunTypes = [ 'M1', 'mk14', 'SLR','AWM',    'pistol','VSS', 'M249', 'ak47', 'FAMAS',    's686','DBS', 'usas12',     'ump45','vector','mp5'] // except special guns: 'tankBuster', 'grenadeLauncher', 'fragment'
-const flareTypes = ['red','green','yellow','white']
+const flareTypes = ['red','green','yellow','white','purple']
 const meleeTypes = ['knife','bat']
 
 
@@ -736,7 +736,8 @@ function resetMap(MapNameGiven){
       makeNdropItem('gun', 'flareGun', getCoordTilesCenter({row:27,col:3}),onground=true,variantNameGiven='yellow')// variant should be red,green etc.
       makeNdropItem('gun', 'flareGun', getCoordTilesCenter({row:37,col:5}),onground=true,variantNameGiven='white')// variant should be red,green etc.
     }
-  
+    makeNdropItem('gun', 'flareGun', getCoordTilesCenter({row:48,col:48}),onground=true,variantNameGiven='purple') //spawnVehicle(getCoordTilesCenter(tileloc_request),vehicleTypes[idxItem])
+
   
     // MAKE HOUSES
     for (let i=0;i<5;i++){
@@ -2662,7 +2663,7 @@ function explosion(location,BLASTNUM,playerID=0,shockWave=false,small=false){
 
 
 // 
-const AIRSTRIKE_TYPE_DICT = {'red':'bomb','green':'supply','white':'transport', 'yellow':'vehicle request'} 
+const AIRSTRIKE_TYPE_DICT = {'red':'bomb','green':'supply','white':'transport', 'yellow':'vehicle request', 'purple':'cover'} 
 const STRIKE_INTERVAL_COEF = 10
 const PLANE_PICKUP_RADIUS = 256 // plane rad is 384
 const PLANE_SOUND_HEAR_RANGE = TILE_SIZE*16
@@ -2678,7 +2679,7 @@ function spawnAirstrike(location, callerID, signalColor='green'){ // currently o
   }
 
 
-  let speed = Math.min( ((MAPHEIGHT - location.y)/MAPHEIGHT)*6+2 , 5) // 2~5
+  let speed = Math.min( ((MAPHEIGHT - location.y)/MAPHEIGHT)*6+3 , 6) // 3~6
   const y = MAPHEIGHT + PLANE_SOUND_HEAR_RANGE // goes up
 
   const signal = AIRSTRIKE_TYPE_DICT[signalColor]
@@ -2687,11 +2688,13 @@ function spawnAirstrike(location, callerID, signalColor='green'){ // currently o
   let strikeNumber = 1
 
   if (signal==='bomb'){
-    speed = 7 // fly fast and bomber (same speed as B2)
+    speed = 8 // fly fast and bomb (near speed as B2)
     strikeNumber = 16
     strike_Y_level = Math.round(location.y + (strikeNumber/2)*speed*STRIKE_INTERVAL_COEF)
   } else if(signal==='transport'){
-    speed = 6
+    speed = 7
+  }else if(signal==='cover'){
+    speed = 7
   }
 
 
@@ -2782,6 +2785,11 @@ function DeployAirstrike(airstrike){
       }
 
     }
+  }else if(airstrike.signal==='cover'){ 
+    makeObjects("wall", 120, {orientation: 'vertical',start:{x:airstrike.x,y:airstrike.y-100}, end:{x:airstrike.x,y:airstrike.y+100}, width:20, color: 'gray'})
+    makeObjects("wall", 120, {orientation: 'horizontal',start:{x:airstrike.x-100,y:airstrike.y}, end:{x:airstrike.x+100,y:airstrike.y}, width:20, color: 'gray'})
+    
+    pushSoundRequest({x:airstrike.x,y:airstrike.y},'item_landing',TILE_SIZE*6, duration=1)
   }
 
 
