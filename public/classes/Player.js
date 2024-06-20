@@ -25,6 +25,7 @@ class Player{
       this.start_offset =  16
       this.rotation_alpha = Math.PI/6
       this.healthboost = healthboost
+      this.recoil = 0
       
     }
     drawPlayer(canvas, skin, xloc, yloc){
@@ -109,7 +110,13 @@ class Player{
 
       if (currentHoldingItem.itemtype==='gun'){
         const itemSize = currentHoldingItem.size
-        const itemlength = itemSize.length*2
+        const itemlength = itemSize.length*2 - this.recoil
+        if (this.recoil<0.05){
+          this.recoil =0
+        }else{
+          this.recoil -= this.recoil/10
+        }
+        
         const gunmainwidth = itemSize.width*2
         let angle = Math.atan2(
           (this.cursorPos.y) - this.canvasHeight/2,

@@ -540,13 +540,13 @@ function shootCheck(event,holding = false){
   listen = false // block
 
   socket.emit("shoot", {angle:getAngle(event),currentGun:currentGunName,currentHoldingItemId,holding})
-
+  
   if (!(currentHoldingItem.itemtype==='melee')){ // not malee, i.e. gun!
     // decrease ammo here!!!!!
     currentHoldingItem.ammo -= 1 
     //console.log(`${currentGunName} ammo: ${currentHoldingItem.ammo}`)
   }
-
+  frontEndPlayer.recoil = 5
   //console.log("fired")
   fireTimeout = window.setTimeout(function(){ if (!frontEndPlayer) {clearTimeout(fireTimeout);return};clearTimeout(fireTimeout);listen = true},GUNFIRERATE)
   //console.log("ready to fire")

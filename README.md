@@ -123,7 +123,7 @@ or
 2024.6.19 Smooth vehicle movement
 
 
-2024.6.20 Added airdrop gun: Lynx (penetrates players & enemies) / Added airstrike: emergency cover & plane speeds adjusted / Consumable update: Added adrenaline & drink / Armor update: anti-blast & turtle / Inventory selection show up
+2024.6.20 Added airdrop gun: Lynx (penetrates players & enemies) / Added airstrike: emergency cover & plane speeds adjusted / Consumable update: Added adrenaline & drink / Armor update: anti-blast & turtle / Inventory selection show up / Added Gun recoil effect 
 
 
 Future plan:
@@ -131,7 +131,6 @@ Future plan:
 - vehicle-vehicle collision
 - Military base: finish structures / add trees (object) in the dense forest
 
-- Gun recoil effect 
 - SONA (shows location of enemy in the map & direction for 1 seconds)
 - smarter AI (zombies shoots projectiles)
 - wind update
