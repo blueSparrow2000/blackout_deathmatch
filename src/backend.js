@@ -8,7 +8,7 @@ const SHOWBLOODPARTICLE = true
 
 ///////////////////////////////////// MAP CONFIGURATION /////////////////////////////////////
 const MAPDICT = {'Wilderness':30, 'Sahara':50, 'MilitaryBase':100} // mapName : map tile number
-let MAPNAME = 'MilitaryBase' //  'Sahara' //'MilitaryBase' //    'Wilderness' //'Sahara' 
+let MAPNAME =  'Sahara' //'MilitaryBase'  //'MilitaryBase' //    'Wilderness' //'Sahara' 
 let MAPTILENUM = MAPDICT[MAPNAME] // can vary, but map is SQUARE!
 const variantMapName = ['Sahara','MilitaryBase']
 ///////////////////////////////////// MAP CONFIGURATION /////////////////////////////////////
@@ -111,7 +111,8 @@ const gunInfo = {
     'flareGun':{travelDistance:320, damage: 0, shake:0, num: 1, fireRate: 1000, projectileSpeed:3, magSize: 1, reloadTime: 1000, ammotype:'red', size: {length:15, width:4}}, // default is red
     'explosion':{travelDistance:32, damage: 1, shake:3, num: 1, fireRate: 500, projectileSpeed:6, magSize:1, reloadTime: 1000, ammotype:'hard', size: {length:0, width:3}},
 
-
+    'Lynx':{travelDistance:3000, damage: 50, shake:0, num: 1, fireRate: 2200, projectileSpeed:40, magSize: 5, reloadTime: 4000, ammotype:'7mm', size: {length:60, width:3}}, 
+    
     'M1':{travelDistance:2000, damage: 6, shake:0, num: 1, fireRate: 1300, projectileSpeed:42, magSize: 5, reloadTime: 3600, ammotype:'7mm', size: {length:42, width:3}}, 
     'mk14':{travelDistance:1088, damage: 3.5, shake:1, num: 1, fireRate: 650, projectileSpeed:34, magSize:14, reloadTime: 3300, ammotype:'7mm', size: {length:34, width:2} }, 
     'SLR':{travelDistance:1216, damage: 2.5, shake:1, num: 1, fireRate: 300, projectileSpeed:36, magSize: 10, reloadTime: 2700, ammotype:'7mm', size: {length:38, width:2}}, 
@@ -138,6 +139,7 @@ const gunInfo = {
 
   }
 const gunOrderInDeathmatch = ['grenadeLauncher','AWM','vector','s686','ak47','SLR','FAMAS','usas12','mp5','M249','mk14','VSS','DBS','ump45','M1','Deagle','pistol']
+const SPECIAL_GUNS = ['flareGun', 'Lynx','tankBuster']
 const finalScore = gunOrderInDeathmatch.length - 1
 
 let defaultGuns = [gunOrderInDeathmatch[0]]//['tankBuster','shockWave','fragment','grenadeLauncher']// 
@@ -151,8 +153,8 @@ const meleeTypes = ['knife','bat']
 
 const consumableTypes = ['bandage','medkit']
 const consumableInfo = {
-'bandage': {size:{length:8, width:8}, color: '#99A3A3', healamount: 2 },
-'medkit': {size:{length:12, width:12}, color: '#560319', healamount: PLAYERHEALTHMAX},
+'bandage': {size:{length:8, width:8}, color: '#99A3A3', healamount: 2, consumeTime: 1000 },
+'medkit': {size:{length:12, width:12}, color: '#560319', healamount: PLAYERHEALTHMAX, consumeTime: 4000},
 }
 
 const armorTypes = ['absorb', 'reduce']
@@ -1092,9 +1094,9 @@ async function main(){
 
           if (currentHoldingItemId>0){ // decrease ammo
             let thisGun = backEndItems[currentHoldingItemId]
-            if (thisGun.name==='flareGun'){
+            if (SPECIAL_GUNS.includes(thisGun.name)){
               if (thisGun.iteminfo.ammo>0){
-                thisGun.iteminfo.ammo = 0
+                thisGun.iteminfo.ammo -= 1
               }
               shootProjectile(angle,currentGun,startDistance,holding)
 
@@ -1537,8 +1539,11 @@ setInterval(() => {
             pushParticleRequest(projGET.x, projGET.y, 'blood', 0,duration=1)
           }
           // delete projectile after inspecting who shot the projectile & calculating damage
-          BULLETDELETED = true
-          safeDeleteProjectile(id)
+          if (projGET.gunName !== 'Lynx'){
+            BULLETDELETED = true
+            safeDeleteProjectile(id)
+          }
+
 
           break // only one player can get hit by a projectile
         }
@@ -1570,8 +1575,10 @@ setInterval(() => {
           pushParticleRequest(projGET.x, projGET.y, 'blood', 0,duration=1)
         }
         // delete projectile after inspecting who shot the projectile & calculating damage
-        BULLETDELETED = true
-        safeDeleteProjectile(id)
+        if (projGET.gunName !== 'Lynx'){
+          BULLETDELETED = true
+          safeDeleteProjectile(id)
+        }
         break // only one enemy can get hit by a projectile
       }
     }
@@ -1765,6 +1772,10 @@ function makeNdropItem(itemtype, name, groundloc,onground=true,variantNameGiven=
 
     if (name==='flareGun'){
       ammotype = variantNameGiven
+      ammo = 1
+    }else if(name==='Lynx'){
+      ammo = 5
+    }else if(name==='tankBuster'){
       ammo = 1
     }
 
@@ -2722,7 +2733,7 @@ function updateAirstrike(airstrikeid){
 }
 
 //'item_landing','vehicle_landing'
-const AirstrikeGuns = ['grenadeLauncher','AWM','tankBuster']
+const AirstrikeGuns = ['Lynx'] //'tankBuster'
 function DeployAirstrike(airstrike){
 
   if (airstrike.signal==='bomb'){ // strike multiple times
@@ -2736,9 +2747,10 @@ function DeployAirstrike(airstrike){
   } else if(airstrike.signal==='supply'){ // strike once
 
     const idxGUN = Math.round(Math.random()*(AirstrikeGuns.length-1)) 
-    makeNdropItem('consumable', 'medkit', {x:airstrike.x + 100, y:airstrike.y})
+    // makeNdropItem('consumable', 'medkit', {x:airstrike.x + 100, y:airstrike.y})
+    makeNdropItem('gun', AirstrikeGuns[idxGUN], {x:airstrike.x, y:airstrike.y} )
     makeNdropItem('scope', "2" ,{x:airstrike.x - 100, y:airstrike.y})
-    makeNdropItem('armor', 'reduce', {x:airstrike.x, y:airstrike.y})
+    makeNdropItem('armor', 'reduce', {x:airstrike.x + 100, y:airstrike.y})
 
     pushSoundRequest({x:airstrike.x,y:airstrike.y},'item_landing',TILE_SIZE*3, duration=1)
 

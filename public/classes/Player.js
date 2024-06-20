@@ -125,7 +125,12 @@ class Player{
         } else if(thisguninfo.projectileSpeed >= 30){ // snipters except VSS (can shoot all across the screen)
           const tipsize = 4
           const tipstart = itemlength- tipsize
-          const tipwidth = parseInt(gunmainwidth + thisguninfo.damage/2)
+          const damage = thisguninfo.damage
+          let tipwidth = parseInt(gunmainwidth + damage/2)
+          if (damage> 30){//Lynx
+            tipwidth = 16
+          }
+          
           const bodylen = itemlength - 40
 
           // body part

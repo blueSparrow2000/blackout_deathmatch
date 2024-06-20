@@ -123,10 +123,18 @@ or
 2024.6.19 Smooth vehicle movement
 
 
+2024.6.20 Added airdrop gun: Lynx (penetrates players & enemies)
+
+
 Future plan:
+- Consumable update: adrenaline / medkit consume time 1s -> 4s
+- Airstrike update: emergency cover
+- Armor update: anti-blast / turtle
+- Melee update: frisby / sakura (jett skill)
 - Inventory selection show up
 - vehicle-vehicle collision
 - Military base: finish structures / add trees (object) in the dense forest
+
 - Gun recoil effect 
 - SONA (shows location of enemy in the map & direction for 1 seconds)
 - smarter AI (zombies shoots projectiles)
