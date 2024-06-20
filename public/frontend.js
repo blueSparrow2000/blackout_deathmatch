@@ -86,6 +86,9 @@ planeImageMINIMAP.src = "/images/plane_minimap.png"
 const pingImageMINIMAP = new Image();
 pingImageMINIMAP.src = "/images/ping_minimap.png"
 
+const item_selection = new Image();
+item_selection.src = "/images/selection.png"
+
 let skinImages = {}
 const skinKeys = ['default','HALO','VOID','FROST','TAEGEUK','GRADIENT','CANDY','JAVA','PYTHON','LINUX']
 for (let i=0;i<skinKeys.length;i++){
@@ -239,7 +242,6 @@ function updateItemHTML(itemIDX,itemName){
   document.querySelector(`#item${itemIDX}`).innerHTML = `<div data-id="${itemIDX}"> [${itemIDX}] ${itemName} </div>`
   
 }
-
 
 function updateLastWinner(name){
   lastWinnerNameFRONTEND = name
@@ -575,6 +577,18 @@ addEventListener('click', (event) => {
   }
 })
 
+let current_slot = 1
+const slot_x_loc = canvasEl.width - 204
+const slot_y_delta = 22
+const slot_y_loc = canvasEl.height-113
+function change_highlight(idx){
+  current_slot = idx
+}
+
+
+function draw_highlight(){
+  canvas.drawImage(item_selection, slot_x_loc, slot_y_loc + slot_y_delta*(current_slot))
+}
 
 // periodically request backend server
 setInterval(()=>{
@@ -590,16 +604,19 @@ setInterval(()=>{
   if (listen) {
       if (keys.digit1.pressed){
           socket.emit('keydown',{keycode:'Digit1'})
-          
+          change_highlight(1)
       }
       if (keys.digit2.pressed){
           socket.emit('keydown',{keycode:'Digit2'})
+          change_highlight(2)
       }
       if (keys.digit3.pressed){
           socket.emit('keydown',{keycode:'Digit3'})
+          change_highlight(3)
       }
       if (keys.digit4.pressed){
           socket.emit('keydown',{keycode:'Digit4'})
+          change_highlight(4)
       }
 
       if (keys.r.pressed){ // reload lock? click once please... dont spam click. It will slow your PC
@@ -1862,6 +1879,7 @@ function loop(){
       canvas.fillText('Press F to take off!', centerX - 110, centerY + PLAYERRADIUS*2)
     }
 
+    draw_highlight()
     
 
     window.requestAnimationFrame(loop);
