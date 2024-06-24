@@ -169,7 +169,7 @@ class Player{
         } else if(thisguninfo.ammotype==='5mm'){
           const cylotip = 4
           const tipstart = 24
-          const tipwidth = gunmainwidth + (thisguninfo.projectileSpeed-18)
+          const tipwidth = gunmainwidth + (thisguninfo.projectileSpeed-22)
 
           canvas.beginPath()
           canvas.moveTo(xReal + direction.x * tipstart, yReal + direction.y * tipstart)
