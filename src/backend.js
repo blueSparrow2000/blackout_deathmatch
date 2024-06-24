@@ -112,27 +112,27 @@ const gunInfo = {
     'flareGun':{travelDistance:320, damage: 0, shake:0, num: 1, fireRate: 1000, projectileSpeed:3, magSize: 1, reloadTime: 1000, ammotype:'red', size: {length:15, width:4}}, // default is red
     'explosion':{travelDistance:32, damage: 1, shake:3, num: 1, fireRate: 500, projectileSpeed:6, magSize:1, reloadTime: 1000, ammotype:'hard', size: {length:0, width:3}},
 
-    'Lynx':{travelDistance:3000, damage: 50, shake:0, num: 1, fireRate: 2200, projectileSpeed:38, magSize: 5, reloadTime: 4000, ammotype:'.50BMG', size: {length:60, width:3}}, 
+    'Lynx':{travelDistance:3200, damage: 50, shake:0, num: 1, fireRate: 2200, projectileSpeed:38, magSize: 5, reloadTime: 4000, ammotype:'.50BMG', size: {length:60, width:3}}, 
     
-    'M1':{travelDistance:2000, damage: 6, shake:0, num: 1, fireRate: 1300, projectileSpeed:42, magSize: 5, reloadTime: 3600, ammotype:'7mm', size: {length:42, width:3}}, 
-    'mk14':{travelDistance:1088, damage: 3.5, shake:1, num: 1, fireRate: 650, projectileSpeed:34, magSize:14, reloadTime: 3300, ammotype:'7mm', size: {length:34, width:2} }, 
-    'SLR':{travelDistance:1216, damage: 2.5, shake:1, num: 1, fireRate: 300, projectileSpeed:36, magSize: 10, reloadTime: 2700, ammotype:'7mm', size: {length:38, width:2}}, 
-    'AWM':{travelDistance:2400, damage: 11, shake:0, num: 1, fireRate: 2000, projectileSpeed:32, magSize:  7, reloadTime: 4000, ammotype:'7mm', size: {length:50, width:3}}, 
-    'Deagle':{travelDistance:640, damage: 3, shake:1, num: 1, fireRate: 350, projectileSpeed:18, magSize:7, reloadTime: 3300, ammotype:'7mm', size: {length:18, width:3}}, 
+    'M1':{travelDistance:2400, damage: 6, shake:0, num: 1, fireRate: 1300, projectileSpeed:42, magSize: 5, reloadTime: 3600, ammotype:'7mm', size: {length:42, width:3}}, 
+    'mk14':{travelDistance:1216, damage: 3.5, shake:1, num: 1, fireRate: 650, projectileSpeed:34, magSize:14, reloadTime: 3300, ammotype:'7mm', size: {length:34, width:2} }, 
+    'SLR':{travelDistance:2000, damage: 2.5, shake:1, num: 1, fireRate: 300, projectileSpeed:36, magSize: 10, reloadTime: 2700, ammotype:'7mm', size: {length:38, width:2}}, 
+    'AWM':{travelDistance:2800, damage: 11, shake:0, num: 1, fireRate: 2000, projectileSpeed:32, magSize:  7, reloadTime: 4000, ammotype:'7mm', size: {length:50, width:3}}, 
+    'Deagle':{travelDistance:640, damage: 3, shake:1, num: 1, fireRate: 350, projectileSpeed:20, magSize:7, reloadTime: 3300, ammotype:'7mm', size: {length:18, width:3}}, 
     
-    'pistol':{travelDistance:640, damage: 1, shake:2, num: 1, fireRate: 300, projectileSpeed:15, magSize:15, reloadTime: 1100, ammotype:'5mm', size: {length:17, width:2}}, 
-    'M249':{travelDistance:960, damage: 1, shake:1, num: 1, fireRate: 100, projectileSpeed:23, magSize:100, reloadTime: 7200, ammotype:'5mm', size: {length:28, width:6}},
-    'VSS':{travelDistance:1088, damage: 1, shake:1, num: 1, fireRate: 100, projectileSpeed:19, magSize:20, reloadTime: 2300, ammotype:'5mm' , size: {length:27, width:2}}, 
-    'ak47':{travelDistance:832, damage: 1, shake:1, num: 1, fireRate: 110, projectileSpeed:21, magSize:30, reloadTime: 2000, ammotype:'5mm', size: {length:28, width:3}}, 
-    'FAMAS':{travelDistance:704, damage: 1, shake:2, num: 1, fireRate: 90, projectileSpeed:20, magSize: 30, reloadTime: 3200, ammotype:'5mm', size: {length:22, width:3}}, 
+    'pistol':{travelDistance:640, damage: 1, shake:2, num: 1, fireRate: 300, projectileSpeed:18, magSize:15, reloadTime: 1100, ammotype:'5mm', size: {length:17, width:2}}, 
+    'M249':{travelDistance:960, damage: 1, shake:1, num: 1, fireRate: 100, projectileSpeed:26, magSize:100, reloadTime: 7200, ammotype:'5mm', size: {length:28, width:6}},
+    'VSS':{travelDistance:1216, damage: 1, shake:1, num: 1, fireRate: 100, projectileSpeed:21, magSize:20, reloadTime: 2300, ammotype:'5mm' , size: {length:27, width:2}}, 
+    'ak47':{travelDistance:832, damage: 1, shake:1, num: 1, fireRate: 110, projectileSpeed:25, magSize:30, reloadTime: 2000, ammotype:'5mm', size: {length:28, width:3}}, 
+    'FAMAS':{travelDistance:704, damage: 1, shake:2, num: 1, fireRate: 90, projectileSpeed:23, magSize: 30, reloadTime: 3200, ammotype:'5mm', size: {length:22, width:3}}, 
 
     's686':{travelDistance:320, damage: 1, shake:4, num: 6, fireRate: 180, projectileSpeed:11, magSize:2, reloadTime: 2500, ammotype:'12G', size: {length:13, width:5}},
     'DBS':{travelDistance:448, damage: 1, shake:2, num: 3, fireRate: 400, projectileSpeed:14, magSize:14, reloadTime: 6000, ammotype:'12G', size: {length:16, width:5}},
     'usas12':{travelDistance:448, damage: 0, shake:1, num: 1, fireRate: 260, projectileSpeed:12, magSize:5, reloadTime: 2800, ammotype:'12G', size: {length:18, width:4}},
     
-    'ump45':{travelDistance:800, damage: 0.8, shake:1, num: 1, fireRate: 85, projectileSpeed:16, magSize:25, reloadTime: 2700, ammotype:'45ACP', size: {length:19, width:4}},
-    'vector':{travelDistance:650, damage: 0.8, shake:1, num: 1, fireRate: 45, projectileSpeed:17, magSize:19, reloadTime: 2600, ammotype:'45ACP', size: {length:18, width:3}},
-    'mp5':{travelDistance:700, damage: 0.8, shake:1, num: 1, fireRate: 70, projectileSpeed:19, magSize:30, reloadTime: 2100, ammotype:'45ACP', size: {length:20, width:3}},
+    'ump45':{travelDistance:800, damage: 0.8, shake:1, num: 1, fireRate: 85, projectileSpeed:19, magSize:25, reloadTime: 2700, ammotype:'45ACP', size: {length:19, width:4}},
+    'vector':{travelDistance:650, damage: 0.8, shake:1, num: 1, fireRate: 45, projectileSpeed:20, magSize:19, reloadTime: 2600, ammotype:'45ACP', size: {length:18, width:3}},
+    'mp5':{travelDistance:700, damage: 0.8, shake:1, num: 1, fireRate: 70, projectileSpeed:22, magSize:30, reloadTime: 2100, ammotype:'45ACP', size: {length:20, width:3}},
     
     'fist':{travelDistance:24, damage: 0.5, shake:0, num: 1, fireRate: 300, projectileSpeed:6, magSize:0, reloadTime: 0, ammotype:'bio', size: {length:0, width:4}},
     'knife':{travelDistance:32, damage: 1, shake:0, num: 1, fireRate: 200, projectileSpeed:8, magSize:0, reloadTime: 0, ammotype:'sharp', size: {length:0, width:2}},
