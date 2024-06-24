@@ -2704,7 +2704,7 @@ function spawnAirstrike(location, callerID, signalColor='green'){ // currently o
   }
 
 
-  let speed = Math.min( ((MAPHEIGHT - location.y)/MAPHEIGHT)*6+3 , 6) // 3~6
+  let speed = Math.min( ((MAPHEIGHT - location.y)/MAPHEIGHT)*6+2 , 5) // 2~5
   const y = MAPHEIGHT + PLANE_SOUND_HEAR_RANGE // goes up
 
   const signal = AIRSTRIKE_TYPE_DICT[signalColor]
@@ -2719,7 +2719,7 @@ function spawnAirstrike(location, callerID, signalColor='green'){ // currently o
   } else if(signal==='transport'){
     speed = 7
   }else if(signal==='cover'){
-    speed = 7
+    speed = 6
   }
 
 

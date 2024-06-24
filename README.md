@@ -131,6 +131,9 @@ https://www.youtube.com/watch?v=wLojAqzOkSk
 2024.6.20 Added airdrop gun: Lynx (penetrates players & enemies) / Added airstrike: emergency cover & plane speeds adjusted / Consumable update: Added adrenaline & drink / Armor update: anti-blast & turtle / Inventory selection show up / Added Gun recoil effect 
 
 
+2024.6.24 Added Look ahead feature! Its now the world of snipers (press shift)
+
+
 Future plan:
 - Melee update: frisby / sakura (jett skill)
 - vehicle-vehicle collision
@@ -148,3 +151,9 @@ Future plan:
 - Decibel Amplification site online) https://www.mp3louder.com/ko/
 
 Tiled tip: If you hover over a tile and press ALT+C, tile (col,row) value is copied to a clipboard. Use it when map making! You can directly modify tile png file (military_base_tile) in the public & src directory for different texture pack! 
+
+## Musics
+Lost BGM; VLLO 'water'
+
+
+https://www.youtube.com/watch?v=GBoxaLNfJkc&list=PLjGfYMne8nMrdzlvO-bGBMpeq_xY_aQKg

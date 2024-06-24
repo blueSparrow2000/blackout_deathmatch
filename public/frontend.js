@@ -49,6 +49,9 @@ const AIRSTRIKEDIST_ADDITIONAL = 8 // additional distance to see the airdrop (+3
 let winnerCeremony = false
 
 const PLAYERRADIUS = 16 
+let lookaheadDist = TILE_SIZE
+let lookaheadX = 0
+let lookaheadY = 0
 
 // flash info
 const MAX_FLASH_DURATION = 180
@@ -66,6 +69,7 @@ const UNDROPPABLE_ITEM = ['gun']
 const PICKABLE_GUNS = ['flareGun', 'Lynx','tankBuster','grenadeLauncher']
 
 const LobbyBGM = new Audio("/sound/Lobby.mp3")
+const LostBGM = new Audio("/sound/Lost_BGM.mp3")
 const shothitsound = new Audio("/sound/shothit.mp3")
 const playerdeathsound = new Audio("/sound/playerdeath.mp3")
 const interactSound = new Audio("/sound/interact.mp3")
@@ -297,6 +301,9 @@ const keys = {
     q:{ // drop
       pressed: false
     },
+    shift:{ // zoom
+      pressed: false
+    },
 }
 
 
@@ -344,7 +351,10 @@ switch(event.code) {
     keys.r.pressed = true
     break
     case 'KeyQ':
-      keys.q.pressed = true
+    keys.q.pressed = true
+    break
+    case 'ShiftLeft':
+      keys.shift.pressed = true
     break
 }
 })
@@ -393,7 +403,10 @@ switch(event.code) {
     keys.r.pressed = false
     break
     case 'KeyQ':
-      keys.q.pressed = false
+    keys.q.pressed = false
+    break
+    case 'ShiftLeft':
+      keys.shift.pressed = false
     break
 }
 })
@@ -1070,11 +1083,13 @@ socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles,
               
                 //socket.emit('playerdeath',{playerId: id, armorID: mePlayer.wearingarmorID, scopeID: mePlayer.wearingscopeID,vehicleID:mePlayer.ridingVehicleID})
                 if (winnerCeremony){
-                  LobbyBGM.volume = 1
+                  // LobbyBGM.volume = 1
+                  LobbyBGM.play()
                 } else{
-                  LobbyBGM.volume = 0.5
+                  LostBGM.volume = 0.02
+                  LostBGM.play()
                 }
-                LobbyBGM.play()
+                
             }
             else{ // other player died
                 shothitsound.play()
@@ -1423,11 +1438,13 @@ const centerY = Math.round(canvasEl.height/2)
 canvas.font ='italic bold 24px sans-serif'
 const defaultSightChunk = 2
 let chunkInfo 
+let truechunk
 let sightChunk = defaultSightChunk
 
 
 function updateSightChunk(scopeDist){
   sightChunk = defaultSightChunk + scopeDist
+  lookaheadDist = (sightChunk-1)*TILE_SIZE // cap to 0
 }
 
 // Particle helper functions
@@ -1504,12 +1521,13 @@ function deployFireworkRocket(){
 
 let GLOBALCLOCK = 0
 
+
 function loop(){
     canvas.clearRect(0,0,canvasEl.width, canvasEl.height)  
 
     if (!frontEndPlayer){ // if not exists - draw nothing
       canvas.fillStyle = 'black'
-      canvas.fillText("loading...",centerX - 50,centerY + 90)
+      canvas.fillText("loading...",centerX - 50,centerY + 40)
 
       // loading screen some fireworks?
       if (winnerCeremony){ // fire works!
@@ -1600,14 +1618,42 @@ function loop(){
     camX = frontEndPlayer.x - centerX
     camY = frontEndPlayer.y - centerY
 
+    // ADVANCED GROUNDTILES
+    chunkInfo = getChunk(frontEndPlayer.x,frontEndPlayer.y)
+    let gid 
+    const { id } = groundMap[chunkInfo.rowNum][chunkInfo.colNum]
+    gid = id
+    if (keys.shift.pressed){// camera adjustments for shift!
+      // lookahead towards mouse direction
+      // get mouse direction
+      const angle = Math.atan2(cursorY - canvasEl.height/2, cursorX - canvasEl.width/2)
+      lookaheadX = Math.round(lookaheadDist*Math.cos(angle))
+      lookaheadY = Math.round(lookaheadDist*Math.sin(angle))
+      // add to camX,Y 
+      camX+= lookaheadX 
+      camY+= lookaheadY
 
-      // ADVANCED GROUNDTILES
-      chunkInfo = getChunk(frontEndPlayer.x,frontEndPlayer.y)
+      // vision boundary check 
+      if (camX + centerX >= MAPWIDTH  ||
+        camX + centerX<= 0||
+        camY + centerY>= MAPHEIGHT  ||
+        camY + centerY <= 0
+      ) {
+        // cancel lookahead (invalid lookahead)
+        camX = frontEndPlayer.x - centerX
+        camY = frontEndPlayer.y - centerY
+        lookaheadX = 0
+        lookaheadY = 0
+      }else{
+        chunkInfo = getChunk(frontEndPlayer.x+lookaheadX ,frontEndPlayer.y+lookaheadY)
+        const { id } = groundMap[chunkInfo.rowNum][chunkInfo.colNum]
+        gid = id
+      }
+      
+    }
 
       // SIGHT DISTANCE IS CHANGED IF PLAYER IS IN THE HOUSE CHUNK - house chunk has id===50
 
-      const { id } =groundMap[chunkInfo.rowNum][chunkInfo.colNum]
-      
       if (!frontEndPlayer.getinhouse && (floor_of_house_tile_id.includes(id)) && !frontEndPlayer.onBoard){ //  get in house for the first time
         frontEndPlayer.getinhouse = true // prediction
         socket.emit('houseEnter')
@@ -1695,7 +1741,23 @@ function loop(){
     ///////////////////////////////// PLAYERS /////////////////////////////////
     canvas.fillStyle = 'white'
     // canvas.strokeStyle = 'black' // same stroke style with projectiles
-    if (!frontEndPlayer.onBoard){ // draw myself in the center
+    // let truecamX = frontEndPlayer.x - centerX
+    // let truecamY = frontEndPlayer.y - centerY
+
+    if (keys.shift.pressed){// camera adjustments for shift!
+      if (!frontEndPlayer.onBoard){ // draw myself in the center
+        const currentHoldingItem = getCurItem(frontEndPlayer)
+        frontEndPlayer.displayAttribute(canvas, camX, camY, currentHoldingItem)
+        if (gunInfoFrontEnd){
+          const thisguninfo = gunInfoFrontEnd[currentHoldingItem.name]
+          frontEndPlayer.drawGun(canvas, camX, camY, centerX - lookaheadX, centerY- lookaheadY , currentHoldingItem, thisguninfo)
+        }
+        frontEndPlayer.drawPlayer(canvas,myPCSkin, centerX - PLAYERRADIUS - lookaheadX, centerY - PLAYERRADIUS -lookaheadY)
+      }
+
+      
+    } else{
+      if (!frontEndPlayer.onBoard){ // draw myself in the center
         const currentHoldingItem = getCurItem(frontEndPlayer)
         frontEndPlayer.displayAttribute(canvas, camX, camY, currentHoldingItem)
         if (gunInfoFrontEnd){
@@ -1703,7 +1765,7 @@ function loop(){
           frontEndPlayer.drawGun(canvas, camX, camY, centerX , centerY , currentHoldingItem, thisguninfo)
         }
         frontEndPlayer.drawPlayer(canvas,myPCSkin, centerX - PLAYERRADIUS, centerY - PLAYERRADIUS )
-        //canvas.drawImage(myPCSkin, centerX - PLAYERRADIUS, centerY - PLAYERRADIUS)
+    }
     }
 
     for (const id in frontEndPlayers){ 
@@ -1729,7 +1791,12 @@ function loop(){
     // This loop is for displaying health & name
     canvas.lineWidth = 8
     if (!frontEndPlayer.onBoard){ // draw myself in the center
-      frontEndPlayer.displayHealth(canvas, camX, camY, centerX , centerY - PLAYERRADIUS*2)
+      if (keys.shift.pressed){// camera adjustments for shift!
+        frontEndPlayer.displayHealth(canvas, camX, camY, centerX-lookaheadX , centerY -lookaheadY- PLAYERRADIUS*2)
+      }else{
+        frontEndPlayer.displayHealth(canvas, camX, camY, centerX , centerY - PLAYERRADIUS*2)
+      }
+      
     }
 
     for (const id in frontEndPlayers){ 
@@ -1851,7 +1918,12 @@ function loop(){
     canvas.lineWidth = 3
     for (const id in frontEndPing){ 
       const thisPing = frontEndPing[id]
-      thisPing.draw(canvas, camX, camY,centerX,centerY) 
+      if (keys.shift.pressed){
+        thisPing.draw(canvas, camX, camY,centerX-lookaheadX,centerY-lookaheadY) 
+      }else{
+        thisPing.draw(canvas, camX, camY,centerX,centerY) 
+      }
+      
       if (thisPing.deleteRequest){
         safeDeletePing(id)
       }
@@ -1906,6 +1978,8 @@ document.querySelector('#usernameForm').addEventListener('submit', (event) => {
     event.preventDefault()
     LobbyBGM.pause()
     LobbyBGM.currentTime = 0
+    LostBGM.pause()
+    LostBGM.currentTime = 0
     pointEl.innerHTML = 0 // init score
     document.querySelector('#usernameForm').style.display = 'none' // unblock the screen
 
