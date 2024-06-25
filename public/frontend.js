@@ -304,6 +304,9 @@ const keys = {
     shift:{ // zoom
       pressed: false
     },
+    v:{ // range
+      pressed: false
+    },
 }
 
 
@@ -354,7 +357,10 @@ switch(event.code) {
     keys.q.pressed = true
     break
     case 'ShiftLeft':
-      keys.shift.pressed = true
+    keys.shift.pressed = true
+    break
+    case 'KeyV':
+    keys.v.pressed = true
     break
 }
 })
@@ -406,7 +412,10 @@ switch(event.code) {
     keys.q.pressed = false
     break
     case 'ShiftLeft':
-      keys.shift.pressed = false
+    keys.shift.pressed = false
+    break
+    case 'KeyV':
+    keys.v.pressed = false
     break
 }
 })
@@ -1527,7 +1536,7 @@ function loop(){
 
     if (!frontEndPlayer){ // if not exists - draw nothing
       canvas.fillStyle = 'black'
-      canvas.fillText("loading...",centerX - 50,centerY + 40)
+      canvas.fillText("loading...",centerX - 50,centerY + 20)
 
       // loading screen some fireworks?
       if (winnerCeremony){ // fire works!
@@ -1651,6 +1660,9 @@ function loop(){
       }
       
     }
+
+
+    
 
       // SIGHT DISTANCE IS CHANGED IF PLAYER IS IN THE HOUSE CHUNK - house chunk has id===50
 
@@ -1943,6 +1955,24 @@ function loop(){
         if (frontEndPR.deleteRequest){
           safeDeletePR(id)
         }
+      }
+    }
+
+    if (keys.v.pressed){ // show range
+      const gun = getCurItem(frontEndPlayer)
+      if (gun.itemtype==='gun'){
+        const thisguninfo = gunInfoFrontEnd[gun.name]
+        canvas.strokeStyle = 'red'
+        canvas.lineWidth = 2
+        let Xloc = centerX
+        let Yloc = centerY
+        if (keys.shift.pressed){
+          Xloc -= lookaheadX
+          Yloc -= lookaheadY
+        }
+        canvas.beginPath()
+        canvas.arc(Xloc,Yloc , thisguninfo.travelDistance, 0, Math.PI * 2, false)
+        canvas.stroke()
       }
     }
 
