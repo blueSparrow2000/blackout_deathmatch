@@ -25,6 +25,7 @@
 		flashed:false,
                 on_water:false,
 		healthboost,
+		dash: 1,
 
             };
 

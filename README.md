@@ -134,8 +134,7 @@ https://www.youtube.com/watch?v=wLojAqzOkSk
 2024.6.24 Added Look ahead feature! Its now the world of snipers (press shift)
 
 
-2024.7.2 Now you can scroll to change inventory! / Minimap key is changed to 'Q'
-
+2024.7.2 Now you can scroll to change inventory! / Minimap key is changed to 'Q' / Press 'E' to dash towards a mouse direction. Dash is recharged when you get a kill, charging upto one. 
 
 
 Future plan:

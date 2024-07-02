@@ -64,6 +64,7 @@ const INVENTORYSIZE = 4
 const PLAYERRADIUS = 16 
 const PLAYERSPEED = 2 // pixel
 const PLAYERSPEED_ONWATER = 1
+const DASH_DIST = TILE_SIZE*2 
 const PLAYERHEALTH = 8
 const PLAYERHEALTHMAX = 8
 const HEALTHBOOSTMAX = 32
@@ -552,12 +553,13 @@ function safeDeletePlayer(playerId){
 // }
 
 
-function updateGunBasedOnScore(shooterID){
+function updateGunBasedOnScore(shooterID){ 
   const player = backEndPlayers[shooterID]
   if (!player){ // if does not exist
     return
   }
   const score = player.score
+  player.dash = 1 // also update player's dash
 
   if (score >= finalScore){
     lastWinnerName = player.username
@@ -1091,6 +1093,7 @@ async function main(){
                 flashed:false,
                 on_water:false,
                 healthboost:0,
+                dash: 1,
 
             };
             USERCOUNT[0]++;
@@ -1133,6 +1136,50 @@ async function main(){
 
 
         } )
+
+        socket.on('dash',({angle})=>{
+          let playerGIVEN = backEndPlayers[socket.id]
+          if (!playerGIVEN){return}
+
+          // if in the vehicle, no dash
+          const vehicleID = playerGIVEN.ridingVehicleID
+          if (vehicleID>0){ // if riding something
+            return
+          }
+
+          playerGIVEN.x += Math.cos(angle)*DASH_DIST
+          playerGIVEN.y += Math.sin(angle)*DASH_DIST
+      
+          // check boundary with objects also
+          borderCheckWithObjects(playerGIVEN)
+          
+          const playerSides = {
+            left: playerGIVEN.x - playerGIVEN.radius,
+            right: playerGIVEN.x + playerGIVEN.radius,
+            top: playerGIVEN.y - playerGIVEN.radius,
+            bottom: playerGIVEN.y + playerGIVEN.radius
+          }
+        
+          // MAP BORDER CHECK
+          if (playerSides.left<0){ // restore position for backend
+            playerGIVEN.x = playerGIVEN.radius
+          }
+          if (playerSides.right>MAPWIDTH){ // restore position for backend
+            playerGIVEN.x = MAPWIDTH - playerGIVEN.radius
+          }
+          if (playerSides.top<0){ // restore position for backend
+            playerGIVEN.y = playerGIVEN.radius
+          }
+          if (playerSides.bottom>MAPHEIGHT){ // restore position for backend
+            playerGIVEN.y = MAPHEIGHT - playerGIVEN.radius
+          }
+      
+          playerGIVEN.x = Math.round(playerGIVEN.x)
+          playerGIVEN.y = Math.round(playerGIVEN.y)
+        // dash end
+          playerGIVEN.dash -= 1
+
+        })
 
 
           // eat

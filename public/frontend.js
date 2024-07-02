@@ -77,7 +77,7 @@ const interactSound = new Audio("/sound/interact.mp3")
 const pingSound = new Audio("/sound/ping.mp3")
 const throwSound = new Audio("/sound/throw.mp3")
 const flashSound = new Audio("/sound/flash.mp3")
-
+const dashSound = new Audio("/sound/dash.mp3")
 
 const mapImage = new Image();
 mapImage.src =  "/military_base_tile.png" //"/tiles1.png" //"/military_base_tile.png" //
@@ -658,6 +658,19 @@ setInterval(()=>{
   }
   // dont have to emit since they are seen by me(a client, not others)
 
+  if (keys.e.pressed){
+    
+    if (frontEndPlayer && frontEndPlayer.dash>0){
+      if (frontEndPlayer.ridingVehicleID>0){
+        // pass
+      }else{
+        const angle = getAngle({clientX:cursorX, clientY:cursorY})
+        dashSound.play()
+        socket.emit('dash',{angle})
+      }
+    }
+
+  }
   if (listen) {
       if (keys.digit1.pressed){
         changeInventory(1)
@@ -790,8 +803,6 @@ function interactVehicle(id,backEndVehicles){
   if (!listen) {return} // not ready to interact
   listen = false 
 
-
-
   let currentVehicle = backEndVehicles[id]
   if (frontEndPlayer.ridingVehicleID>0){ // already riding a vehicle
     interactSound.play()
@@ -807,7 +818,6 @@ function interactVehicle(id,backEndVehicles){
     clearTimeout(interactTimeout);
     if (frontEndPlayer){listen = true;    // reload when pick up
     }}, INTERACTTIME)
-
 }
 
 
@@ -1057,6 +1067,7 @@ socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles,
           skin:backEndPlayer.skin,
           onBoard: backEndPlayer.onBoard,
           healthboost:backEndPlayer.healthboost,
+          dash: backEndPlayer.dash,
 
         })
   
@@ -1078,6 +1089,7 @@ socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles,
             frontEndPlayerOthers.skin = backEndPlayer.skin
             frontEndPlayerOthers.onBoard = backEndPlayer.onBoard
             frontEndPlayerOthers.healthboost = backEndPlayer.healthboost
+            frontEndPlayerOthers.dash = backEndPlayer.dash
             // canvas width and height changed => init Game!
 
             // inventory attributes
