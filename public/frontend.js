@@ -53,6 +53,7 @@ let lookaheadDist = TILE_SIZE
 let lookaheadX = 0
 let lookaheadY = 0
 
+
 // flash info
 const MAX_FLASH_DURATION = 180
 let flash_duration = MAX_FLASH_DURATION
@@ -580,6 +581,39 @@ function mapLoc_to_realLoc(x_map,y_map){
 }
 
 
+addEventListener('wheel',(event) => {
+  if (!frontEndPlayer){
+    return
+  }
+  if (!listen){
+    return
+  }
+  const cur_slot = frontEndPlayer.currentSlot
+  let wheel = event.wheelDeltaY;
+  let val = 1
+  if (wheel>0){
+    val = -1
+  }
+	// if(wheel > 0) {
+  //     // console.log('Up!');
+  //     // pass
+  //   }
+	// else { // (wheel < 0)
+  //     // console.log('Down!');
+  //   }
+
+  let new_slot = cur_slot+val
+  if (new_slot<1){ // no op
+    new_slot = 1
+  }else if (new_slot>4){ // no op
+    new_slot = 4
+  }
+  changeInventory(new_slot)
+  // console.log('scroll')
+  return false; 
+}, false);
+
+
 addEventListener('click', (event) => {
   if (keys.g.pressed){ // in this case, make a ping
     pingID ++ 
@@ -612,6 +646,11 @@ function draw_highlight(){
   canvas.drawImage(item_selection, slot_x_loc, slot_y_loc + slot_y_delta*(current_slot))
 }
 
+function changeInventory(num){ // num:1~4
+  socket.emit('keydown',{keycode:`Digit${num}`})
+  change_highlight(num)
+}
+
 // periodically request backend server
 setInterval(()=>{
   if (keys.f.pressed){
@@ -625,20 +664,24 @@ setInterval(()=>{
 
   if (listen) {
       if (keys.digit1.pressed){
-          socket.emit('keydown',{keycode:'Digit1'})
-          change_highlight(1)
+        changeInventory(1)
+          // socket.emit('keydown',{keycode:'Digit1'})
+          // change_highlight(1)
       }
       if (keys.digit2.pressed){
-          socket.emit('keydown',{keycode:'Digit2'})
-          change_highlight(2)
+        changeInventory(2)
+          // socket.emit('keydown',{keycode:'Digit2'})
+          // change_highlight(2)
       }
       if (keys.digit3.pressed){
-          socket.emit('keydown',{keycode:'Digit3'})
-          change_highlight(3)
+        changeInventory(3)
+          // socket.emit('keydown',{keycode:'Digit3'})
+          // change_highlight(3)
       }
       if (keys.digit4.pressed){
-          socket.emit('keydown',{keycode:'Digit4'})
-          change_highlight(4)
+        changeInventory(4)
+          // socket.emit('keydown',{keycode:'Digit4'})
+          // change_highlight(4)
       }
 
       if (keys.r.pressed){ // reload lock? click once please... dont spam click. It will slow your PC
@@ -1528,8 +1571,13 @@ function deployFireworkRocket(){
 }
 
 
-let GLOBALCLOCK = 0
 
+
+
+
+
+
+let GLOBALCLOCK = 0
 
 function loop(){
     canvas.clearRect(0,0,canvasEl.width, canvasEl.height)  

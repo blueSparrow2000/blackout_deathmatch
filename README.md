@@ -134,6 +134,10 @@ https://www.youtube.com/watch?v=wLojAqzOkSk
 2024.6.24 Added Look ahead feature! Its now the world of snipers (press shift)
 
 
+2024.7.2 Now you can scroll to change inventory!
+
+
+
 Future plan:
 - Melee update: frisby / sakura (jett skill)
 - vehicle-vehicle collision

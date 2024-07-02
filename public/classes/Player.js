@@ -214,8 +214,10 @@ class Player{
         }
 
       }else{ // draw circle 
-        
-        if (currentHoldingItem.name !== 'fist'){
+        if (currentHoldingItem.itemtype === 'melee'){
+          //pass
+        }
+        else{
           let angle = Math.atan2(
             (this.cursorPos.y) - this.canvasHeight/2,
             (this.cursorPos.x) - this.canvasWidth/2

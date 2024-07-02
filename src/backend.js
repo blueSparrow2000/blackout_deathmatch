@@ -8,7 +8,7 @@ const SHOWBLOODPARTICLE = true
 
 ///////////////////////////////////// MAP CONFIGURATION /////////////////////////////////////
 const MAPDICT = {'Wilderness':30, 'Sahara':50, 'MilitaryBase':100} // mapName : map tile number
-let MAPNAME =  'Sahara' //'MilitaryBase'  //'MilitaryBase' //    'Wilderness' //'Sahara' 
+let MAPNAME = 'Sahara' //'MilitaryBase' // 'MilitaryBase'  //    'Wilderness' //'Sahara' 
 let MAPTILENUM = MAPDICT[MAPNAME] // can vary, but map is SQUARE!
 const variantMapName = ['Sahara','MilitaryBase']
 ///////////////////////////////////// MAP CONFIGURATION /////////////////////////////////////
