@@ -138,7 +138,6 @@ https://www.youtube.com/watch?v=wLojAqzOkSk
 
 
 Future plan:
-- sprint option?
 - Melee update: frisby / sakura (jett skill)
 - vehicle-vehicle collision
 - Military base: finish structures / add trees (object) in the dense forest
