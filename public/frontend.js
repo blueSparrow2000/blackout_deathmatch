@@ -293,13 +293,13 @@ const keys = {
     space:{ // hold fire
       pressed: false
     },
-    g:{ // minimap
+    e:{ // dash
       pressed: false
     },
     r:{ // reload
       pressed: false
     },
-    q:{ // drop
+    q:{  // minimap
       pressed: false
     },
     shift:{ // zoom
@@ -348,8 +348,8 @@ switch(event.code) {
     case 'Space':
     keys.space.pressed = true
     break
-    case 'KeyG':
-    keys.g.pressed = true
+    case 'KeyE':
+    keys.e.pressed = true
     break
     case 'KeyR':
     keys.r.pressed = true
@@ -403,8 +403,8 @@ switch(event.code) {
     case 'Space':
     keys.space.pressed = false
     break
-    case 'KeyG':
-    keys.g.pressed = false
+    case 'KeyE':
+    keys.e.pressed = false
     break
     case 'KeyR':
     keys.r.pressed = false
@@ -615,7 +615,7 @@ addEventListener('wheel',(event) => {
 
 
 addEventListener('click', (event) => {
-  if (keys.g.pressed){ // in this case, make a ping
+  if (keys.q.pressed){ // in this case, make a ping
     pingID ++ 
     // this is a location in a map
     const RealLoc = mapLoc_to_realLoc(event.clientX, event.clientY)
@@ -657,10 +657,6 @@ setInterval(()=>{
     socket.emit('keydown',{keycode:'KeyF'})
   }
   // dont have to emit since they are seen by me(a client, not others)
-  if (keys.g.pressed){
-    // not emitting when G
-    //socket.emit('keydown',{keycode:'KeyG'})
-  }
 
   if (listen) {
       if (keys.digit1.pressed){
@@ -1622,7 +1618,7 @@ function loop(){
 
 
     // OTHERS
-    if (keys.g.pressed){ // draw minimap
+    if (keys.q.pressed){ // draw minimap
       canvas.drawImage(minimapImage, 
         0,
         0,

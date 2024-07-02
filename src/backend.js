@@ -1306,9 +1306,6 @@ async function main(){
                 //console.log('f presssed')
                 socket.emit('interact',{backEndItems,backEndVehicles})
                 break
-            case 'KeyG':
-                //console.log('g presssed')
-                break
             case 'KeyR':
                 //console.log('r presssed')
                 socket.emit('reload')

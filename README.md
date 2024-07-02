@@ -134,11 +134,12 @@ https://www.youtube.com/watch?v=wLojAqzOkSk
 2024.6.24 Added Look ahead feature! Its now the world of snipers (press shift)
 
 
-2024.7.2 Now you can scroll to change inventory!
+2024.7.2 Now you can scroll to change inventory! / Minimap key is changed to 'Q'
 
 
 
 Future plan:
+- sprint option?
 - Melee update: frisby / sakura (jett skill)
 - vehicle-vehicle collision
 - Military base: finish structures / add trees (object) in the dense forest
