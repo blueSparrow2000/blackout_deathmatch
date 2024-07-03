@@ -137,13 +137,17 @@ https://www.youtube.com/watch?v=wLojAqzOkSk
 2024.7.2 Now you can scroll to change inventory! / Minimap key is changed to 'Q' / Press 'E' to dash towards a mouse direction. Dash is recharged when you get a kill, charging upto one. 
 
 
+2024.7.3 Shows remaining kills 
+
+
+
 Future plan:
 - Melee update: frisby / sakura (jett skill)
 - vehicle-vehicle collision
 - Military base: finish structures / add trees (object) in the dense forest
+- smarter AI (zombies shoots projectiles)
 
 - SONA (shows location of enemy in the map & direction for 1 seconds)
-- smarter AI (zombies shoots projectiles)
 - wind update
 - make melee weapon skin (katana etc.) + more powerful melee weapons!
 

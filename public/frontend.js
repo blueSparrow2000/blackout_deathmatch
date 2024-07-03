@@ -243,9 +243,17 @@ function showKillLog(loglist){
 
 }
 
+function showkillRemain(num){
+  document.querySelector(`#killsRemaining`).innerHTML = `<div data-id="0"> ${num} </div>`
+}
+
+function calc_kill_remain(score){ // remaining kills = number of guns (in the gunOrderInDeathmatch) - score
+  return 15 - score
+}
+
+
 function updateItemHTML(itemIDX,itemName){
   document.querySelector(`#item${itemIDX}`).innerHTML = `<div data-id="${itemIDX}"> [${itemIDX}] ${itemName} </div>`
-  
 }
 
 function updateLastWinner(name){
@@ -1107,6 +1115,9 @@ socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles,
                   const prevItemID = frontEndPlayerOthers.inventory[i]
                   if (prevItemID !== backEndItem.myID){ // my inventory change by server's decision (like gun update due to score/placing/consume)
                     updateItemHTML(i+1,frontEndItems[backEndItem.myID].name)
+                    if (i===0){ // for current gun
+                      showkillRemain(calc_kill_remain(frontEndPlayerOthers.score))
+                    }
                   }
                 }
   
@@ -1131,7 +1142,7 @@ socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles,
         if (!backEndPlayers[id]){
             const divToDelete = document.querySelector(`div[data-id="${id}"]`)
             divToDelete.parentNode.removeChild(divToDelete)
-        
+            
             // if I dont exist
             if (id === myPlayerID) {     // reshow the start button interface
                 const mePlayer = frontEndPlayers[myPlayerID]
@@ -1140,7 +1151,9 @@ socket.on('updateFrontEnd',({backEndPlayers, backEndEnemies, backEndProjectiles,
                 playerdeathsound.play()
                 document.querySelector('#usernameForm').style.display = 'block'
                 hideInventory()
-              
+                // reset kill remains
+                showkillRemain(0)
+
                 //socket.emit('playerdeath',{playerId: id, armorID: mePlayer.wearingarmorID, scopeID: mePlayer.wearingscopeID,vehicleID:mePlayer.ridingVehicleID})
                 if (winnerCeremony){
                   // LobbyBGM.volume = 1
@@ -2096,7 +2109,7 @@ document.querySelector('#usernameForm').addEventListener('submit', (event) => {
       updateItemHTML(i+1,'fist')
     }
     showInventory()
-
+    showkillRemain(15)
     // reset particle ids
     particleID = 0
   })
