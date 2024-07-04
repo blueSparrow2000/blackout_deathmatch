@@ -115,7 +115,7 @@ const gunInfo = {
     'flareGun':{travelDistance:320, damage: 0, shake:0, num: 1, fireRate: 1000, projectileSpeed:3, magSize: 1, reloadTime: 1000, ammotype:'red', size: {length:15, width:4}}, // default is red
     'explosion':{travelDistance:32, damage: 1, shake:3, num: 1, fireRate: 500, projectileSpeed:6, magSize:1, reloadTime: 1000, ammotype:'hard', size: {length:0, width:3}},
 
-    'Lynx':{travelDistance:3200, damage: 50, shake:0, num: 1, fireRate: 2200, projectileSpeed:38, magSize: 5, reloadTime: 4000, ammotype:'.50BMG', size: {length:60, width:3}}, 
+    'Lynx':{travelDistance:3200, damage: 30, shake:0, num: 1, fireRate: 2200, projectileSpeed:60, magSize: 5, reloadTime: 4000, ammotype:'.50BMG', size: {length:60, width:3}}, 
     
     'M1':{travelDistance:2400, damage: 6, shake:0, num: 1, fireRate: 1300, projectileSpeed:42, magSize: 5, reloadTime: 3600, ammotype:'7mm', size: {length:42, width:3}}, 
     'mk14':{travelDistance:1216, damage: 3.5, shake:1, num: 1, fireRate: 650, projectileSpeed:34, magSize:14, reloadTime: 3300, ammotype:'7mm', size: {length:34, width:2} }, 
@@ -130,8 +130,8 @@ const gunInfo = {
     'FAMAS':{travelDistance:704, damage: 1, shake:2, num: 1, fireRate: 90, projectileSpeed:23, magSize: 30, reloadTime: 3200, ammotype:'5mm', size: {length:22, width:3}}, 
 
     's686':{travelDistance:320, damage: 1, shake:4, num: 6, fireRate: 180, projectileSpeed:11, magSize:2, reloadTime: 2500, ammotype:'12G', size: {length:13, width:5}},
-    'DBS':{travelDistance:448, damage: 1, shake:2, num: 3, fireRate: 400, projectileSpeed:14, magSize:14, reloadTime: 6000, ammotype:'12G', size: {length:16, width:5}},
-    'usas12':{travelDistance:448, damage: 0, shake:1, num: 1, fireRate: 260, projectileSpeed:12, magSize:5, reloadTime: 2800, ammotype:'12G', size: {length:18, width:4}},
+    'DBS':{travelDistance:448, damage: 1, shake:2, num: 3, fireRate: 300, projectileSpeed:14, magSize:14, reloadTime: 6000, ammotype:'12G', size: {length:16, width:5}},
+    'usas12':{travelDistance:448, damage: 0, shake:1, num: 1, fireRate: 250, projectileSpeed:12, magSize:5, reloadTime: 2800, ammotype:'12G', size: {length:18, width:4}},
     
     'ump45':{travelDistance:800, damage: 0.8, shake:1, num: 1, fireRate: 85, projectileSpeed:19, magSize:25, reloadTime: 2700, ammotype:'45ACP', size: {length:19, width:4}},
     'vector':{travelDistance:650, damage: 0.8, shake:1, num: 1, fireRate: 45, projectileSpeed:20, magSize:19, reloadTime: 2600, ammotype:'45ACP', size: {length:18, width:3}},
@@ -476,6 +476,11 @@ function addProjectile(angle,currentGun,playerID,location,startDistance,holding=
     color = itemInfoFlareGun.ammotype
     // recalculate distance: max travel distance or player mouse pos
     travelDistance = Math.min(guninfoGET.travelDistance, Math.max(startDistance, get_player_center_mouse_distance(thisPlayer.mousePos, thisPlayer.canvasWidth/2, thisPlayer.canvasHeight/2) - startDistance))
+  } else if (currentGun==='Lynx'){// fire two bullets at the same time
+    backEndProjectiles[projectileId] = {
+      x:location.x + Math.cos(angle)*180, y:location.y + Math.sin(angle)*180,radius,velocity, speed:bulletSpeed, playerId: playerID, gunName:currentGun, travelDistance, projDamage,color
+    }
+    projectileId++
   }
 
   if (startDistance>0){
@@ -2427,7 +2432,7 @@ function spawnEnemies(){
   enemyId++
   ENEMYCOUNT ++
   const factor = Math.round((1 +  Math.random())*10)/10 // 1~2
-  const radius = Math.round(factor*8) // 8~16
+  const radius = 12 + Math.round(factor*4) // 16~20
   const speed = DIFFICULTY+2.5 - factor // DIFFICULTY+0.5~1.5
 
   let x = 64
@@ -2476,7 +2481,7 @@ function spawnEnemies(){
 
   const damage = 1
   const myID = enemyId
-  const health = factor*8 - 1
+  const health = 5 + DIFFICULTY + factor*2 // 5 + D + 2~4 
   const wearingarmorID = -1 //none
 
   let bias = 0.3 - (Math.round(Math.random()*10)/40)
@@ -2837,7 +2842,7 @@ function DeployAirstrike(airstrike){
     // makeNdropItem('consumable', 'medkit', {x:airstrike.x + 100, y:airstrike.y})
     makeNdropItem('gun', AirstrikeGuns[idxGUN], {x:airstrike.x, y:airstrike.y} )
     makeNdropItem('scope', "2" ,{x:airstrike.x - 100, y:airstrike.y})
-    makeNdropItem('armor', 'reduce', {x:airstrike.x + 100, y:airstrike.y})
+    makeNdropItem('armor', 'turtle', {x:airstrike.x + 100, y:airstrike.y})
 
     pushSoundRequest({x:airstrike.x,y:airstrike.y},'item_landing',TILE_SIZE*3, duration=1)
 

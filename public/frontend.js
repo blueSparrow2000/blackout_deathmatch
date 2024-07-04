@@ -1567,7 +1567,7 @@ function skippedGenerator(maxSize){
 }
 
 let FIREWORKRATE = 20 // 400
-const FIREWORKCOLORS = ['Seashell','Orchid','Dusty Rose','Bisque', 'Amaranth', 'pink', 'Coral Pink', ]
+const FIREWORKCOLORS = ['Seashell','Orchid','Dusty Rose','Bisque', 'Amaranth', 'pink', 'Coral Pink' ]
 const FIREWORKCOLORSIZE = FIREWORKCOLORS.length-1
 // using particle
 function firework(x,y, color){
