@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="6" height="6" tilewidth="128" tileheight="128" infinite="0" nextlayerid="3" nextobjectid="1">
+ <tileset firstgid="1" source="military_base_tile.tsx"/>
+ <layer id="1" name="ground" width="6" height="6">
+  <data encoding="csv">
+258,258,258,258,258,258,
+258,258,258,258,258,258,
+219,219,219,219,219,219,
+242,242,242,242,242,242,
+277,277,277,277,277,277,
+120,120,120,120,120,120
+</data>
+ </layer>
+ <layer id="2" name="plants and rocks" width="6" height="6" visible="0">
+  <data encoding="csv">
+0,0,0,0,137,0,
+0,136,1610612872,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+0,0,0,0,0,0,
+131,131,131,0,0,134
+</data>
+ </layer>
+</map>

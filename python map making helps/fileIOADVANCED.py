@@ -1,5 +1,6 @@
 # f = open("./sahara.txt", 'r')
-f = open("./MB.txt", 'r')
+# f = open("./MB.txt", 'r')
+f = open("./Tutorial.txt", 'r')
 lines = f.readlines()
 
 LocationName = ""

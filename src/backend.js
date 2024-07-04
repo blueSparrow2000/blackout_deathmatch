@@ -7,8 +7,8 @@ let signalReset = false
 const SHOWBLOODPARTICLE = true
 
 ///////////////////////////////////// MAP CONFIGURATION /////////////////////////////////////
-const MAPDICT = {'Wilderness':{tilenum:30,difficulty:1,spawnrate:15000}, 'Sahara':{tilenum:50,difficulty:2,spawnrate:30000}, 'MilitaryBase':{tilenum:100,difficulty:2,spawnrate:15000},'Arena':{tilenum:10,difficulty:3,spawnrate:10000}} // mapName : map tile number
-let MAPNAME = 'Sahara' //'MilitaryBase' // 'MilitaryBase'  //    'Wilderness' //'Sahara' 
+const MAPDICT = {'Wilderness':{tilenum:30,difficulty:1,spawnrate:15000}, 'Sahara':{tilenum:50,difficulty:2,spawnrate:30000}, 'MilitaryBase':{tilenum:100,difficulty:2,spawnrate:15000},'Tutorial':{tilenum:10,difficulty:1,spawnrate:100000},'Arena':{tilenum:10,difficulty:3,spawnrate:10000}} // mapName : map tile number
+let MAPNAME = 'Tutorial'//'Sahara' //'MilitaryBase' // 'MilitaryBase'  //    'Wilderness' //'Sahara' 
 let MAPTILENUM = MAPDICT[MAPNAME].tilenum // can vary, but map is SQUARE!
 const DIFFICULTY = MAPDICT[MAPNAME].difficulty // 1~3 3 is the hardest
 const variantMapName = ['Sahara','MilitaryBase']
@@ -93,8 +93,8 @@ let ENEMYCOUNT = 0
 const GROUNDITEMFLAG = true
 let GHOSTENEMY = false
 
-const ENTITYDISTRIBUTIONS = ["test", "battleRoyale"]
-const ENTITYDISTRIBUTION_MARK = 1
+const ENTITYDISTRIBUTIONS = ["test", "battleRoyale", "deathmatch"]
+const ENTITYDISTRIBUTION_MARK = 2
 
 // for items
 const MINE_DETECTION_RADIUS = 32
@@ -307,7 +307,7 @@ if (GROUNDITEMFLAG){
   }
 
   ///////////////////////////////////////// BATTLE ROYALE DROPS /////////////////////////////////////////
-  else if (MAPNAME==='Wilderness' && ENTITYDISTRIBUTIONS[ENTITYDISTRIBUTION_MARK]==="battleRoyale"){
+  else if (MAPNAME==='Wilderness' && ENTITYDISTRIBUTIONS[ENTITYDISTRIBUTION_MARK]==="deathmatch"){
     // special tile locations in 'Wilderness'
 
     const TILESLOC = {"center":{row:14,col:14},"house1":{row:13,col:2},"house2":{row:2,col:24},"house3":{row:5,col:24},
@@ -370,11 +370,14 @@ if (GROUNDITEMFLAG){
 
   }
 
-  else if (MAPNAME==='Sahara' && ENTITYDISTRIBUTIONS[ENTITYDISTRIBUTION_MARK]==="battleRoyale"){
+  else if (MAPNAME==='Sahara' && ENTITYDISTRIBUTIONS[ENTITYDISTRIBUTION_MARK]==="deathmatch"){
     resetMap('Sahara')
   }
-  else if (MAPNAME==='MilitaryBase' && ENTITYDISTRIBUTIONS[ENTITYDISTRIBUTION_MARK]==="battleRoyale"){
+  else if (MAPNAME==='MilitaryBase' && ENTITYDISTRIBUTIONS[ENTITYDISTRIBUTION_MARK]==="deathmatch"){
     resetMap('MilitaryBase')
+  }
+  else if (MAPNAME==='Tutorial' ){//&& ENTITYDISTRIBUTIONS[ENTITYDISTRIBUTION_MARK]==="battleRoyale" // in this mode, you pickup guns - TBU
+    resetMap('Tutorial')
   }
 }
 
@@ -902,6 +905,41 @@ function resetMap(MapNameGiven){
       }
     }
 
+  }else if (MapNameGiven=== 'Tutorial'){   
+    const TILESLOC_N_REQUEST = {
+'house1':{row: 5, col:1, request:['scope','1']},
+'house2':{row: 5, col:4, request:['scope','1']},
+'adrenaline1':{row: 9, col:9, request:['consumable','adrenaline']},
+'medkit1':{row: 9, col:8, request:['consumable','medkit']},
+'knife1':{row: 9, col:7, request:['melee','knife']},
+'grenade1':{row: 9, col:6, request:['throwable','grenade']},
+'flash1':{row: 9, col:5, request:['throwable','flash']},
+'smoke1':{row: 9, col:4, request:['throwable','smoke']},
+'flares1':{row: 9, col:3, request:['flare','random']},
+'flares2':{row: 9, col:2, request:['flare','random']},
+'flares3':{row: 9, col:1, request:['flare','random']},
+'flares4':{row: 9, col:0, request:['flare','random']},
+'car1':{row: 8, col:3, request:['vehicle','car']},
+    } 
+  
+    // AUTO DROPPER - GENERATE ITEMS / VEHICLES
+    auto_dropper(TILESLOC_N_REQUEST)
+    for (let i=0;i<2;i++){
+      makeNdropItem('placeable', 'barrel' ,getCoordTilesCenter({row:8,col:1}),onground=true) 
+    }
+    for (let i=0;i<2;i++){
+      makeNdropItem('placeable', 'mine' ,getCoordTilesCenter({row:8,col:0}),onground=true,variantNameGiven='Saharamine') 
+    }
+
+    // MAKE HOUSES
+    for (let i=0;i<2;i++){
+      makeHouse_2Tiles(getCoordTiles(TILESLOC_N_REQUEST[`house${i+1}`]))
+    }
+      
+    // MAKE OBJECTS - walls on top to prevent enemy from comming
+
+
+
   }
 
  
@@ -1070,6 +1108,11 @@ async function main(){
             for (let i=0;i<defaultGuns.length; i++){
               makeNdropItem('gun', defaultGuns[i], {x:0 ,y:0},onground=false)
               inventory[i] = backEndItems[itemsId]
+            }
+
+            if (MAPNAME==='Tutorial'){
+              playerX = TILE_SIZE*9
+              playerY = TILE_SIZE*9 
             }
 
             playerJoinTimeout = setTimeout(function(){
@@ -1965,11 +2008,16 @@ function makeHouse_2Tiles(location){ // location is top left corner
   const HOUSEWIDTH = TILE_SIZE*2
   const HOUSEHEIGHT = TILE_SIZE
   const DOORLEN = 40
-  makeObjects("wall", 30, {orientation: 'vertical',start:{x:location.x+WALLWIDTH_HALF,y:location.y+DOORLEN}, end:{x:location.x+WALLWIDTH_HALF,y:location.y+HOUSEHEIGHT}, width:WALLWIDTH, color: 'gray'})
-  makeObjects("wall", 30, {orientation: 'vertical',start:{x:location.x+HOUSEWIDTH-WALLWIDTH_HALF,y:location.y}, end:{x:location.x+HOUSEWIDTH-WALLWIDTH_HALF,y:location.y+HOUSEHEIGHT}, width:WALLWIDTH, color: 'gray'})
-  makeObjects("wall", 30, {orientation: 'horizontal',start:{x:location.x,y:location.y}, end:{x:location.x+HOUSEWIDTH,y:location.y}, width:WALLWIDTH, color: 'gray'})
-  makeObjects("wall", 30, {orientation: 'horizontal',start:{x:location.x,y:location.y+HOUSEHEIGHT}, end:{x:location.x+HOUSEWIDTH,y:location.y+HOUSEHEIGHT}, width:WALLWIDTH, color: 'gray'})
+  // makeObjects("wall", 30, {orientation: 'vertical',start:{x:location.x+WALLWIDTH_HALF,y:location.y+DOORLEN}, end:{x:location.x+WALLWIDTH_HALF,y:location.y+HOUSEHEIGHT}, width:WALLWIDTH, color: 'gray'})
   
+  one_tile_wall_vertical({x:location.x+HOUSEWIDTH , y: location.y})
+
+  for (let i=0;i<2;i++){
+    for (let j=0;j<2;j++){
+      one_tile_wall_horizontal({x: location.x+TILE_SIZE*j , y: location.y+ HOUSEHEIGHT*i})
+    }
+  }
+
 }
 
 function one_tile_wall_vertical(location){
