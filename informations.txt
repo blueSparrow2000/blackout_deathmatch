@@ -35,7 +35,7 @@
 
 
   backEndEnemies[enemyId] = {
-    x,y,radius,velocity, myID, color, damage, health, homing, homingTargetId, speed, wearingarmorID, entityType: 'enemy'
+    x,y,radius,velocity, myID, color, damage, health, homing, homingTargetId, speed, wearingarmorID, entityType: 'enemy', bias
   }
 
 

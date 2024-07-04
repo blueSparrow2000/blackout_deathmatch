@@ -7,9 +7,10 @@ let signalReset = false
 const SHOWBLOODPARTICLE = true
 
 ///////////////////////////////////// MAP CONFIGURATION /////////////////////////////////////
-const MAPDICT = {'Wilderness':30, 'Sahara':50, 'MilitaryBase':100} // mapName : map tile number
+const MAPDICT = {'Wilderness':{tilenum:30,difficulty:1,spawnrate:15000}, 'Sahara':{tilenum:50,difficulty:2,spawnrate:30000}, 'MilitaryBase':{tilenum:100,difficulty:2,spawnrate:15000},'Arena':{tilenum:10,difficulty:3,spawnrate:10000}} // mapName : map tile number
 let MAPNAME = 'Sahara' //'MilitaryBase' // 'MilitaryBase'  //    'Wilderness' //'Sahara' 
-let MAPTILENUM = MAPDICT[MAPNAME] // can vary, but map is SQUARE!
+let MAPTILENUM = MAPDICT[MAPNAME].tilenum // can vary, but map is SQUARE!
+const DIFFICULTY = MAPDICT[MAPNAME].difficulty // 1~3 3 is the hardest
 const variantMapName = ['Sahara','MilitaryBase']
 ///////////////////////////////////// MAP CONFIGURATION /////////////////////////////////////
 
@@ -84,7 +85,8 @@ const EXTREMEFRICTION = 0.88
 
 // enemy setting (manual)
 const SPAWNENEMYFLAG = true
-let ENEMYSPAWNRATE = 15000//30000
+const ENEMYSPAWNRATE = MAPDICT[MAPNAME].spawnrate // 1~3 3 is the hardest
+//30000
 let ENEMYNUM = 1
 let ENEMYCOUNT = 0
 
@@ -1749,9 +1751,18 @@ setInterval(() => {
           targetplayer.y - enemy.y,
           targetplayer.x - enemy.x
         )
+
+        let normal_move = enemy.speed
         
-        enemy.x += enemy.speed * Math.cos(angle)
-        enemy.y += enemy.speed * Math.sin(angle)
+        if (Math.random()>enemy.bias){
+          normal_move *= -1
+        }
+        const cos =  Math.cos(angle)
+        const sin =  Math.sin(angle)
+
+        // auxiliary movement
+        enemy.x += enemy.speed * cos + normal_move*sin
+        enemy.y += enemy.speed * sin - normal_move*cos
       }
       else{  // initial target died => dont move for a moment and walk randomly
         enemy.homing = false 
@@ -2415,9 +2426,9 @@ function throwable_reflection_with_Objects(entity){
 function spawnEnemies(){
   enemyId++
   ENEMYCOUNT ++
-  const factor = 1 +  Math.random()  // 1~2
-  const radius = Math.round(factor*16) // 16~32
-  const speed = 3 - factor // 1~2
+  const factor = Math.round((1 +  Math.random())*10)/10 // 1~2
+  const radius = Math.round(factor*8) // 8~16
+  const speed = DIFFICULTY+2.5 - factor // DIFFICULTY+0.5~1.5
 
   let x = 64
   let y = 64
@@ -2435,26 +2446,25 @@ function spawnEnemies(){
   // }
 
 
-  let homing = false
+  // all enemies are homing
+  let homing = true
   let homingTargetId = -1
   //let colorfactor = 100 + Math.round(factor*40)
 
-  if (Math.random() > 0.5){ // 50% chance of homing!
-    homing = true
-    //colorfactor = Math.round(factor*40)
-    const backEndPlayersKey = Object.keys(backEndPlayers)
-    const playerNum = backEndPlayersKey.length
+  //colorfactor = Math.round(factor*40)
+  const backEndPlayersKey = Object.keys(backEndPlayers)
+  const playerNum = backEndPlayersKey.length
 
-    if (playerNum===0){
-      //console.log('No players')
-      idx = 0
-      homing = false
-    }else{
-      //console.log(`${playerNum} Players playing`)
-      idx = Math.round(Math.random()* (playerNum - 1) ) // 0 ~ #player - 1
-    }
-    homingTargetId = backEndPlayersKey[idx]
+  if (playerNum===0){
+    //console.log('No players')
+    idx = 0
+    homing = false
+  }else{
+    //console.log(`${playerNum} Players playing`)
+    idx = Math.round(Math.random()* (playerNum - 1) ) // 0 ~ #player - 1
   }
+  homingTargetId = backEndPlayersKey[idx]
+
   // back ticks: ~ type this without shift!
 
   const color = "CadetBlue" //`hsl(${colorfactor},50%,50%)` // [0~360, saturation %, lightness %]
@@ -2469,9 +2479,14 @@ function spawnEnemies(){
   const health = factor*8 - 1
   const wearingarmorID = -1 //none
 
+  let bias = 0.3 - (Math.round(Math.random()*10)/40)
+  if (Math.random()>0.5){
+    bias = 1-bias 
+  }
+
   // (new Enemy({ex, ey, eradius, ecolor, evelocity}))
   backEndEnemies[enemyId] = {
-    x,y,radius,velocity, myID, color, damage, health, homing, homingTargetId, speed, wearingarmorID, entityType: 'enemy'
+    x,y,radius,velocity, myID, color, damage, health, homing, homingTargetId, speed, wearingarmorID, entityType: 'enemy',bias
   }
   //console.log(`spawned enemy ID: ${enemyId}`)
 }

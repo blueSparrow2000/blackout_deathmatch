@@ -140,15 +140,19 @@ https://www.youtube.com/watch?v=wLojAqzOkSk
 2024.7.3 Shows remaining kills 
 
 
+2024.7.4 AI's move became more agile
+
 
 Future plan:
-- Melee update: frisby / sakura (jett skill)
-- vehicle-vehicle collision
-- Military base: finish structures / add trees (object) in the dense forest
-- smarter AI (zombies shoots projectiles)
 
+- HTML: detailed pop-ups (for picking items/riding vehicles)
+- smarter AI (zombies shoots projectiles)
+- Military base: finish structures / add trees (object) in the dense forest
+
+- vehicle-vehicle collision
 - SONA (shows location of enemy in the map & direction for 1 seconds)
 - wind update
+- Melee update: frisby / sakura (jett skill)
 - make melee weapon skin (katana etc.) + more powerful melee weapons!
 
 ## Various Tips
