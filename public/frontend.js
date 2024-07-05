@@ -156,10 +156,34 @@ const tutorials = ["Welcome to the tutorial.\nPress Q to see the minimap",
   "Press V to see the range of a gun you are holding",
   "Well done! If you have control to the server, than change the MAPNAME in the backend.js. Otherwise, refresh the browser."
  ]
+ const pingsForTutorials = [null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  {c:8, r:9},
+  null,
+  {c:7, r:9},
+  {c:6, r:9},
+  {c:7, r:8},
+  {c:3, r:9},
+  {c:3, r:8},
+  {c:4, r:5},
+  {c:0, r:0},
+  null,
+  null,
+  null
+ ]
 
  function checkpointReady(){
   document.querySelector('#tutorial').innerHTML = `<div data-id="0"> ${tutorials[checkpoint_step]} </div>`
   //console.log(`successfully checked ${checkpoint_step}th checkpoint `)
+  const ping = pingsForTutorials[checkpoint_step]
+  if (ping){
+    addPing(ping.c*TILE_SIZE + Math.round(TILE_SIZE/2), ping.r*TILE_SIZE + Math.round(TILE_SIZE/2), false)
+  }
   checkpoint_step+=1 // proceed
  }
 
@@ -648,6 +672,10 @@ function mapLoc_to_realLoc(x_map,y_map){
   const MiniMapRatio = MINIMAPSIZE/MAPWIDTH
   return {x: Math.round( (x_map - centerX + MINIMAPSIZE_HALF)/MiniMapRatio ), y: Math.round( (y_map - centerY + MINIMAPSIZE_HALF)/MiniMapRatio )}
 }
+function realLoc_to_mapLoc(x_real,y_real){
+  const MiniMapRatio = MINIMAPSIZE/MAPWIDTH
+  return {x: x_real*MiniMapRatio+centerX-MINIMAPSIZE_HALF, y:y_real*MiniMapRatio+centerY-MINIMAPSIZE_HALF}
+}
 
 
 addEventListener('wheel',(event) => {
@@ -682,20 +710,35 @@ addEventListener('wheel',(event) => {
   return false; 
 }, false);
 
-
-addEventListener('click', (event) => {
-  if (keys.q.pressed){ // in this case, make a ping
-    pingID ++ 
-    // this is a location in a map
-    const RealLoc = mapLoc_to_realLoc(event.clientX, event.clientY)
+function addPing(xpos,ypos,mapflag = true){
+  pingID ++ 
+  // this is a location in a map
+  if (mapflag){
+    const RealLoc = mapLoc_to_realLoc(xpos,ypos)
     frontEndPing[pingID] = new Ping({
       x: RealLoc.x,
       y: RealLoc.y,
-      x_map: event.clientX,
-      y_map: event.clientY,
+      x_map: xpos,
+      y_map: ypos,
     })
-    // add ping sound if needed here
-    pingSound.play()
+  }else{
+    const MapLoc = realLoc_to_mapLoc(xpos,ypos)
+    frontEndPing[pingID] = new Ping({
+      x: xpos,
+      y: ypos,
+      x_map: MapLoc.x,
+      y_map: MapLoc.y,
+    })
+  }
+
+  // add ping sound if needed here
+  pingSound.play()
+}
+
+addEventListener('click', (event) => {
+  if (keys.q.pressed){ // in this case, make a ping
+    addPing(event.clientX, event.clientY)
+
   }
   else{
     shootCheck(event)

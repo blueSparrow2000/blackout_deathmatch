@@ -481,7 +481,7 @@ function addProjectile(angle,currentGun,playerID,location,startDistance,holding=
     travelDistance = Math.min(guninfoGET.travelDistance, Math.max(startDistance, get_player_center_mouse_distance(thisPlayer.mousePos, thisPlayer.canvasWidth/2, thisPlayer.canvasHeight/2) - startDistance))
   } else if (currentGun==='Lynx'){// fire two bullets at the same time
     backEndProjectiles[projectileId] = {
-      x:location.x + Math.cos(angle)*180, y:location.y + Math.sin(angle)*180,radius,velocity, speed:bulletSpeed, playerId: playerID, gunName:currentGun, travelDistance, projDamage,color
+      x:location.x + Math.cos(angle)*150, y:location.y + Math.sin(angle)*150,radius,velocity, speed:bulletSpeed, playerId: playerID, gunName:currentGun, travelDistance, projDamage,color
     }
     projectileId++
   }
