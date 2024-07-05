@@ -143,6 +143,9 @@ https://www.youtube.com/watch?v=wLojAqzOkSk
 2024.7.4 AI's move became more agile
 
 
+2024.7.5 Added tutorial mode (check  points & scripts)
+
+
 Future plan:
 
 - HTML: detailed pop-ups (for picking items/riding vehicles)

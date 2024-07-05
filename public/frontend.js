@@ -131,6 +131,37 @@ const canvas = canvasEl.getContext("2d");
 
 const pointEl = document.querySelector('#pointEl')
 
+// Tutorial checkpoints
+// length = # of tutorial steps 
+// checkpoints = the value that should turn to true for completing
+// the words to show before each step
+let checkpoint_step = 0 // start with index 0
+let IsTutorial = false
+const tutorials = ["Welcome to the tutorial.\nPress Q to see the minimap",
+  "Use WASD to move",
+   "Press E to dash", 
+   "Use scroll or number keys to swap inventory",
+   "Click or hold space to shoot", 
+   "Go to the first inventory slot and press R to reload", 
+   "Press (left) shift to look ahead",
+  "Press F to pickup items: With the fist in the slot, get close to '+' sign (item) and press F", 
+  "Click anywhere to use the holding item", 
+  "Pickup the knife and click to use", 
+  "Pickup the grenade and throw by clicking it", 
+  "pickup the barrel and click to place it", 
+  "pickup the flare gun and click to use it",
+  "You can ride a vehicle by getting close to the solid circle (vehicle) and pressing F. You can also get off by pressing the same key",
+  "House is the structure where you cannot see inside from the outside. Getting inside the house narrows the vision to one blocks. Try to get inside the house",
+  "Mob is spawned on the top of this map. Break the wall and try to kill one",
+  "Press V to see the range of a gun you are holding",
+  "Well done! If you have control to the server, than change the MAPNAME in the backend.js. Otherwise, refresh the browser."
+ ]
+
+ function checkpointReady(){
+  document.querySelector('#tutorial').innerHTML = `<div data-id="0"> ${tutorials[checkpoint_step]} </div>`
+  //console.log(`successfully checked ${checkpoint_step}th checkpoint `)
+  checkpoint_step+=1 // proceed
+ }
 
 // get socket
 const socket = io()//io(`ws://localhost:5000`);
@@ -149,6 +180,12 @@ socket.on('serverVars',( {loadedMap,MAPTILENUMBACKEND,MAPNAMEBACKEND,gunInfo, co
 
   MAPTILENUM = MAPTILENUMBACKEND
   MAPNAME = MAPNAMEBACKEND
+  if (MAPNAME==="Tutorial"){ // some check points and htmls
+    document.querySelector('#TutorialBlock').style.visibility = "visible"
+    checkpoint_step = 0 // init
+    IsTutorial = true
+    checkpointReady()
+  }
   MAPWIDTH = TILE_SIZE*MAPTILENUM
   MAPHEIGHT =TILE_SIZE*MAPTILENUM
 
@@ -245,6 +282,9 @@ function showKillLog(loglist){
 
 function showkillRemain(num){
   document.querySelector(`#killsRemaining`).innerHTML = `<div data-id="0"> ${num} </div>`
+  if (IsTutorial && checkpoint_step===16){ // killing changes the score!
+    checkpointReady()
+  }
 }
 
 function calc_kill_remain(score){ // remaining kills = number of guns (in the gunOrderInDeathmatch) - score
@@ -452,6 +492,21 @@ function shootCheck(event,holding = false){
     return
   }
   if (!frontEndPlayer){return}
+  if (IsTutorial){
+    const cur_item = getCurItem(frontEndPlayer)
+    const cur_item_type = cur_item.itemtype
+    if (checkpoint_step===9 && cur_item_type==='consumable'){
+      checkpointReady()
+    }else if(checkpoint_step===10 && cur_item.name==='knife'){
+      checkpointReady()
+    }else if(checkpoint_step===11 && cur_item_type==='throwable'){
+      checkpointReady()
+    }else if(checkpoint_step===12 && cur_item_type==='placeable'){
+      checkpointReady()
+    }else if(checkpoint_step===13 && cur_item.name==='flareGun'){
+      checkpointReady()
+    }
+  }
 
 
   // get currently holding item
@@ -501,6 +556,9 @@ function shootCheck(event,holding = false){
       listen = false // block
     
       socket.emit("shoot", {angle:getAngle(event),currentGun:currentGunName, startDistance:frontEndVehicles[vehicleID].radius + guninfGET.projectileSpeed,holding})
+      if (IsTutorial && checkpoint_step===5){
+        checkpointReady()
+      }
     
       fireTimeout = window.setTimeout(function(){ if (!frontEndPlayer) {clearTimeout(fireTimeout);return};clearTimeout(fireTimeout);listen = true},GUNFIRERATE)
       return
@@ -571,6 +629,9 @@ function shootCheck(event,holding = false){
   listen = false // block
 
   socket.emit("shoot", {angle:getAngle(event),currentGun:currentGunName,currentHoldingItemId,holding})
+  if (IsTutorial && checkpoint_step===5){
+    checkpointReady()
+  }
   
   if (!(currentHoldingItem.itemtype==='melee')){ // not malee, i.e. gun!
     // decrease ammo here!!!!!
@@ -639,6 +700,7 @@ addEventListener('click', (event) => {
   else{
     shootCheck(event)
   }
+
 })
 
 let current_slot = 1
@@ -657,17 +719,30 @@ function draw_highlight(){
 function changeInventory(num){ // num:1~4
   socket.emit('keydown',{keycode:`Digit${num}`})
   change_highlight(num)
+  if (IsTutorial && checkpoint_step===4){
+    checkpointReady()
+  }
 }
+
+
+
 
 // periodically request backend server
 setInterval(()=>{
   if (keys.f.pressed){
     socket.emit('keydown',{keycode:'KeyF'})
+    if (IsTutorial){  // empty hand
+      if (checkpoint_step===8 && frontEndPlayer.currentSlot!==1){
+        checkpointReady()
+      }else if(checkpoint_step===14 && frontEndPlayer.ridingVehicleID>0){
+        checkpointReady()
+      }
+      
+    }
   }
   // dont have to emit since they are seen by me(a client, not others)
 
-  if (keys.e.pressed){
-    
+  if (keys.e.pressed){    
     if (frontEndPlayer && frontEndPlayer.dash>0){
       if (frontEndPlayer.ridingVehicleID>0){
         // pass
@@ -675,8 +750,12 @@ setInterval(()=>{
         const angle = getAngle({clientX:cursorX, clientY:cursorY})
         dashSound.play()
         socket.emit('dash',{angle})
+        if (IsTutorial && checkpoint_step===3){
+          checkpointReady()
+        }
       }
     }
+
 
   }
   if (listen) {
@@ -703,10 +782,17 @@ setInterval(()=>{
 
       if (keys.r.pressed){ // reload lock? click once please... dont spam click. It will slow your PC
           socket.emit('keydown',{keycode:'KeyR'})
+          if (IsTutorial && checkpoint_step===6 && frontEndPlayer.currentSlot===1){
+            checkpointReady()
+          }
       }
   }
 
   const Movement = keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed
+
+  if (IsTutorial && checkpoint_step===2 && Movement){
+    checkpointReady()
+  }
 
   if (Movement && keys.space.pressed){ // always fire hold = true since space was pressed
   // update frequent keys at once (Movement & hold shoot)
@@ -1674,6 +1760,9 @@ function loop(){
           canvas.drawImage(pingImageMINIMAP, thisPing.x_map-4, thisPing.y_map-4)
         }
 
+        if (IsTutorial && checkpoint_step===1){
+          checkpointReady()
+        }
         window.requestAnimationFrame(loop);
         return
     }
@@ -1727,7 +1816,9 @@ function loop(){
         const { id } = groundMap[chunkInfo.rowNum][chunkInfo.colNum]
         gid = id
       }
-      
+      if (IsTutorial && checkpoint_step===7){
+        checkpointReady()
+      }
     }
 
 
@@ -1739,6 +1830,9 @@ function loop(){
         frontEndPlayer.getinhouse = true // prediction
         socket.emit('houseEnter')
         updateSightChunk(-1)
+        if (IsTutorial && checkpoint_step===15){
+          checkpointReady()
+        }
       }
       if (frontEndPlayer.getinhouse && (!floor_of_house_tile_id.includes(id))){ // get out of the house for the first time
         frontEndPlayer.getinhouse = false // prediction
@@ -2042,6 +2136,10 @@ function loop(){
         canvas.beginPath()
         canvas.arc(Xloc,Yloc , thisguninfo.travelDistance, 0, Math.PI * 2, false)
         canvas.stroke()
+
+        if (IsTutorial && checkpoint_step===17){
+          checkpointReady()
+        }
       }
     }
 

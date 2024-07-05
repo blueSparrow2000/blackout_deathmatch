@@ -7,7 +7,7 @@ let signalReset = false
 const SHOWBLOODPARTICLE = true
 
 ///////////////////////////////////// MAP CONFIGURATION /////////////////////////////////////
-const MAPDICT = {'Wilderness':{tilenum:30,difficulty:1,spawnrate:15000}, 'Sahara':{tilenum:50,difficulty:2,spawnrate:30000}, 'MilitaryBase':{tilenum:100,difficulty:2,spawnrate:15000},'Tutorial':{tilenum:10,difficulty:1,spawnrate:100000},'Arena':{tilenum:10,difficulty:3,spawnrate:10000}} // mapName : map tile number
+const MAPDICT = {'Wilderness':{tilenum:30,difficulty:1,spawnrate:15000}, 'Sahara':{tilenum:50,difficulty:2,spawnrate:30000}, 'MilitaryBase':{tilenum:100,difficulty:2,spawnrate:15000},'Tutorial':{tilenum:10,difficulty:1,spawnrate:30000},'Arena':{tilenum:10,difficulty:3,spawnrate:10000}} // mapName : map tile number
 let MAPNAME = 'Tutorial'//'Sahara' //'MilitaryBase' // 'MilitaryBase'  //    'Wilderness' //'Sahara' 
 let MAPTILENUM = MAPDICT[MAPNAME].tilenum // can vary, but map is SQUARE!
 const DIFFICULTY = MAPDICT[MAPNAME].difficulty // 1~3 3 is the hardest
@@ -925,16 +925,22 @@ function resetMap(MapNameGiven){
     // AUTO DROPPER - GENERATE ITEMS / VEHICLES
     auto_dropper(TILESLOC_N_REQUEST)
     for (let i=0;i<2;i++){
-      makeNdropItem('placeable', 'barrel' ,getCoordTilesCenter({row:8,col:1}),onground=true) 
+      makeNdropItem('placeable', 'barrel' ,getCoordTilesCenter({row:8,col:7}),onground=true) 
     }
     for (let i=0;i<2;i++){
-      makeNdropItem('placeable', 'mine' ,getCoordTilesCenter({row:8,col:0}),onground=true,variantNameGiven='Saharamine') 
+      makeNdropItem('placeable', 'mine' ,getCoordTilesCenter({row:8,col:8}),onground=true,variantNameGiven='Saharamine') 
     }
 
     // MAKE HOUSES
     for (let i=0;i<2;i++){
       makeHouse_2Tiles(getCoordTiles(TILESLOC_N_REQUEST[`house${i+1}`]))
     }
+
+    for (let i=0;i<10;i++){
+      one_tile_wall_horizontal({x: i*TILE_SIZE, y:TILE_SIZE })
+    }
+
+
       
     // MAKE OBJECTS - walls on top to prevent enemy from comming
 
@@ -1734,17 +1740,17 @@ setInterval(() => {
     // let THROWABLEDELETED = false
     let throwGET = backEndThrowables[id]
     const PROJECTILERADIUS = throwGET.radius
-    let myspeed = throwGET.speed
+    // let myspeed = throwGET.speed
 
     throwGET.velocity.x *= HIGHFRICTION
     throwGET.velocity.y *= HIGHFRICTION
-    myspeed *= HIGHFRICTION
+    throwGET.speed *= HIGHFRICTION
     throwGET.x += throwGET.velocity.x
     throwGET.y += throwGET.velocity.y
 
-    throwGET.travelDistance -= myspeed
+    throwGET.travelDistance -= throwGET.speed
     // travel distance check for projectiles
-    if (throwGET.travelDistance <= 0 || myspeed<=2){
+    if (throwGET.travelDistance <= 0 || throwGET.speed<=0.1){
       // console.log(throwGET.travelDistance,myspeed)
       // THROWABLEDELETED = true
       safeDeleteThrowable(id)
