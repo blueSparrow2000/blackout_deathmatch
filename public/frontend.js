@@ -177,7 +177,7 @@ const tutorials = ["Welcome to the tutorial.\nPress Q to see the minimap",
   null
  ]
 
- function checkpointReady(){
+ function updateCheckPoint(){
   document.querySelector('#tutorial').innerHTML = `<div data-id="0"> ${tutorials[checkpoint_step]} </div>`
   //console.log(`successfully checked ${checkpoint_step}th checkpoint `)
   const ping = pingsForTutorials[checkpoint_step]
@@ -208,7 +208,7 @@ socket.on('serverVars',( {loadedMap,MAPTILENUMBACKEND,MAPNAMEBACKEND,gunInfo, co
     document.querySelector('#TutorialBlock').style.visibility = "visible"
     checkpoint_step = 0 // init
     IsTutorial = true
-    checkpointReady()
+    updateCheckPoint()
   }
   MAPWIDTH = TILE_SIZE*MAPTILENUM
   MAPHEIGHT =TILE_SIZE*MAPTILENUM
@@ -307,7 +307,7 @@ function showKillLog(loglist){
 function showkillRemain(num){
   document.querySelector(`#killsRemaining`).innerHTML = `<div data-id="0"> ${num} </div>`
   if (IsTutorial && checkpoint_step===16){ // killing changes the score!
-    checkpointReady()
+    updateCheckPoint()
   }
 }
 
@@ -520,15 +520,15 @@ function shootCheck(event,holding = false){
     const cur_item = getCurItem(frontEndPlayer)
     const cur_item_type = cur_item.itemtype
     if (checkpoint_step===9 && cur_item_type==='consumable'){
-      checkpointReady()
+      updateCheckPoint()
     }else if(checkpoint_step===10 && cur_item.name==='knife'){
-      checkpointReady()
+      updateCheckPoint()
     }else if(checkpoint_step===11 && cur_item_type==='throwable'){
-      checkpointReady()
+      updateCheckPoint()
     }else if(checkpoint_step===12 && cur_item_type==='placeable'){
-      checkpointReady()
+      updateCheckPoint()
     }else if(checkpoint_step===13 && cur_item.name==='flareGun'){
-      checkpointReady()
+      updateCheckPoint()
     }
   }
 
@@ -581,7 +581,7 @@ function shootCheck(event,holding = false){
     
       socket.emit("shoot", {angle:getAngle(event),currentGun:currentGunName, startDistance:frontEndVehicles[vehicleID].radius + guninfGET.projectileSpeed,holding})
       if (IsTutorial && checkpoint_step===5){
-        checkpointReady()
+        updateCheckPoint()
       }
     
       fireTimeout = window.setTimeout(function(){ if (!frontEndPlayer) {clearTimeout(fireTimeout);return};clearTimeout(fireTimeout);listen = true},GUNFIRERATE)
@@ -654,7 +654,7 @@ function shootCheck(event,holding = false){
 
   socket.emit("shoot", {angle:getAngle(event),currentGun:currentGunName,currentHoldingItemId,holding})
   if (IsTutorial && checkpoint_step===5){
-    checkpointReady()
+    updateCheckPoint()
   }
   
   if (!(currentHoldingItem.itemtype==='melee')){ // not malee, i.e. gun!
@@ -763,7 +763,7 @@ function changeInventory(num){ // num:1~4
   socket.emit('keydown',{keycode:`Digit${num}`})
   change_highlight(num)
   if (IsTutorial && checkpoint_step===4){
-    checkpointReady()
+    updateCheckPoint()
   }
 }
 
@@ -776,9 +776,9 @@ setInterval(()=>{
     socket.emit('keydown',{keycode:'KeyF'})
     if (IsTutorial){  // empty hand
       if (checkpoint_step===8 && frontEndPlayer.currentSlot!==1){
-        checkpointReady()
+        updateCheckPoint()
       }else if(checkpoint_step===14 && frontEndPlayer.ridingVehicleID>0){
-        checkpointReady()
+        updateCheckPoint()
       }
       
     }
@@ -794,7 +794,7 @@ setInterval(()=>{
         dashSound.play()
         socket.emit('dash',{angle})
         if (IsTutorial && checkpoint_step===3){
-          checkpointReady()
+          updateCheckPoint()
         }
       }
     }
@@ -826,7 +826,7 @@ setInterval(()=>{
       if (keys.r.pressed){ // reload lock? click once please... dont spam click. It will slow your PC
           socket.emit('keydown',{keycode:'KeyR'})
           if (IsTutorial && checkpoint_step===6 && frontEndPlayer.currentSlot===1){
-            checkpointReady()
+            updateCheckPoint()
           }
       }
   }
@@ -834,7 +834,7 @@ setInterval(()=>{
   const Movement = keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed
 
   if (IsTutorial && checkpoint_step===2 && Movement){
-    checkpointReady()
+    updateCheckPoint()
   }
 
   if (Movement && keys.space.pressed){ // always fire hold = true since space was pressed
@@ -1804,7 +1804,7 @@ function loop(){
         }
 
         if (IsTutorial && checkpoint_step===1){
-          checkpointReady()
+          updateCheckPoint()
         }
         window.requestAnimationFrame(loop);
         return
@@ -1860,7 +1860,7 @@ function loop(){
         gid = id
       }
       if (IsTutorial && checkpoint_step===7){
-        checkpointReady()
+        updateCheckPoint()
       }
     }
 
@@ -1874,7 +1874,7 @@ function loop(){
         socket.emit('houseEnter')
         updateSightChunk(-1)
         if (IsTutorial && checkpoint_step===15){
-          checkpointReady()
+          updateCheckPoint()
         }
       }
       if (frontEndPlayer.getinhouse && (!floor_of_house_tile_id.includes(id))){ // get out of the house for the first time
@@ -2181,7 +2181,7 @@ function loop(){
         canvas.stroke()
 
         if (IsTutorial && checkpoint_step===17){
-          checkpointReady()
+          updateCheckPoint()
         }
       }
     }
@@ -2227,9 +2227,7 @@ document.querySelector('#usernameForm').addEventListener('submit', (event) => {
     resetKeys()
     listen = true // initialize the semaphore
     updateSightChunk(0) // scope to 0
-    const playerX = MAPWIDTH * Math.random() //0 //
-    const playerY = MAPHEIGHT * Math.random() //MAPHEIGHT// 
-    const playerColor =  `hsl(${Math.random()*360},100%,70%)`
+
 
     const myUserName = document.querySelector('#usernameInput').value
 
@@ -2243,7 +2241,7 @@ document.querySelector('#usernameForm').addEventListener('submit', (event) => {
 
     myPCSkin = skinImages[Myskin]
     //console.log(myPCSkin.src)
-    socket.emit('initGame', {username:myUserName, playerX, playerY, playerColor,canvasHeight:canvasEl.height,canvasWidth:canvasEl.width,Myskin})
+    socket.emit('initGame', {username:myUserName,canvasHeight:canvasEl.height,canvasWidth:canvasEl.width,Myskin})
     
     updateItemHTML(1,'AWM')
     for (let i=1;i<4;i++){ // initialize to fist

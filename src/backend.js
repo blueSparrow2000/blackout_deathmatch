@@ -6,18 +6,26 @@ const ITEMRADIUS = 16
 let signalReset = false
 const SHOWBLOODPARTICLE = true
 
+// map info
+const TILES_IN_ROW = 23 // only use designated tileset: 23 kinds of tiles are in a row
+const TILE_SIZE_HALF = 64;
+const TILE_SIZE = TILE_SIZE_HALF*2 //128;
+
 ///////////////////////////////////// MAP CONFIGURATION /////////////////////////////////////
-const MAPDICT = {'Wilderness':{tilenum:30,difficulty:1,spawnrate:15000}, 'Sahara':{tilenum:50,difficulty:2,spawnrate:30000}, 'MilitaryBase':{tilenum:100,difficulty:2,spawnrate:15000},'Tutorial':{tilenum:10,difficulty:1,spawnrate:30000},'Arena':{tilenum:10,difficulty:3,spawnrate:10000}} // mapName : map tile number
+const MAPDICT = {'Wilderness':{tilenum:30,difficulty:1,spawnrate:15000,playerSpawn:'Random', 
+  enemySpawn:[{x:TILE_SIZE*1 + TILE_SIZE_HALF,y:TILE_SIZE*1 + TILE_SIZE_HALF}]},
+   'Sahara':{tilenum:50,difficulty:2,spawnrate:30000,playerSpawn:'Random', enemySpawn:[{x:TILE_SIZE*1 + TILE_SIZE_HALF,y:TILE_SIZE*1 + TILE_SIZE_HALF}]},
+   'MilitaryBase':{tilenum:100,difficulty:2,spawnrate:15000,playerSpawn:'Random', enemySpawn:[{x:TILE_SIZE*50,y:TILE_SIZE*10},{x:TILE_SIZE*20,y:TILE_SIZE*20},{x:TILE_SIZE*70,y:TILE_SIZE*10}]},
+   'Tutorial':{tilenum:10,difficulty:1,spawnrate:20000,playerSpawn:{x:9*TILE_SIZE,y:9*TILE_SIZE}, enemySpawn:[{x: TILE_SIZE_HALF,y:TILE_SIZE_HALF},{x:TILE_SIZE*9+ TILE_SIZE_HALF,y:TILE_SIZE_HALF}]},
+   'Arena':{tilenum:10,difficulty:3,spawnrate:10000,playerSpawn:'Random', enemySpawn:[{x:TILE_SIZE_HALF,y:TILE_SIZE_HALF}]}} 
+   
 let MAPNAME = 'Tutorial'//'Sahara' //'MilitaryBase' // 'MilitaryBase'  //    'Wilderness' //'Sahara' 
 let MAPTILENUM = MAPDICT[MAPNAME].tilenum // can vary, but map is SQUARE!
 const DIFFICULTY = MAPDICT[MAPNAME].difficulty // 1~3 3 is the hardest
 const variantMapName = ['Sahara','MilitaryBase']
 ///////////////////////////////////// MAP CONFIGURATION /////////////////////////////////////
 
-// map info
-const TILES_IN_ROW = 23 // only use designated tileset: 23 kinds of tiles are in a row
-const TILE_SIZE_HALF = 64;
-const TILE_SIZE = TILE_SIZE_HALF*2 //128;
+
 let MAPWIDTH = TILE_SIZE*MAPTILENUM
 let MAPHEIGHT =TILE_SIZE*MAPTILENUM
 const loadMap = require("./mapLoader")
@@ -89,6 +97,8 @@ const ENEMYSPAWNRATE = MAPDICT[MAPNAME].spawnrate // 1~3 3 is the hardest
 //30000
 let ENEMYNUM = 1
 let ENEMYCOUNT = 0
+const ENEMYORBITDIST = 5*TILE_SIZE 
+const ENEMTBACKSTEPDIST = TILE_SIZE + TILE_SIZE_HALF
 
 const GROUNDITEMFLAG = true
 let GHOSTENEMY = false
@@ -1106,7 +1116,7 @@ async function main(){
         })
 
         // initialize game when clicking button (submit name)
-        socket.on('initGame',({username,playerX, playerY, playerColor,canvasHeight,canvasWidth,Myskin='default'})=>{
+        socket.on('initGame',({username,canvasHeight,canvasWidth,Myskin='default'})=>{
             // initialize inventory with fist
             let inventory =  new Array(INVENTORYSIZE).fill().map(() => (backEndItems[0])) // array points to references - fist can be shared for all players
 
@@ -1116,9 +1126,16 @@ async function main(){
               inventory[i] = backEndItems[itemsId]
             }
 
-            if (MAPNAME==='Tutorial'){
-              playerX = TILE_SIZE*9
-              playerY = TILE_SIZE*9 
+
+            let playerX = MAPWIDTH * Math.random() //0 //
+            let playerY = MAPHEIGHT * Math.random() //MAPHEIGHT// 
+            const playerColor =  'black'//`hsl(${Math.random()*360},100%,70%)`
+            if (MAPDICT[MAPNAME].playerSpawn==='Random'){
+              // pass
+            }
+            else{
+              playerX = MAPDICT[MAPNAME].playerSpawn.x // TILE_SIZE*9
+              playerY = MAPDICT[MAPNAME].playerSpawn.y // TILE_SIZE*9 
             }
 
             playerJoinTimeout = setTimeout(function(){
@@ -1801,16 +1818,22 @@ setInterval(() => {
     if (enemy.homing){ 
       const targetplayer = backEndPlayers[enemy.homingTargetId]
       if (targetplayer){// initial target still exists
+        const x_dist = targetplayer.x - enemy.x
+        const y_dist = targetplayer.y - enemy.y
+
         const angle = Math.atan2(
-          targetplayer.y - enemy.y,
-          targetplayer.x - enemy.x
+          y_dist,
+          x_dist
         )
 
-        let normal_move = enemy.speed
-        
-        if (Math.random()>enemy.bias){
-          normal_move *= -1
+        let normal_move = 0
+        if (ENEMYORBITDIST > Math.hypot(x_dist,y_dist)){
+          normal_move = enemy.speed
+          if (Math.random()>enemy.bias){
+            normal_move *= -1
+          }
         }
+
         const cos =  Math.cos(angle)
         const sin =  Math.sin(angle)
 
@@ -2481,6 +2504,8 @@ function throwable_reflection_with_Objects(entity){
 
 
 
+const spawn_locations = MAPDICT[MAPNAME].enemySpawn
+const num_spawn_loc = spawn_locations.length-1
 
 function spawnEnemies(){
   enemyId++
@@ -2489,12 +2514,9 @@ function spawnEnemies(){
   const radius = 12 + Math.round(factor*4) // 16~20
   const speed = DIFFICULTY+2.5 - factor // DIFFICULTY+0.5~1.5
 
-  let x = 64
-  let y = 64
-  if (MAPNAME==='Sahara'){
-    x = TILE_SIZE*1 + TILE_SIZE_HALF
-    y = TILE_SIZE*1 + TILE_SIZE_HALF
-  }
+  const loc = spawn_locations[Math.round(Math.random()* (num_spawn_loc))]
+  let x = loc.x
+  let y = loc.y
 
   // if (Math.random() < 0.5) {
   //     x = Math.random() < 0.5 ? 0 - radius : MAPWIDTH + radius
