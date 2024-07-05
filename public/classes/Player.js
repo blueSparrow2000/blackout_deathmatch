@@ -146,7 +146,7 @@ class Player{
           const tipstart = itemlength- tipsize
           const damage = thisguninfo.damage
           let tipwidth = parseInt(gunmainwidth + damage/2)
-          if (damage> 30){//Lynx
+          if (currentHoldingItem.name==='Lynx'){//Lynx
             tipwidth = 16
           }
           
