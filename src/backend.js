@@ -144,8 +144,10 @@ const gunInfo = {
     'usas12':{travelDistance:448, damage: 0, shake:1, num: 1, fireRate: 250, projectileSpeed:12, magSize:5, reloadTime: 2800, ammotype:'12G', size: {length:18, width:4}},
     
     'ump45':{travelDistance:800, damage: 0.8, shake:1, num: 1, fireRate: 85, projectileSpeed:19, magSize:25, reloadTime: 2700, ammotype:'45ACP', size: {length:19, width:4}},
-    'vector':{travelDistance:650, damage: 0.8, shake:1, num: 1, fireRate: 45, projectileSpeed:20, magSize:19, reloadTime: 2600, ammotype:'45ACP', size: {length:18, width:3}},
+    'vector':{travelDistance:650, damage: 0.8, shake:1, num: 1, fireRate: 50, projectileSpeed:21, magSize:19, reloadTime: 2600, ammotype:'45ACP', size: {length:18, width:3}},
     'mp5':{travelDistance:700, damage: 0.8, shake:1, num: 1, fireRate: 70, projectileSpeed:22, magSize:30, reloadTime: 2100, ammotype:'45ACP', size: {length:20, width:3}},
+    'MG3':{travelDistance:700, damage: 0.8, shake:0, num: 1, fireRate: 35, projectileSpeed:17, magSize:100, reloadTime: 1600, ammotype:'45ACP', size: {length:13, width:2}},
+    
     
     'fist':{travelDistance:24, damage: 0.5, shake:0, num: 1, fireRate: 300, projectileSpeed:6, magSize:0, reloadTime: 0, ammotype:'bio', size: {length:0, width:4}},
     'knife':{travelDistance:32, damage: 1, shake:0, num: 1, fireRate: 200, projectileSpeed:8, magSize:0, reloadTime: 0, ammotype:'sharp', size: {length:0, width:2}},
@@ -153,7 +155,7 @@ const gunInfo = {
 
   }
 const gunOrderInDeathmatch = ['AWM','vector','s686','ak47','SLR','FAMAS','usas12','mp5','M249','mk14','VSS','DBS','ump45','M1','Deagle','pistol']
-const PICKABLE_GUNS = ['flareGun', 'Lynx','tankBuster','grenadeLauncher']
+const PICKABLE_GUNS = ['flareGun', 'Lynx','tankBuster','grenadeLauncher','MG3']
 const PENETRATION_GUNS = ['Lynx', 'shockWave']
 const finalScore = gunOrderInDeathmatch.length - 1
 
@@ -256,7 +258,7 @@ function armorEffect(armorID, damage){
       }
       return (9*damage)/10
     case 'turtle': // 
-      return damage/3
+      return damage/2
     case 'anti blast': // 
       if (damage===15){ // shockwave
         return 1
@@ -1935,6 +1937,8 @@ function makeNdropItem(itemtype, name, groundloc,onground=true,variantNameGiven=
       ammo = 1
     }else if(name==='grenadeLauncher'){
       ammo = 6
+    }else if(name==='MG3'){
+      ammo = 200
     }
 
     iteminfo = {ammo,ammotype}
@@ -2901,7 +2905,7 @@ function updateAirstrike(airstrikeid){
 }
 
 //'item_landing','vehicle_landing'
-const AirstrikeGuns = ['Lynx','grenadeLauncher'] //'tankBuster',
+const AirstrikeGuns = ['Lynx','grenadeLauncher','MG3'] //'tankBuster',
 function DeployAirstrike(airstrike){
 
   if (airstrike.signal==='bomb'){ // strike multiple times

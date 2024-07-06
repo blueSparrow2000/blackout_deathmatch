@@ -146,6 +146,10 @@ https://www.youtube.com/watch?v=wLojAqzOkSk
 2024.7.5 Added tutorial mode (check  points & scripts)
 
 
+2024.7.6 Added MG3 (?) : Attempted to add uzi but it was too op
+
+
+
 Future plan:
 
 - HTML: detailed pop-ups (for picking items/riding vehicles)

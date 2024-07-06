@@ -67,7 +67,7 @@ let interactTimeout
 const INTERACTTIME = 300
 const ITEM_THAT_TAKESUP_INVENTORY = ['consumable', 'placeable','melee','throwable']
 const UNDROPPABLE_ITEM = ['gun']
-const PICKABLE_GUNS = ['flareGun', 'Lynx','tankBuster','grenadeLauncher']
+const PICKABLE_GUNS = ['flareGun', 'Lynx','tankBuster','grenadeLauncher','MG3']
 
 const LobbyBGM = new Audio("/sound/Lobby.mp3")
 const LostBGM = new Audio("/sound/Lost_BGM.mp3")
